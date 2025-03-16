@@ -1144,6 +1144,8 @@ public class Badges {
 	}
 	
 	public static void unlock( Badge badge ){
+        if(badge==null) return;
+
 		if (!isUnlocked(badge) && (badge.type == BadgeType.JOURNAL || Dungeon.customSeedText.isEmpty())){
 			global.add( badge );
 			saveNeeded = true;
