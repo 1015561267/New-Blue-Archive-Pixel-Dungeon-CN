@@ -253,6 +253,7 @@ public class SuperNova extends MeleeWeapon {
         }
 
         hero.spendAndNext(Actor.TICK);
+        updateQuickslot();
     }
 
     private CellSelector.Listener shooter = new CellSelector.Listener() {
@@ -438,6 +439,7 @@ public class SuperNova extends MeleeWeapon {
         @Override
         public void detach() {
             hero.yellP(Messages.get(Hero.class, hero.heroClass.name() + "_supernova_ready_" + (Random.Int(3)+1)));
+            updateQuickslot();
             super.detach();
         }
 
