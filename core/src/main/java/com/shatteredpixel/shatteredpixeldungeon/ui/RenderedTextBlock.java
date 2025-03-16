@@ -54,7 +54,9 @@ public class RenderedTextBlock extends Component {
 	public static final int CENTER_ALIGN = 2;
 	public static final int RIGHT_ALIGN = 3;
 	private int alignment = LEFT_ALIGN;
-	
+
+    public static boolean cnLocalizationFlag = false;
+
 	public RenderedTextBlock(int size){
 		this.size = size;
 	}

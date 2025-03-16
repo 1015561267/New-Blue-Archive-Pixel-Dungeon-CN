@@ -39,8 +39,11 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Archs;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats;
@@ -178,7 +181,7 @@ public class TitleScene extends PixelScene {
 		};
 		btnAbout.icon(Icons.get(Icons.SHPX));
 		add(btnAbout);
-		
+
 		final int BTN_HEIGHT = 20;
 		int GAP = (int)(h - topRegion - (landscape() ? 3 : 4)*BTN_HEIGHT)/3;
 		GAP /= landscape() ? 3 : 5;
@@ -205,6 +208,10 @@ public class TitleScene extends PixelScene {
 			btnSettings.setRect(btnNews.left(), btnNews.bottom()+GAP, btnRankings.width(), BTN_HEIGHT);
 			btnAbout.setRect(btnSettings.right()+2, btnSettings.top(), btnSettings.width(), BTN_HEIGHT);
 		}
+
+        StyledButton btnLocalization = new LocalizationButton(GREY_TR, "译者注");
+        add(btnLocalization);
+        btnLocalization.setRect(0, h - BTN_HEIGHT, 50, BTN_HEIGHT);
 
 		BitmapText version = new BitmapText( "v" + Game.version, pixelFont);
 		version.measure();
@@ -371,4 +378,79 @@ public class TitleScene extends PixelScene {
 			ShatteredPixelDungeon.switchNoFade(SupporterScene.class);
 		}
 	}
+
+    private static class LocalizationButton extends StyledButton {
+        public LocalizationButton(Chrome.Type type, String label) {
+            super(type, label);
+            icon(Icons.get(Icons.LANGS));
+        }
+
+        @Override
+        protected void onClick() {
+            ShatteredPixelDungeon.scene().add(new WndLocalization());
+        }
+
+        private static class WndLocalization extends Window {
+
+            private static final int WIDTH_P = 120;
+            private static final int WIDTH_L = 144;
+            private static final int MARGIN = 4;
+
+            private static final int BTN_HEIGHT = 20;
+
+            public WndLocalization() {
+                super();
+
+                String text =  "_怎么又是你？_\n" +
+                        "Man!what can I say?\n" +
+                        "_这回是什么版本？_\n" +
+                        "New-Blue-Archive-Pixel-Dungeon，简称NBPD，与之前的枪火重制版类似只不过是对BAPD做重置。\n" +
+                        "_作者还没发正式版呢咋翻译版就出来了？_\n" +
+                        "别问，问就是同样闲得慌。\n" +
+                        "QQ：1015561267\n" +
+                        "QQ群：460655540\n" +
+                        "github项目地址：https://github.com/ \n" + "1015561267/New-Blue-Archive-Pixel-Dungeon-CN \n"+
+                        "——by _Teller_\n";
+
+                RenderedTextBlock.cnLocalizationFlag = true;
+
+                RenderedTextBlock info = PixelScene.renderTextBlock( text, 6 );
+                info.maxWidth((PixelScene.landscape() ? WIDTH_L : WIDTH_P) - MARGIN * 2);
+                info.setPos(MARGIN, MARGIN);
+                add( info );
+
+                RedButton bugButton = new BugButton("bug");
+                add(bugButton);
+                bugButton.setRect(0, info.height() + MARGIN, 50, BTN_HEIGHT);
+
+                resize(
+                        (int) (info.width() + MARGIN * 2),
+                        (int) (info.height() + BTN_HEIGHT + MARGIN * 3));
+
+                RenderedTextBlock.cnLocalizationFlag = false;
+            }
+
+
+            private static class BugButton extends RedButton {
+                public BugButton(String text) {
+                    super(text);
+                }
+
+                @Override
+                protected void onClick() {
+                    RenderedTextBlock.cnLocalizationFlag = true;
+                    ShatteredPixelDungeon.scene().add(new WndMessage(
+
+                            "_Bug会变少吗？_\n" +
+                                    "你问我，那我问你\n\n\n" +
+
+                                    "- 爱丽丝2-3 +2只有升级界面显示效果，实际仍然会消除刻印\n" +
+                                    "- 爱丽丝2-5 漏写判定导致光炮基础冷却时间为90回合（应为100）\n" +
+                                    "- 爱丽丝ex1 3-5 实际使用任何近战武器均可触发\n"
+                    ));
+                    RenderedTextBlock.cnLocalizationFlag = false;
+                }
+            }
+        }
+    }
 }
