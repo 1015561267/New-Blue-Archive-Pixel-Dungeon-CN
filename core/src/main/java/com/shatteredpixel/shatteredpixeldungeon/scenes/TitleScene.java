@@ -405,8 +405,8 @@ public class TitleScene extends PixelScene {
                         "Man!what can I say?\n" +
                         "_这回是什么版本？_\n" +
                         "New-Blue-Archive-Pixel-Dungeon，简称NBPD，与之前的枪火重制版类似只不过是对BAPD做重置。\n" +
-                        "_作者还没发正式版呢咋翻译版就出来了？_\n" +
-                        "别问，问就是同样闲得慌。\n" +
+                        "_Bug会变少吗？_\n" +
+                        "你问我，那我问你。\n" +
                         "QQ：1015561267\n" +
                         "QQ群：460655540\n" +
                         "github项目地址：https://github.com/ \n" + "1015561267/New-Blue-Archive-Pixel-Dungeon-CN \n"+
@@ -442,10 +442,9 @@ public class TitleScene extends PixelScene {
                     ShatteredPixelDungeon.scene().add(new WndMessage(
 
                             "_Bug会变少吗？_\n" +
-                                    "你问我，那我问你\n\n\n" +
+                                    "你问我，那我问你。\n\n\n" +
 
                                     "- 爱丽丝2-3 +2只有升级界面显示效果，实际仍然会消除刻印\n" +
-                                    "- 爱丽丝2-5 漏写判定导致光炮基础冷却时间为90回合（应为100）\n" +
                                     "- 爱丽丝ex1 3-5 实际使用任何近战武器均可触发\n"
                     ));
                     RenderedTextBlock.cnLocalizationFlag = false;
