@@ -132,7 +132,12 @@ public enum Icons {
 	KRISTJAN,
 	CUBE_CODE,
 	PURIGRO,
-	ARCNOR;
+	ARCNOR,
+
+	//new icons
+	DISCORD,
+	GITHUB,
+	HIKARI;
 
 	public Image get() {
 		return get( this );
@@ -426,6 +431,17 @@ public enum Icons {
 				icon.scale.set(PixelScene.align(0.49f));
 				break;
 
+			//new icons
+			case DISCORD:
+				icon.frame( icon.texture.uvRectBySize( 0, 128, 16, 16 ) );
+				break;
+			case GITHUB:
+				icon.frame( icon.texture.uvRectBySize( 16, 128, 16, 16 ) );
+				break;
+			case HIKARI:
+				icon.frame( icon.texture.uvRectBySize( 0, 144, 15, 19 ) );
+				icon.scale.set(PixelScene.align(0.85f));
+				break;
 		}
 		return icon;
 	}
@@ -445,6 +461,8 @@ public enum Icons {
 	
 	public static Image get( HeroClass cl ) {
 		switch (cl) {
+			case ARIS:
+				return new ItemSprite(ItemSpriteSheet.SEAL);
 			case WARRIOR:
 				return new ItemSprite(ItemSpriteSheet.SEAL);
 			case MAGE:
@@ -459,8 +477,9 @@ public enum Icons {
 			case HUNTRESS:
 				return new ItemSprite(ItemSpriteSheet.SPIRIT_BOW);
 			case DUELIST:
-			case ARIS:
-				return new ItemSprite(ItemSpriteSheet.SEAL);
+				return new ItemSprite(ItemSpriteSheet.RAPIER);
+			case CLERIC:
+				return new ItemSprite(ItemSpriteSheet.ARTIFACT_TOME);
 			default:
 				return null;
 		}
