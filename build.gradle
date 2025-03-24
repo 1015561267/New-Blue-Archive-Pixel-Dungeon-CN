@@ -21,13 +21,13 @@ allprojects {
 
     ext {
         appName = 'Re Blue Archive Pixel Dungeon'
-        appPackageName = 'com.shatteredpixel.rebluearchivedungeon'
+        appPackageName = 'com.shatteredpixel.rebluearchivepixeldungeoncn'
 
-        appVersionCode = 802
-        appVersionName = '2.5.4'
+        appVersionCode = 832
+        appVersionName = '3.0.1'
 
         appVersionCode += 101
-        appVersionName += '_based_1.0.1_cn'
+        appVersionName += '_based_1.0.2_cn'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
