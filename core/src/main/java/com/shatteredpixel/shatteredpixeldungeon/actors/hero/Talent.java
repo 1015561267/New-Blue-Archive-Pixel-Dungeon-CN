@@ -63,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
@@ -82,11 +83,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SuperNova;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.MG.MG;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -806,6 +810,18 @@ public enum Talent {
 				hero.belongings.weapon.identify();
 			}
 		}
+		if (talent == NONOMI_T1_2 && !ShardOfOblivion.passiveIDDisabled()) {
+			if (hero.pointsInTalent(NONOMI_T1_2) == 1) {
+				if (hero.belongings.weapon() instanceof MG)  {
+					hero.belongings.weapon.identify();
+				}
+			}
+			if (hero.pointsInTalent(NONOMI_T1_2) == 2) {
+				for (Item i : hero.belongings.getAllItems(MG.class)) {
+					i.identify();
+				}
+			}
+		}
 		if (talent == LIGHT_READING && hero.heroClass == HeroClass.CLERIC){
 			for (Item item : Dungeon.hero.belongings.backpack){
 				if (item instanceof HolyTome){
@@ -833,6 +849,13 @@ public enum Talent {
 				hero.HP = Math.min(hero.HP + healing, hero.HT);
 				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healing), FloatingText.HEALING);
 
+			}
+		}
+		if (hero.hasTalent(NONOMI_T1_1)){
+			//3/5 HP healed, when hero is below 30% health
+			if (hero.HP/(float)hero.HT <= 0.4f) {
+				int healing = 1 + 2 * hero.pointsInTalent(NONOMI_T1_1);
+				hero.heal(healing);
 			}
 		}
 		if (hero.hasTalent(IRON_STOMACH) || hero.hasTalent(Talent.ARIS_T2_1)){
@@ -907,6 +930,15 @@ public enum Talent {
 				Buff.prolong( hero, Recharging.class, 1 + (hero.pointsInTalent(ENLIGHTENING_MEAL)) );
 				ScrollOfRecharging.charge( hero );
 				SpellSprite.show(hero, SpellSprite.CHARGE);
+			}
+		}
+		if (hero.hasTalent(Talent.NONOMI_T2_1)) {
+			KindOfWeapon weapon = hero.belongings.weapon();
+			if (weapon instanceof Gun) {
+				((Gun) weapon).reload();
+				if (hero.pointsInTalent(Talent.NONOMI_T2_1) == 2) {
+					((Gun) weapon).manualReload(1, true);
+				}
 			}
 		}
 	}
@@ -1089,6 +1121,9 @@ public enum Talent {
 		if (hero.pointsInTalent(ARIS_T1_2) == 2 && (item instanceof Weapon || item instanceof Armor)){
 			identify = true;
 		}
+		if (hero.hasTalent(NONOMI_T1_2) && (item instanceof MG)){
+			identify = true;
+		}
 
 		if (identify && !ShardOfOblivion.passiveIDDisabled()){
 			item.identify();
@@ -1098,6 +1133,16 @@ public enum Talent {
 	public static void onItemCollected( Hero hero, Item item ){
 		if (hero.pointsInTalent(THIEFS_INTUITION) == 2){
 			if (item instanceof Ring) ((Ring) item).setKnown();
+		}
+
+		boolean identify = false;
+
+		if (hero.pointsInTalent(NONOMI_T1_2) == 2 && (item instanceof MG)){
+			identify = true;
+		}
+
+		if (identify && !ShardOfOblivion.passiveIDDisabled()){
+			item.identify();
 		}
 	}
 
@@ -1185,6 +1230,14 @@ public enum Talent {
 			dmg = hero.buff(Division.DivisionBuff.class).attackProc(hero, enemy, dmg);
 		}
 
+		if (hero.hasTalent(Talent.NONOMI_T2_5) && enemy.buff(PushingTracker.class) == null) {
+			Buff.affect(enemy, PushingTracker.class);
+			Elastic.pushEnemy(hero, enemy, hero.belongings.weapon(), 1 + hero.pointsInTalent(Talent.NONOMI_T2_5));
+			if (Random.Float() < 0.2f) {
+				hero.yellI(Messages.get(Hero.class, "nonomi_push"));
+			}
+		}
+
 		return dmg;
 	}
 
@@ -1253,6 +1306,8 @@ public enum Talent {
 			return false;
 		}
 	}
+
+	public static class PushingTracker extends Buff {};
 
 	//new buff here
 

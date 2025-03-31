@@ -7,10 +7,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
@@ -308,7 +310,9 @@ public class Gun extends MeleeWeapon {
     }
 
     public void onReload() {	//재장전 시 작동하는 메서드. 특히 현재 장탄수가 바뀌기 전에 동작해야 한다
-
+        if (hero.hasTalent(Talent.NONOMI_T1_4)) {
+            Buff.affect(hero, Barrier.class).setShield((int)reloadTime(hero) + Math.max(0, hero.pointsInTalent(Talent.NONOMI_T1_4)-1)); //reload time + 0 or 1, depends on talent level
+        }
     }
 
     public void quickReload() {	//다른 것들을 작동시키지 않고 탄창만 완전히 재장전하는 메서드
@@ -451,6 +455,15 @@ public class Gun extends MeleeWeapon {
         int damage = Random.NormalIntRange(bulletMin(), bulletMax());
 
         damage = augment.damageFactor(damage);  //증강에 따라 변화하는 효과
+
+        if (hero.hasTalent(Talent.NONOMI_T1_3)) {
+            if (hero.pointsInTalent(Talent.NONOMI_T1_3) == 2) {
+                damage += 1; //adds 1
+            } else {
+                damage += Random.Int(2); //adds 0~1
+            }
+        }
+
         return damage;
     }
 
@@ -614,7 +627,19 @@ public class Gun extends MeleeWeapon {
             }
             damage = Math.round(damage * multiplier);
 
+            damage += bulletDamageBonus(attacker, defender);
+
             return Gun.this.proc(attacker, defender, damage);
+        }
+
+        private int bulletDamageBonus(Char attacker, Char defender) { //탄환 피해의 순수 증가량. 탄환 피해 배율 적용 이후에 적용됨
+            int bonus = 0;
+
+            if (hero.hasTalent(Talent.NONOMI_T2_4) && defender instanceof Mob && ((Mob) defender).surprisedBy(attacker)) {
+                bonus += hero.pointsInTalent(Talent.NONOMI_T2_4);
+            }
+
+            return bonus;
         }
 
         @Override
