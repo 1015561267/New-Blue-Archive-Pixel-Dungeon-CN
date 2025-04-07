@@ -454,9 +454,9 @@ public class TitleScene extends PixelScene {
                     ShatteredPixelDungeon.scene().add(new WndMessage(
 
                             "_Bug会变少吗？_\n" +
-                                    "你问我，那我问你。\n\n\n" +
+                                    "你问我，那我问你。（以下内容以该窗口最后编辑版本1.0.2为准）\n\n\n" +
 
-                                    "- 爱丽丝2-3 +2只有升级界面显示效果，实际仍然会消除刻印\n" +
+                                    "- 爱丽丝2-3 +2 还会对武器的附魔起效\n" +
                                     "- 爱丽丝ex1 3-5 实际使用任何近战武器均可触发\n"
                     ));
                     RenderedTextBlock.cnLocalizationFlag = false;
