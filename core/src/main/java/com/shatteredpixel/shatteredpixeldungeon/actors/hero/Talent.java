@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
@@ -43,11 +44,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ScrollEmpower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShootAllBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SuperNovaCharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.aris.Division;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.nonomi.Bipod;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower;
@@ -91,6 +94,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SuperNova;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.MG.MG;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.MG.MG_SP;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -801,27 +805,6 @@ public enum Talent {
 				Dungeon.level.drop(toGive, hero.pos).sprite.drop();
 			}
 		}
-
-		if (talent == ARIS_T1_2 && hero.pointsInTalent(ARIS_T1_2) == 2){
-			if (hero.belongings.armor() != null && !ShardOfOblivion.passiveIDDisabled())  {
-				hero.belongings.armor.identify();
-			}
-			if (hero.belongings.weapon() != null && !ShardOfOblivion.passiveIDDisabled())  {
-				hero.belongings.weapon.identify();
-			}
-		}
-		if (talent == NONOMI_T1_2 && !ShardOfOblivion.passiveIDDisabled()) {
-			if (hero.pointsInTalent(NONOMI_T1_2) == 1) {
-				if (hero.belongings.weapon() instanceof MG)  {
-					hero.belongings.weapon.identify();
-				}
-			}
-			if (hero.pointsInTalent(NONOMI_T1_2) == 2) {
-				for (Item i : hero.belongings.getAllItems(MG.class)) {
-					i.identify();
-				}
-			}
-		}
 		if (talent == LIGHT_READING && hero.heroClass == HeroClass.CLERIC){
 			for (Item item : Dungeon.hero.belongings.backpack){
 				if (item instanceof HolyTome){
@@ -835,6 +818,39 @@ public enum Talent {
 		//if we happen to have spirit form applied with a ring of might
 		if (talent == SPIRIT_FORM){
 			Dungeon.hero.updateHT(false);
+		}
+
+		if (talent == ARIS_T1_2 && hero.pointsInTalent(ARIS_T1_2) == 2){
+			if (hero.belongings.armor() != null && !ShardOfOblivion.passiveIDDisabled())  {
+				hero.belongings.armor.identify();
+			}
+			if (hero.belongings.weapon() != null && !ShardOfOblivion.passiveIDDisabled())  {
+				hero.belongings.weapon.identify();
+			}
+		}
+
+		if (talent == NONOMI_T1_2 && !ShardOfOblivion.passiveIDDisabled()) {
+			if (hero.pointsInTalent(NONOMI_T1_2) == 1) {
+				if (hero.belongings.weapon() instanceof MG)  {
+					hero.belongings.weapon.identify();
+				}
+			}
+			if (hero.pointsInTalent(NONOMI_T1_2) == 2) {
+				for (Item i : hero.belongings.getAllItems(MG.class)) {
+					i.identify();
+				}
+			}
+		}
+
+		if (talent == NONOMI_T3_1 && hero.pointsInTalent(NONOMI_T3_1) == 1) {
+			new MG_SP().identify().collect();
+		}
+		if (talent == NONOMI_T3_1) {
+			Item.updateQuickslot();
+		}
+
+		if (talent == NONOMI_EX1_1) {
+			Item.updateQuickslot();
 		}
 	}
 
@@ -935,7 +951,7 @@ public enum Talent {
 		if (hero.hasTalent(Talent.NONOMI_T2_1)) {
 			KindOfWeapon weapon = hero.belongings.weapon();
 			if (weapon instanceof Gun) {
-				((Gun) weapon).reload();
+				((Gun) weapon).quickReload();
 				if (hero.pointsInTalent(Talent.NONOMI_T2_1) == 2) {
 					((Gun) weapon).manualReload(1, true);
 				}
@@ -1230,12 +1246,33 @@ public enum Talent {
 			dmg = hero.buff(Division.DivisionBuff.class).attackProc(hero, enemy, dmg);
 		}
 
-		if (hero.hasTalent(Talent.NONOMI_T2_5) && enemy.buff(PushingTracker.class) == null) {
+		if (hero.hasTalent(Talent.NONOMI_T2_5) && enemy.buff(PushingTracker.class) == null && !(hero.belongings.attackingWeapon() instanceof MissileWeapon)) {
 			Buff.affect(enemy, PushingTracker.class);
-			Elastic.pushEnemy(hero, enemy, hero.belongings.weapon(), 1 + hero.pointsInTalent(Talent.NONOMI_T2_5));
+			Elastic.pushEnemyWithoutPit(hero, enemy, hero.belongings.weapon(), 1 + hero.pointsInTalent(Talent.NONOMI_T2_5));
 			if (Random.Float() < 0.2f) {
 				hero.yellI(Messages.get(Hero.class, "nonomi_push"));
 			}
+		}
+
+		if (hero.hasTalent(Talent.NONOMI_EX1_3)
+				&& !(hero.belongings.attackingWeapon() instanceof MissileWeapon)
+				&& hero.buff(ShootAllBuff.OverHeat.class) != null) {
+			if (Random.Float() < 0.1f * (hero.buff(ShootAllBuff.OverHeat.class).duration() + hero.pointsInTalent(Talent.NONOMI_EX1_3) - 1)) { //10*(OverHeat turns left + talent level - 1)
+				Buff.affect(enemy, Burning.class).reignite(enemy);
+			}
+		}
+
+		if (hero.hasTalent(Talent.NONOMI_EX1_2)
+				&& !(hero.belongings.attackingWeapon() instanceof MissileWeapon)
+				&& hero.buff(ShootAllBuff.OverHeat.class) != null) {
+			if (Random.Float() < hero.pointsInTalent(Talent.NONOMI_EX1_2) / 3f) {
+				hero.buff(ShootAllBuff.OverHeat.class).hit();
+			}
+		}
+
+		if (hero.buff(Bipod.BipodBuff.class) != null
+				&& !(hero.belongings.attackingWeapon() instanceof Gun.Bullet)) {
+			hero.buff(Bipod.BipodBuff.class).detach();
 		}
 
 		return dmg;

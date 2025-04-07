@@ -10,9 +10,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShootAllBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.nonomi.Bipod;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
@@ -47,9 +49,6 @@ public class Gun extends MeleeWeapon {
     protected boolean explode = false; //탄환 폭발 여부
     protected boolean spread = false; //산탄 여부. 멀리 떨어지면 탄환 위력이 감소한다.
     public static final String TXT_STATUS = "%d/%d";
-
-    private boolean riot = false;
-    private boolean shootAll = false;
 
     public boolean isEmpowered = false;
 
@@ -209,8 +208,6 @@ public class Gun extends MeleeWeapon {
         bundle.put(SHOOTING_ACCURACY, shootingAccuracy);
         bundle.put(EXPLODE, explode);
         bundle.put(SPREAD, spread);
-        bundle.put(RIOT, riot);
-        bundle.put(SHOOTALL, shootAll);
         bundle.put(BARREL_MOD, barrelMod);
         bundle.put(MAGAZINE_MOD, magazineMod);
         bundle.put(BULLET_MOD, bulletMod);
@@ -231,8 +228,6 @@ public class Gun extends MeleeWeapon {
         shootingAccuracy = bundle.getFloat(SHOOTING_ACCURACY);
         explode = bundle.getBoolean(EXPLODE);
         spread = bundle.getBoolean(SPREAD);
-        riot = bundle.getBoolean(RIOT);
-        shootAll = bundle.getBoolean(SHOOTALL);
         barrelMod = bundle.getEnum(BARREL_MOD, BarrelMod.class);
         magazineMod = bundle.getEnum(MAGAZINE_MOD, MagazineMod.class);
         bulletMod = bundle.getEnum(BULLET_MOD, BulletMod.class);
@@ -249,6 +244,15 @@ public class Gun extends MeleeWeapon {
             actions.add(AC_SHOOT);
             actions.add(AC_RELOAD);
         }
+        if (hero.buff(ShootAllBuff.OverHeat.class) != null) {
+            actions.remove(AC_SHOOT);
+            actions.remove(AC_EQUIP);
+            if (isEquipped(hero)) {
+                actions.remove(AC_UNEQUIP);
+                actions.remove(AC_DROP);
+                actions.remove(AC_THROW);
+            }
+        }
         return actions;
     }
 
@@ -257,6 +261,15 @@ public class Gun extends MeleeWeapon {
         super.execute(hero, action);
 
         if (action.equals(AC_SHOOT)) {
+            if (hero.buff(ShootAllBuff.OverHeat.class) != null) {
+                if (round <= 0) { //현재 탄창이 0이면 AC_RELOAD 버튼을 눌렀을 때처럼 작동
+                    execute(hero, AC_RELOAD);
+                } else {
+                    usesTargeting = false;
+                    GLog.w(Messages.get(this, "overheat"));
+                    return;
+                }
+            }
             if (!isEquipped( hero )) {
                 usesTargeting = false;
                 GLog.w(Messages.get(this, "not_equipped"));
@@ -305,13 +318,13 @@ public class Gun extends MeleeWeapon {
         hero.busy();
         hero.sprite.operate(hero.pos);
         Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
-        hero.spendAndNext(reloadTime(hero));
+        hero.spendAndNext(reloadTime());
         GLog.i(Messages.get(this, "reload"));
     }
 
     public void onReload() {	//재장전 시 작동하는 메서드. 특히 현재 장탄수가 바뀌기 전에 동작해야 한다
         if (hero.hasTalent(Talent.NONOMI_T1_4)) {
-            Buff.affect(hero, Barrier.class).setShield((int)reloadTime(hero) + Math.max(0, hero.pointsInTalent(Talent.NONOMI_T1_4)-1)); //reload time + 0 or 1, depends on talent level
+            Buff.affect(hero, Barrier.class).setShield((int)reloadTime() + Math.max(0, hero.pointsInTalent(Talent.NONOMI_T1_4)-1)); //reload time + 0 or 1, depends on talent level
         }
     }
 
@@ -352,6 +365,10 @@ public class Gun extends MeleeWeapon {
 
         amount = this.magazineMod.magazineFactor(amount);
 
+        if (hero != null && hero.hasTalent(Talent.NONOMI_EX1_1)) {
+            amount += hero.pointsInTalent(Talent.NONOMI_EX1_1);
+        }
+
         return amount;
     }
 
@@ -361,12 +378,17 @@ public class Gun extends MeleeWeapon {
 
     public void useRound() {
         round--;
+        updateQuickslot();
     }
 
-    public float reloadTime(Char user) { //재장전에 소모하는 턴
+    public float reloadTime() { //재장전에 소모하는 턴
         float amount = reload_time;
 
         amount = this.magazineMod.reloadTimeFactor(amount);
+
+        if (hero != null && hero.hasTalent(Talent.NONOMI_EX1_1)) {
+            amount += 1;
+        }
 
         amount = Math.max(0, amount);
         return amount;
@@ -490,10 +512,10 @@ public class Gun extends MeleeWeapon {
         //근접 무기의 설명을 모두 가져옴, 여기에서 할 것은 근접 무기의 설명에 추가로 생기는 문장을 더하는 것
         if (levelKnown) { //감정되어 있을 때
             info += "\n\n" + Messages.get(Gun.class, "gun_desc",
-                    shotPerShoot(), augment.damageFactor(bulletMin(buffedLvl())), augment.damageFactor(bulletMax(buffedLvl())), round, maxRound(), new DecimalFormat("#.##").format(reloadTime(hero)));
+                    shotPerShoot(), augment.damageFactor(bulletMin(buffedLvl())), augment.damageFactor(bulletMax(buffedLvl())), round, maxRound(), new DecimalFormat("#.##").format(reloadTime()));
         } else { //감정되어 있지 않을 때
             info += "\n\n" + Messages.get(Gun.class, "gun_typical_desc",
-                    shotPerShoot(), augment.damageFactor(bulletMin(0)), augment.damageFactor(bulletMax(0)), round, maxRound(), new DecimalFormat("#.##").format(reloadTime(hero)));
+                    shotPerShoot(), augment.damageFactor(bulletMin(0)), augment.damageFactor(bulletMax(0)), round, maxRound(), new DecimalFormat("#.##").format(reloadTime()));
         }
         //DecimalFormat("#.##")은 .format()에 들어가는 매개변수(실수)를 "#.##"형식으로 표시하는데 사용된다.
         //가령 5.55555가 .format()안에 들어가서 .format(5.55555)라면, new DecimalFormat("#.##").format(5.55555)는 5.55라는 String 타입의 값을 반환한다.
@@ -660,6 +682,10 @@ public class Gun extends MeleeWeapon {
 
         @Override
         public float delayFactor(Char user) {
+            if (user.buff(Bipod.BipodBuff.class) != null) {
+                return 0;
+            }
+
             float speed = Gun.this.delayFactor(user) * shootingSpeed;
 
             return speed;
@@ -669,11 +695,11 @@ public class Gun extends MeleeWeapon {
         public float accuracyFactor(Char owner, Char target) {
             float ACC = super.accuracyFactor(owner, target);
             ACC *= shootingAccuracy;
-            if (shootAll) {
-                ACC *= 0.5f;
-            }
             if (Gun.this.attachMod == AttachMod.LASER_ATTACH) {
                 ACC *= 1.25f;
+            }
+            if (owner instanceof Hero && owner.buff(Bipod.BipodBuff.class) != null) {
+                ACC *= Bipod.BipodBuff.bulletAccMultiplier();
             }
             ACC = Gun.this.barrelMod.bulletAccuracyFactor(ACC, Dungeon.level.adjacent(owner.pos, target.pos));
             return ACC;
@@ -686,73 +712,27 @@ public class Gun extends MeleeWeapon {
 
         @Override
         protected void onThrow( int cell ) {
-            boolean killedEnemy = false;
-            if (explode) {
-                Char chInPos = Actor.findChar(cell);
-                ArrayList<Char> targets = new ArrayList<>();
-                int[] shootArea = PathFinder.NEIGHBOURS9;
-
-                for (int i : shootArea){
-                    int c = cell + i;
-                    if (c >= 0 && c < Dungeon.level.length()) {
-                        if (Dungeon.level.heroFOV[c]) {
-                            CellEmitter.get(c).burst(SmokeParticle.FACTORY, 4);
-                            CellEmitter.center(cell).burst(BlastParticle.FACTORY, 4);
-                        }
-                        if (Dungeon.level.flamable[c]) {
-                            Dungeon.level.destroy(c);
-                            GameScene.updateMap(c);
-                        }
-                        Char ch = Actor.findChar(c);
-                        if (ch != null && !targets.contains(ch)) {
-                            targets.add(ch);
-                        }
-                    }
-                }
-
-                for (Char target : targets){
-                    for (int i = 0; i < shotPerShoot(); i++) {
-                        curUser.shoot(target, this);
-                    }
-                    if (!target.isAlive()) {
-                        killedEnemy = true;
-                    }
-                    if (target == curUser && !target.isAlive()) {
-                        Dungeon.fail(getClass());
-                        Badges.validateDeathFromFriendlyMagic();
-                        GLog.n(Messages.get(Gun.class, "ondeath"));
-                    }
-                }
-
-                Sample.INSTANCE.play( Assets.Sounds.BLAST );
-            } else {
-                Char enemy = Actor.findChar( cell );
-                for (int i = 0; i < shotPerShoot(); i++) { //데미지 입히는 것과 발사 시 주변에서 나는 연기를 shotPerShoot만큼 반복
-                    if (enemy == null || enemy == curUser) {
-                        parent = null;
-                        CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 2);
-                        CellEmitter.center(cell).burst(BlastParticle.FACTORY, 2);
-                    } else {
-                        if (!curUser.shoot( enemy, this )) {
-                            CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 2);
-                            CellEmitter.center(cell).burst(BlastParticle.FACTORY, 2);
-                        }
-                    }
-                }
-                if (enemy != null && !enemy.isAlive()) {
-                    killedEnemy = true;
-                }
-            }
-
-            onShoot();
+            shoot(cell, true);
         }
 
-        public void onShoot() {
+        public void shoot( int cell, boolean useRound ) {
+            curUser = hero;
+            boolean killedEnemy = false;
+            boolean shootAll = hero.buff(ShootAllBuff.class) != null && hero.buff(ShootAllBuff.class).shootAll();
+            do {
+                if (explode) {
+                    killedEnemy = explosiveShot(cell);
+                } else {
+                    killedEnemy = oneShot(cell);
+                }
 
-            boolean willUseRound = true; //탄환을 소모하지 않는 경우에 false
+                onShoot(shootAll, useRound);
+            } while (shootAll && round() > 0);
+        }
 
-            if (willUseRound) {
-                round --;
+        public void onShoot(boolean shootAll, boolean useRound) {
+            if (useRound) {
+                useRound();
             }
 
             boolean willAggroEnemy = true; //어그로를 끌지 않는 경우에 false
@@ -761,10 +741,76 @@ public class Gun extends MeleeWeapon {
                 aggro();
             }
 
-            updateQuickslot();
+            if (shootAll) {
+                Buff.affect(hero, ShootAllBuff.OverHeat.class).add(1);
+            }
         }
 
-        private void aggro() { //주변의 적들을 영웅의 위치로 모이게 하는 구문
+        private boolean oneShot(int cell) {
+            boolean killedEnemy = false;
+            Char enemy = Actor.findChar( cell );
+            for (int i = 0; i < shotPerShoot(); i++) { //데미지 입히는 것과 발사 시 주변에서 나는 연기를 shotPerShoot만큼 반복
+                if (enemy == null || enemy == curUser) {
+                    parent = null;
+                    CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 2);
+                    CellEmitter.center(cell).burst(BlastParticle.FACTORY, 2);
+                } else {
+                    if (!curUser.shoot( enemy, this )) {
+                        CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 2);
+                        CellEmitter.center(cell).burst(BlastParticle.FACTORY, 2);
+                    }
+                }
+            }
+            if (enemy != null && !enemy.isAlive()) {
+                killedEnemy = true;
+            }
+            return killedEnemy;
+        }
+
+        private boolean explosiveShot(int cell) {
+            boolean killedEnemy = false;
+            Char chInPos = Actor.findChar(cell);
+            ArrayList<Char> targets = new ArrayList<>();
+            int[] shootArea = PathFinder.NEIGHBOURS9;
+
+            for (int i : shootArea){
+                int c = cell + i;
+                if (c >= 0 && c < Dungeon.level.length()) {
+                    if (Dungeon.level.heroFOV[c]) {
+                        CellEmitter.get(c).burst(SmokeParticle.FACTORY, 4);
+                        CellEmitter.center(cell).burst(BlastParticle.FACTORY, 4);
+                    }
+                    if (Dungeon.level.flamable[c]) {
+                        Dungeon.level.destroy(c);
+                        GameScene.updateMap(c);
+                    }
+                    Char ch = Actor.findChar(c);
+                    if (ch != null && !targets.contains(ch)) {
+                        targets.add(ch);
+                    }
+                }
+            }
+
+            for (Char target : targets){
+                for (int i = 0; i < shotPerShoot(); i++) {
+                    curUser.shoot(target, this);
+                }
+                if (!target.isAlive()) {
+                    killedEnemy = true;
+                }
+                if (target == curUser && !target.isAlive()) {
+                    Dungeon.fail(getClass());
+                    Badges.validateDeathFromFriendlyMagic();
+                    GLog.n(Messages.get(Gun.class, "ondeath"));
+                }
+            }
+
+            Sample.INSTANCE.play( Assets.Sounds.BLAST );
+
+            return killedEnemy;
+        }
+
+        private void aggro() { //주변의 적들을 학생의 위치로 모이게 하는 구문
             for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
                 if (mob.paralysed <= 0
                         && Dungeon.level.distance(curUser.pos, mob.pos) <= 4

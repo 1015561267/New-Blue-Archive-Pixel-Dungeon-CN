@@ -925,6 +925,10 @@ public class Hero extends Char {
 		if(hasTalent(Talent.BARKSKIN) && Dungeon.level.map[pos] == Terrain.FURROWED_GRASS){
 			Barkskin.conditionallyAppend(this, (lvl*pointsInTalent(Talent.BARKSKIN))/2, 1 );
 		}
+
+		if (hasTalent(Talent.NONOMI_T3_2) && belongings.weapon instanceof Gun) {
+			if (Random.Float() < 0.05f * pointsInTalent(Talent.NONOMI_T3_2)) ((Gun)belongings.weapon).manualReload();
+		}
 		
 		return actResult;
 	}
@@ -1581,25 +1585,29 @@ public class Hero extends Char {
 			GLog.w( Messages.get(this, "pain_resist") );
 		}
 
+		//temporarily assign to a float to avoid rounding a bunch
+		float damage = dmg;
+
 		Endure.EndureTracker endure = buff(Endure.EndureTracker.class);
 		if (!(src instanceof Char)){
 			//reduce damage here if it isn't coming from a character (if it is we already reduced it)
 			if (endure != null){
-				dmg = Math.round(endure.adjustDamageTaken(dmg));
+				damage = endure.adjustDamageTaken(dmg);
 			}
 			//the same also applies to challenge scroll damage reduction
 			if (buff(ScrollOfChallenge.ChallengeArena.class) != null){
-				dmg *= 0.67f;
+				damage *= 0.67f;
 			}
 			//and to monk meditate damage reduction
 			if (buff(MonkEnergy.MonkAbility.Meditate.MeditateResistance.class) != null){
-				dmg *= 0.2f;
+				damage *= 0.2f;
 			}
 		}
 
+		//unused, could be removed
 		CapeOfThorns.Thorns thorns = buff( CapeOfThorns.Thorns.class );
 		if (thorns != null) {
-			dmg = thorns.proc(dmg, (src instanceof Char ? (Char)src : null),  this);
+			damage = thorns.proc((int)damage, (src instanceof Char ? (Char)src : null),  this);
 		}
 
 		dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
@@ -1613,12 +1621,17 @@ public class Hero extends Char {
 		}
 
 		if (buff(Talent.WarriorFoodImmunity.class) != null){
-			if (pointsInTalent(Talent.IRON_STOMACH) == 1)       dmg = Math.round(dmg*0.25f);
-			else if (pointsInTalent(Talent.IRON_STOMACH) == 2)  dmg = Math.round(dmg*0.00f);
+			if (pointsInTalent(Talent.IRON_STOMACH) == 1)       damage /= 4f;
+			else if (pointsInTalent(Talent.IRON_STOMACH) == 2)  damage = 0;
 
-			if (pointsInTalent(Talent.ARIS_T2_1) == 1)       dmg = Math.round(dmg*0.25f);
-			else if (pointsInTalent(Talent.ARIS_T2_1) == 2)  dmg = Math.round(dmg*0.00f);
+			if (pointsInTalent(Talent.ARIS_T2_1) == 1)       damage /= 4f;
+			else if (pointsInTalent(Talent.ARIS_T2_1) == 2)  damage = 0;
 		}
+
+		dmg = Math.round(damage);
+
+		//we ceil this one to avoid letting the player easily take 0 dmg from tenacity early
+		dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
 
 		int preHP = HP + shielding();
 		if (src instanceof Hunger) preHP -= shielding();
@@ -2628,6 +2641,15 @@ public class Hero extends Char {
 			for (Talent f : tier.keySet()){
 				tier.put(f, 0);
 			}
+		}
+	}
+
+	public void onEnemyKill(Mob mob) {
+		if (heroClass == HeroClass.NONOMI) {
+			int gain = (int)(Dungeon.gold*1.01f) - Dungeon.gold;
+			Dungeon.gold = (int)(Dungeon.gold*1.01f);
+			Item.updateQuickslot();
+			if (gain > 0) sprite.showStatusWithIcon( CharSprite.NEUTRAL, Integer.toString(gain), FloatingText.GOLD );
 		}
 	}
 }
