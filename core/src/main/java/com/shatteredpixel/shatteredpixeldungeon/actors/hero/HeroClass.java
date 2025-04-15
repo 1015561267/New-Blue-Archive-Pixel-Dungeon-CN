@@ -43,6 +43,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.S
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.ElementalBlast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.miyako.CloseAirSupport;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.miyako.Helicopter;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.miyako.WireHook;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.nonomi.Bipod;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.nonomi.BlackCard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.nonomi.Present;
@@ -58,6 +61,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.Teleporter;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
+import com.shatteredpixel.shatteredpixeldungeon.items.active.Claymore;
+import com.shatteredpixel.shatteredpixeldungeon.items.active.HandGrenade;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
@@ -101,6 +106,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SuperNova;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.AR.AR_T1;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.MG.MG_T1;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SMG.SMG_T1;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
@@ -112,6 +118,7 @@ public enum HeroClass {
 
 	ARIS(HeroSubClass.LIGHT_HERO, HeroSubClass.BATTERY_CHARGE),
 	NONOMI(HeroSubClass.SHOOT_ALL, HeroSubClass.SPREAD_SHOT),
+	MIYAKO(HeroSubClass.RABBIT_SQUAD, HeroSubClass.SUPPORT_DRONE),
 
 	WARRIOR( HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ),
 	MAGE( HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ),
@@ -167,6 +174,10 @@ public enum HeroClass {
 
 			case NONOMI:
 				initNonomi( hero );
+				break;
+
+			case MIYAKO:
+				initMiyako( hero );
 				break;
 
 			case WARRIOR:
@@ -246,6 +257,21 @@ public enum HeroClass {
 		MG_T1 mgT1 = new MG_T1();
 		(hero.belongings.weapon = mgT1).identify();
 		Dungeon.quickslot.setSlot(0, mgT1);
+
+		new PotionOfHealing().identify();
+		new ScrollOfRage().identify();
+	}
+
+	private static void initMiyako(Hero hero) {
+		SMG_T1 smgT1 = new SMG_T1();
+		(hero.belongings.weapon = smgT1).identify();
+		Dungeon.quickslot.setSlot(0, smgT1);
+		Claymore claymore = new Claymore();
+		claymore.collect();
+		Dungeon.quickslot.setSlot(1, claymore);
+		HandGrenade handGrenade = new HandGrenade();
+		handGrenade.collect();
+		Dungeon.quickslot.setSlot(2, handGrenade);
 
 		new PotionOfHealing().identify();
 		new ScrollOfRage().identify();
@@ -361,6 +387,8 @@ public enum HeroClass {
 				return new ArmorAbility[]{new ExtendedLaser(), new Division(), new BatteryChange()};
 			case NONOMI:
 				return new ArmorAbility[]{new Present(), new BlackCard(), new Bipod()};
+			case MIYAKO:
+				return new ArmorAbility[]{new WireHook(), new Helicopter(), new CloseAirSupport()};
 			case WARRIOR:
 				return new ArmorAbility[]{new HeroicLeap(), new Shockwave(), new Endure()};
 			case MAGE:
@@ -382,6 +410,8 @@ public enum HeroClass {
 				return Assets.Sprites.ARIS;
 			case NONOMI:
 				return Assets.Sprites.NONOMI;
+			case MIYAKO:
+				return Assets.Sprites.MIYAKO;
 			case WARRIOR:
 				return Assets.Sprites.WARRIOR;
 			case MAGE:
@@ -403,6 +433,8 @@ public enum HeroClass {
 				return Assets.Splashes.ARIS;
 			case NONOMI:
 				return Assets.Splashes.NONOMI;
+			case MIYAKO:
+				return Assets.Splashes.MIYAKO;
 			case WARRIOR:
 				return Assets.Splashes.WARRIOR;
 			case MAGE:
