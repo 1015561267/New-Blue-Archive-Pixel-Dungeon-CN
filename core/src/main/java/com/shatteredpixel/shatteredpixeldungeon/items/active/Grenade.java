@@ -4,11 +4,13 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -16,6 +18,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -99,6 +102,8 @@ public class Grenade extends Item {
 
         max += this.buffedLvl();
 
+        if (Dungeon.hero.hasTalent(Talent.MIYAKO_T2_2)) max++;
+
         return max;
     }
 
@@ -160,6 +165,11 @@ public class Grenade extends Item {
         protected void activate(int cell) {}
 
         @Override
+        public int throwPos(Hero user, int dst) {
+            return super.throwPos(user, dst);
+        }
+
+        @Override
         public void cast(final Hero user, final int dst) {
             super.cast(user, dst);
         }
@@ -170,7 +180,9 @@ public class Grenade extends Item {
         public void onSelect( Integer target ) {
             if (target != null) {
                 knockItem().cast(curUser, target);
-                Grenade.this.amount--;
+                if (!DeviceCompat.isDebug()) {
+                    Grenade.this.amount--;
+                }
             }
         }
         @Override

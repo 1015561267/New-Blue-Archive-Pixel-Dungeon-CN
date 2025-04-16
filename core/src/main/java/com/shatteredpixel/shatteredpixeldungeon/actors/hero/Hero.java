@@ -262,6 +262,10 @@ public class Hero extends Char {
 		if (buff(ElixirOfMight.HTBoost.class) != null){
 			HT += buff(ElixirOfMight.HTBoost.class).boost();
 		}
+
+		if (hasTalent(Talent.MIYAKO_T2_5)) {
+			HT = Math.round(HT*(1f+0.1f*pointsInTalent(Talent.MIYAKO_T2_5))); //+10%/+20% at +1/+2
+		}
 		
 		if (boostHP){
 			HP += Math.max(HT - curHT, 0);
@@ -622,6 +626,12 @@ public class Hero extends Char {
 				Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY, 1, Random.Float(0.96f, 1.05f));
 			}
 			return Messages.get(Monk.class, "parried");
+		}
+
+		if (hasTalent(Talent.MIYAKO_T2_4)) {
+			if (belongings.weapon() instanceof Gun && Random.Float() < 0.25f * pointsInTalent(Talent.MIYAKO_T2_4)) {
+				((Gun)belongings.weapon()).manualReload();
+			}
 		}
 
 		return super.defenseVerb();

@@ -829,7 +829,7 @@ public enum Talent {
 			}
 		}
 
-		if (talent == HEIGHTENED_SENSES || talent == FARSIGHT || talent == DIVINE_SENSE){
+		if (talent == HEIGHTENED_SENSES || talent == FARSIGHT || talent == DIVINE_SENSE || talent == MIYAKO_T2_3){
 			Dungeon.observe();
 		}
 
@@ -907,6 +907,14 @@ public enum Talent {
 
 		if (talent == NONOMI_EX1_1) {
 			Item.updateQuickslot();
+		}
+
+		if (talent == MIYAKO_T2_2) {
+			Item.updateQuickslot();
+		}
+
+		if (talent == MIYAKO_T2_5) {
+			hero.updateHT(true);
 		}
 	}
 
