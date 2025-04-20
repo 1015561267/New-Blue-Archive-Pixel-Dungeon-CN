@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -136,9 +137,43 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
     }
 
     public void snipe(int cell) {
+        if (!Dungeon.level.heroFOV[cell]) {
+            Dungeon.hero.yellW(Messages.get(Hero.class, "miyako_cannot_see"));
+            return;
+        }
         Char ch = Actor.findChar(cell);
-        if (ch != null) {
-            CellEmitter.heroCenter(ch.pos).burst(SnipeParticle.factory(), 1);
+        KindOfWeapon heroWep = Dungeon.hero.belongings.weapon();
+        int tier, lvl;
+        if (heroWep instanceof MeleeWeapon) {
+            tier = ((MeleeWeapon)heroWep).tier();
+            lvl = heroWep.buffedLvl();
+        } else {
+            tier = 1;
+            lvl = 0;
+        }
+        if (ch != null && ch.alignment == Char.Alignment.ENEMY) {
+            Sample.INSTANCE.play(Assets.Sounds.BEACON);
+            Dungeon.hero.yellI(Messages.get(Hero.class, "miyako_attack_miyu"));
+            Dungeon.hero.busy();
+            Dungeon.hero.sprite.operate(Dungeon.hero.pos, new Callback() {
+                @Override
+                public void call() {
+                    GLog.newLine();
+                    GLog.i( "%s: \"%s\" ", Messages.titleCase(Messages.get(RabbitSquadBuff.class, "miyu")), Messages.get(RabbitSquadBuff.class, "miyu_react") );
+                    GLog.newLine();
+                    Dungeon.hero.sprite.idle();
+                    Callback callback = new Callback() {
+                        @Override
+                        public void call() {
+                            Dungeon.hero.spendAndNext(0); //턴을 소모하지 않음
+                            Buff.affect(Dungeon.hero, MiyuCooldown.class, MiyuCooldown.DURATION);
+                        }
+                    };
+                    CellEmitter.center(ch.pos).burst(SnipeParticle.factory(ch, tier, lvl, callback), 1);
+                }
+            });
+        } else {
+            Dungeon.hero.yellW(Messages.get(Hero.class, "miyako_no_char"));
         }
     }
 
@@ -337,10 +372,10 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
 
         @Override
         public void die(Object cause) {
-            super.die(cause);
             buff.saki = null;
             buff.sakiID = 0;
             Buff.affect(Dungeon.hero, SakiCooldown.class, SakiCooldown.DURATION);
+            super.die(cause);
         }
 
         @Override
@@ -421,6 +456,7 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
             super.restoreFromBundle(bundle);
             round = bundle.getInt(ROUND);
             maxRound = bundle.getInt(MAX_ROUND);
+            updateBuff();
         }
 
         public String description() {
