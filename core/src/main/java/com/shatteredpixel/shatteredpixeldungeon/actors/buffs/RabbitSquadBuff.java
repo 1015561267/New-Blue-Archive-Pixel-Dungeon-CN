@@ -27,9 +27,11 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.Tweener;
 import com.watabou.utils.Bundle;
@@ -78,11 +80,6 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
     }
 
     @Override
-    public String desc() {
-        return Messages.get(this, "desc");
-    }
-
-    @Override
     public boolean act() {
         spend(TICK);
         if (saki == null && sakiID != 0) {
@@ -93,6 +90,7 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
 
     @Override
     public String actionName() {
+        findSaki();
         if (Dungeon.hero.buff(SakiCooldown.class) == null && saki == null) {
             return Messages.get(this, "action_name_summon");
         } else if (Dungeon.hero.buff(MiyuCooldown.class) == null) {
@@ -107,6 +105,20 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
     @Override
     public int actionIcon() {
         return HeroIcon.RABBIT_SQUAD_ACTION;
+    }
+
+    @Override
+    public Visual secondaryVisual() {
+        findSaki();
+        if (Dungeon.hero.buff(SakiCooldown.class) == null && saki == null) {
+            return Icons.ACTION_SAKI.get();
+        } else if (Dungeon.hero.buff(MiyuCooldown.class) == null) {
+            return Icons.ACTION_MIYU.get();
+        } else if (Dungeon.hero.buff(MoeCooldown.class) == null) {
+            return Icons.ACTION_MOE.get();
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -202,7 +214,7 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
 
                 //먼저, 반복문에 사용될 변수를 선언한다.
                 float delay = 0; //Tweener에 들어갈 시간 값. 루프가 한 바퀴 돌 때마다 0.1씩 추가된다.
-                int blastAmount = 6; //폭발 횟수
+                int blastAmount = 6+3*Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_3); //폭발 횟수
                 
                 //blastAmount 횟수만큼 반복하는 반복문 작성
                 while (blastAmount > 0) {
@@ -278,11 +290,14 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
             GameScene.add(saki, 1f);
             Dungeon.level.occupyCell(saki);
 
-            CellEmitter.get(saki.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 50);
-
             hero.spend(1f);
             hero.busy();
+            hero.yellI(Messages.get(Hero.class, "miyako_summon_saki"));
+            Sample.INSTANCE.play(Assets.Sounds.BEACON);
+            Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+            CellEmitter.get(saki.pos).burst(Speck.factory(Speck.LIGHT), 4);
             hero.sprite.operate(hero.pos);
+            ActionIndicator.refresh();
         } else {
             GLog.w(Messages.get(this, "no_space"));
         }
@@ -598,10 +613,12 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
                     sakiGun = ((Saki)ch).getGun();
                 }
                 if (sakiGun != null) {
+                    Gun finalSakiGun = sakiGun;
                     ((MissileSprite)parent.recycle( MissileSprite.class )).
                             reset( this, cellToAttack, sakiGun.knockBullet(), new Callback() {
                                 @Override
                                 public void call() {
+                                    finalSakiGun.knockBullet().throwSound();
                                     //sakiGun.knockBullet().shoot()을 사용하는 경우 **영웅이** 적을 공격한 것으로 처리되기 때문에 사용하지 않는다.
                                     //탄환 발사 메커니즘 자체가 hero.shoot()을 사용하기 때문.
                                     //따라서 탄환을 생성하고 그 탄환의 공격력, 명중률, 공격 속도 정보를 사키의 스펙에 적용시켜 사용한다.
@@ -624,6 +641,12 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
         }
 
         public static final float DURATION	= 250f;
+
+        @Override
+        public boolean attachTo(Char target) {
+            ActionIndicator.refresh();
+            return super.attachTo(target);
+        }
 
         @Override
         public int icon() {
@@ -649,6 +672,12 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
         public static final float DURATION	= 50f;
 
         @Override
+        public boolean attachTo(Char target) {
+            ActionIndicator.refresh();
+            return super.attachTo(target);
+        }
+
+        @Override
         public int icon() {
             return BuffIndicator.TIME;
         }
@@ -670,6 +699,12 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
         }
 
         public static final float DURATION	= 100f;
+
+        @Override
+        public boolean attachTo(Char target) {
+            ActionIndicator.refresh();
+            return super.attachTo(target);
+        }
 
         @Override
         public int icon() {
