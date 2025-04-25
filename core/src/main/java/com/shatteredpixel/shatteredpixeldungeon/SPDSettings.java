@@ -481,4 +481,14 @@ public class SPDSettings extends GameSettings {
     public static int fulLScreenMonitor(){
         return getInt( KEY_FULLSCREEN_MONITOR, 0 );
     }
+
+    //Enhance code by Teller
+    public static final String RABBIT_ENHANCE     = "rabbit_enhance";
+    public static void rabbitEnhance( boolean value ){
+        put( RABBIT_ENHANCE, value );
+    }
+
+    public static boolean rabbitEnhance(){
+        return getBoolean(RABBIT_ENHANCE, false );
+    }
 }

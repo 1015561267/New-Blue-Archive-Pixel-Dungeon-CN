@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.effects.particles;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Callback;
@@ -41,6 +42,19 @@ public class SnipeParticle extends PixelParticle {
         };
     }
 
+    public static Emitter.Factory enhancedFactory(Char target, KindOfWeapon heroWep, Callback callback) {
+        return new Emitter.Factory() {
+            @Override
+            public void emit(Emitter emitter, int index, float x, float y) {
+                for (PointF p : POINTS) {
+                    ((SnipeParticle)emitter.recycle( SnipeParticle.class )).reset( x + p.x, y + p.y );
+                }
+                CellEmitter.center(target.pos).burst(ShootParticle.enhancedFactory(target, heroWep, callback), 1);
+                CellEmitter.center(target.pos).burst(SnipeOuterParticle.factory(), 1);
+            }
+        };
+    }
+
     public SnipeParticle() {
         super();
         color(0x000000);
@@ -54,6 +68,7 @@ public class SnipeParticle extends PixelParticle {
     protected final float MIDDLE_REST = 1f/ SPEED_MULTI; //처음 구간 이후 총 발사 전에 쉬는 구간
     protected final float MIDDLE_SHOOT_TIME = 0.1f/ SPEED_MULTI; //총 발사로 조준점이 올라가는 구간
     protected final float MIDDLE_SHOOT_REST = 0.4f/ SPEED_MULTI; //총 발사 후 조준점이 내려오는 구간
+
     //총 발사 후 쉬는 구간 이후 마지막 구간 사이는 아무것도 하지 않음
 
     public void reset( float x, float y) {

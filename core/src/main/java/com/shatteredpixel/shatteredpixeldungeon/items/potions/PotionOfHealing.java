@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
@@ -31,11 +32,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RabbitSquadBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -52,12 +55,18 @@ public class PotionOfHealing extends Potion {
 	public void apply( Hero hero ) {
 		identify();
 		cure( hero );
-		heal( hero );
+        if (hero.hasTalent(Talent.MIYAKO_EX1_1)&& SPDSettings.rabbitEnhance()){
+            enhanceHeal(hero);
+        }
+        heal( hero );
 	}
 
+    private static boolean flag = false;
+
 	public static void heal( Char ch ){
-		if (ch == Dungeon.hero && Dungeon.isChallenged(Challenges.NO_HEALING)){
-			pharmacophobiaProc(Dungeon.hero);
+        if (ch == Dungeon.hero && Dungeon.isChallenged(Challenges.NO_HEALING)){
+            if(flag) {flag = false;}//avoid poison this time
+			else pharmacophobiaProc(Dungeon.hero);
 		} else {
 			//starts out healing 30 hp, equalizes with hero health total at level 11
 			Healing healing = Buff.affect(ch, Healing.class);
@@ -68,6 +77,19 @@ public class PotionOfHealing extends Potion {
 			}
 		}
 	}
+
+    public static void enhanceHeal( Hero ch ){
+        RabbitSquadBuff buff = ch.buff(RabbitSquadBuff.class);
+        if(buff!=null){
+            if(ch.buff(RabbitSquadBuff.SakiCooldown.class) != null){
+                ch.buff(RabbitSquadBuff.SakiCooldown.class).heal();
+                flag = true;
+            }else if(buff.getSaki()!=null){
+                buff.healSaki();
+                flag = true;
+            }
+        }
+    }
 
 	public static void pharmacophobiaProc( Hero hero ){
 		// harms the hero for ~40% of their max HP in poison

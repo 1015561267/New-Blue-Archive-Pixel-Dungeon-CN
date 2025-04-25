@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
@@ -418,6 +420,7 @@ public class WndSettings extends WndTabbed {
 		ColorBlock sep2;
 		CheckBox chkFont;
 		CheckBox chkVibrate;
+        CheckBox rabbitEnhance;
 
 		@Override
 		protected void createChildren() {
@@ -651,6 +654,26 @@ public class WndSettings extends WndTabbed {
 				chkVibrate.checked(SPDSettings.vibration());
 			}
 			add(chkVibrate);
+
+            rabbitEnhance = new CheckBox("Rabbit squad!"){
+                @Override
+                protected void onClick() {
+                    super.onClick();
+                    if(GamesInProgress.checkRabbiting()){
+                        checked(!checked());
+                        ShatteredPixelDungeon.scene().add(new WndMessage("有选择了ex能力rabbit小队的游戏记录！\n为避免程序异常请完成或删除相关存档。"));
+                    }else {
+                        if(checked()) {
+                            ShatteredPixelDungeon.scene().add(new WndMessage("毕竟我又不是兔...慢着，布兑，我还真是\n——by _Teller_"));
+                        }
+                        SPDSettings.rabbitEnhance(checked());
+                        rabbitEnhance.checked(SPDSettings.rabbitEnhance());
+                    }
+                }
+            };
+            rabbitEnhance.checked(SPDSettings.rabbitEnhance());
+            rabbitEnhance.enable(!(Game.scene() instanceof GameScene));
+            add(rabbitEnhance);
 		}
 
 		@Override
@@ -691,12 +714,14 @@ public class WndSettings extends WndTabbed {
 			if (width > 200) {
 				chkFont.setRect(0, sep2.y + 1 + GAP, width/2-1, BTN_HEIGHT);
 				chkVibrate.setRect(chkFont.right()+2, chkFont.top(), width/2-1, BTN_HEIGHT);
-				height = chkVibrate.bottom();
+                rabbitEnhance.setRect(0, chkVibrate.bottom() + 1 + GAP, width, BTN_HEIGHT);
+				height = rabbitEnhance.bottom();
 
 			} else {
 				chkFont.setRect(0, sep2.y + 1 + GAP, width, BTN_HEIGHT);
 				chkVibrate.setRect(0, chkFont.bottom() + GAP, width, BTN_HEIGHT);
-				height = chkVibrate.bottom();
+                rabbitEnhance.setRect(0, chkVibrate.bottom() + 1 + GAP, width, BTN_HEIGHT);
+				height = rabbitEnhance.bottom();
 			}
 		}
 

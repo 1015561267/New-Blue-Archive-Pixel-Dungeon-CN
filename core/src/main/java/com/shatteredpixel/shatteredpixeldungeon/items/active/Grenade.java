@@ -1,10 +1,16 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.active;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RabbitSquadBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
@@ -80,7 +86,7 @@ public class Grenade extends Item {
 
     @Override
     public int level() {
-        int level = Dungeon.hero == null ? 0 : Dungeon.hero.lvl/5;
+        int level = hero == null ? 0 : hero.lvl/5;
         return level;
     }
 
@@ -102,13 +108,16 @@ public class Grenade extends Item {
 
         max += this.buffedLvl();
 
-        if (Dungeon.hero.hasTalent(Talent.MIYAKO_T2_2)) max++;
+        if (hero.hasTalent(Talent.MIYAKO_T2_2)) max++;
 
         return max;
     }
 
     public void reloadByChance() {
         if (Random.Float() < dropChance) {
+            if (SPDSettings.rabbitEnhance() && hero.subClass == HeroSubClass.RABBIT_SQUAD && amount==maxAmount() && hero.hasTalent(Talent.MIYAKO_EX1_3)){
+                Buff.affect(hero, RabbitSquadBuff.MoeEnhance.class).stack();
+            }
             reload(1);
         }
     }
@@ -122,7 +131,7 @@ public class Grenade extends Item {
         Item.updateQuickslot();
         if (oldAmt != amount) {
             if (!special) {
-                Dungeon.hero.sprite.showStatus(CharSprite.BLUE, TXT_ADD, amount-oldAmt, this.name());
+                hero.sprite.showStatus(CharSprite.BLUE, TXT_ADD, amount-oldAmt, this.name());
             }
         }
     }
@@ -244,9 +253,15 @@ public class Grenade extends Item {
                 ch.damage(dmg, this);
             }
 
-            if (ch == Dungeon.hero && !ch.isAlive()) {
+            if (ch == hero && !ch.isAlive()) {
                 GLog.n(Messages.get(this, "ondeath"));
                 Dungeon.fail(this);
+            }
+
+            if(this instanceof HandGrenade && SPDSettings.rabbitEnhance() && hero.subClass == HeroSubClass.RABBIT_SQUAD && hero.hasTalent(Talent.MIYAKO_EX1_3) &&!ch.isAlive()){
+                if(hero.buff(RabbitSquadBuff.MoeCooldown.class)!=null){
+                    hero.buff(RabbitSquadBuff.MoeCooldown.class).kill(5f * hero.pointsInTalent(Talent.MIYAKO_EX1_3));
+                }else Buff.affect(hero, RabbitSquadBuff.MoeEnhance.class).stack();
             }
         }
 

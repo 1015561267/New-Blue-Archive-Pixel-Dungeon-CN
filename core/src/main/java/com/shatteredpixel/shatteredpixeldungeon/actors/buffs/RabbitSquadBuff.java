@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -194,7 +195,14 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
                             Buff.affect(Dungeon.hero, MiyuCooldown.class, MiyuCooldown.DURATION-1); //턴을 소모하지 않기 때문에 1턴을 빼줌
                         }
                     };
-                    CellEmitter.center(ch.pos).burst(SnipeParticle.factory(ch, tier, lvl, callback), 1);
+
+                    if(SPDSettings.rabbitEnhance())
+                    {
+                        CellEmitter.center(ch.pos).burst(SnipeParticle.enhancedFactory(ch,heroWep,callback), 1);
+                    }
+                    else{
+                        CellEmitter.center(ch.pos).burst(SnipeParticle.factory(ch, tier, lvl, callback), 1);
+                    }
                 }
             });
         } else {
@@ -218,6 +226,9 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
                 //먼저, 반복문에 사용될 변수를 선언한다.
                 float delay = 0; //Tweener에 들어갈 시간 값. 루프가 한 바퀴 돌 때마다 0.1씩 추가된다.
                 int blastAmount = 6+3*Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_3); //폭발 횟수
+                if(Dungeon.hero.buff(MoeEnhance.class)!=null){
+                    blastAmount += Dungeon.hero.buff(MoeEnhance.class).getStack();
+                }
                 
                 //blastAmount 횟수만큼 반복하는 반복문 작성
                 while (blastAmount > 0) {
@@ -672,6 +683,12 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
         public float iconFadePercent() {
             return Math.max(0, (DURATION - visualcooldown()) / DURATION);
         }
+        public void heal() {
+            this.spendConstant(-1f*0.33f*Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_1)*(DURATION - 50 * Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_1)));
+            if (cooldown() <= 0){
+                detach();
+            }
+        }
     }
 
     public static class MiyuCooldown extends FlavourBuff {
@@ -730,5 +747,86 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
         public float iconFadePercent() {
             return Math.max(0, (DURATION - visualcooldown()) / DURATION);
         }
+
+        public void kill(float time){
+            this.spendConstant(-1f*time);
+        }
     }
+
+    public void healSaki(){
+        if(saki!=null) {
+            Healing healing = Buff.affect(saki, Healing.class);
+            healing.setHeal((int) ((0.8f * saki.HT + 14) * 0.33f * Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_1)), 0.25f, 0);
+            healing.applyVialEffect();
+        }
+    }
+
+    public Saki getSaki(){
+        return saki;
+    }
+
+    public static class MiyuAccEnhance extends Buff{};
+    public static class MiyuDmgEnhance extends Buff{};
+
+    public static class MoeEnhance extends Buff{
+
+        {
+            type = buffType.NEUTRAL;
+        }
+
+        private int stack = 0;
+
+        public void stack(){
+            stack++;
+            stack=Math.min(stack,3*Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_3));
+        }
+
+        public int getStack(){return stack;}
+
+        @Override
+        public String desc() {
+            return Messages.get(this, "desc", stack,3*Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_3));
+        }
+
+        @Override
+        public String iconTextDisplay() {
+            return Integer.toString(stack);
+        }
+
+        @Override
+        public boolean attachTo(Char target) {
+            ActionIndicator.refresh();
+            return super.attachTo(target);
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.TIME;
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            icon.hardlight(0xF2D9B4);
+        }
+
+        @Override
+        public float iconFadePercent() {
+            return Math.max(0, (3*Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_3)-stack / 3*Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_3)));
+        }
+
+        public static final String STACK = "stack";
+
+        @Override
+        public void storeInBundle(Bundle bundle) {
+            super.storeInBundle(bundle);
+            bundle.put(STACK, stack);
+        }
+
+        @Override
+        public void restoreFromBundle(Bundle bundle) {
+            super.restoreFromBundle(bundle);
+            stack = bundle.getInt(STACK);
+        }
+    };
 }
+

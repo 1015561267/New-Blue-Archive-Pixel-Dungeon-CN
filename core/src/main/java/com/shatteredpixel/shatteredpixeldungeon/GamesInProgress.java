@@ -218,4 +218,13 @@ public class GamesInProgress {
 			return (int)Math.signum( rhs.lastPlayed - lhs.lastPlayed );
 		}
 	};
+
+    public static boolean checkRabbiting(){
+        for (int i = 1; i <= MAX_SLOTS; i++){
+            Info curr = check(i);
+            if(curr!=null&&curr.heroClass==HeroClass.MIYAKO && curr.subClass==HeroSubClass.RABBIT_SQUAD)
+                return true;
+        }
+        return false;
+    }
 }
