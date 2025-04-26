@@ -454,7 +454,8 @@ public class TitleScene extends PixelScene {
                     ShatteredPixelDungeon.scene().add(new WndMessage(
 
                             "_Bug会变少吗？_\n" +
-                                    "你问我，那我问你。（以下内容以该窗口最后编辑版本1.0.2为准）\n\n\n" +
+                                    "你问我，那我问你。（以下内容以该窗口最后编辑版本1.0.6为准）\n\n\n" +
+                                    "- 角色的2-1干饭天赋不能减少吃号角的时间，还是3回合\n" +
                                     "- 枪支精准度写的一塌糊涂，霰弹枪全距离3倍精准\n" +
                                     "- 爱丽丝2-3 +2 还会对武器的附魔起效\n" +
                                     "- 爱丽丝ex1 3-5 实际使用任何近战武器均可触发\n" +
