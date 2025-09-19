@@ -103,6 +103,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.active.IronHorus;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Bulk;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
@@ -563,6 +564,29 @@ public abstract class Char extends Actor {
 				combinedLethality.detach();
 			}
 
+			Talent.TacticalSuppressTracker tacticalSuppress = enemy.buff(Talent.TacticalSuppressTracker.class);
+			if (tacticalSuppress != null && this instanceof Hero && ((Hero) this).belongings.attackingWeapon() instanceof MeleeWeapon) {
+				if ( enemy.isAlive() && enemy.alignment != alignment && !Char.hasProp(enemy, Property.BOSS)
+						&& !Char.hasProp(enemy, Property.MINIBOSS) &&
+						(enemy.HP/(float)enemy.HT) <= 0.4f*((Hero)this).pointsInTalent(Talent.HOSHINO_T3_1)/3f) {
+					enemy.HP = 0;
+					if (enemy.buff(Brute.BruteRage.class) != null){
+						enemy.buff(Brute.BruteRage.class).detach();
+					}
+					if (!enemy.isAlive()) {
+						enemy.die(this);
+					} else {
+						//helps with triggering any on-damage effects that need to activate
+						enemy.damage(-1, this);
+						DeathMark.processFearTheReaper(enemy);
+					}
+					if (enemy.sprite != null) {
+						enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Talent.CombinedLethalityAbilityTracker.class, "executed"));
+					}
+				}
+				tacticalSuppress.detach();
+			}
+
 			if (enemy.sprite != null) {
 				enemy.sprite.bloodBurstA(sprite.center(), effectiveDamage);
 				enemy.sprite.flash();
@@ -929,6 +953,15 @@ public abstract class Char extends Actor {
 			if (buff(ArcaneArmor.class) != null) {
 				dmg -= Random.NormalIntRange(0, buff(ArcaneArmor.class).level());
 			}
+			if (Dungeon.hero.hasTalent(Talent.HOSHINO_T2_4)) {
+				if (buff(IronHorus.LightTacticalShieldBuff.class) != null) {
+					dmg -= Math.round(buff(IronHorus.LightTacticalShieldBuff.class).drRoll()*0.25f*(Dungeon.hero.pointsInTalent(Talent.HOSHINO_T2_4)+1));
+				}
+				if (buff(IronHorus.TacticalShieldBuff.class) != null) {
+					dmg -= Math.round(buff(IronHorus.TacticalShieldBuff.class).drRoll()*0.25f*(Dungeon.hero.pointsInTalent(Talent.HOSHINO_T2_4)+1));
+				}
+			}
+
 			if (dmg < 0) dmg = 0;
 		}
 		

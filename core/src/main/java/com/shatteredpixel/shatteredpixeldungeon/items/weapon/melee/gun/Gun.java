@@ -336,8 +336,14 @@ public class Gun extends MeleeWeapon {
         }
         if (action.equals(AC_RELOAD)) {
             if (isAllLoaded()){
-                if (hero.heroClass == HeroClass.DUELIST) {
-                    execute(hero, AC_ABILITY);
+                if (hero.heroClass == HeroClass.HOSHINO && round == maxRound()) {
+                    onReload();
+                    manualReload(1, true);
+
+                    hero.busy();
+                    hero.sprite.operate(hero.pos);
+                    Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
+                    hero.spendAndNext(reloadTime());
                 } else {
                     GLog.w(Messages.get(this, "already_loaded"));
                 }
@@ -446,6 +452,10 @@ public class Gun extends MeleeWeapon {
 
         if (hero != null && hero.hasTalent(Talent.NONOMI_EX1_1)) {
             amount += 1;
+        }
+
+        if (hero != null && hero.hasTalent(Talent.HOSHINO_T1_4)) {
+            amount -= hero.pointsInTalent(Talent.HOSHINO_T1_4);
         }
 
         amount = Math.max(0, amount);
@@ -731,6 +741,17 @@ public class Gun extends MeleeWeapon {
 
             damage += bulletDamageBonus(attacker, defender);
 
+            if (attacker instanceof Hero && ((Hero)attacker).hasTalent(Talent.HOSHINO_T2_5) && attacker.buff(Barrier.class) == null) {
+                int shield = 2+3*((Hero)attacker).pointsInTalent(Talent.HOSHINO_T2_5)-distance;
+                if (shield > 0) {
+                    Buff.affect(attacker, Barrier.class).setShield(shield);
+                }
+            }
+
+            if (attacker instanceof Hero && ((Hero)attacker).hasTalent(Talent.HOSHINO_T3_1)) {
+                Buff.affect(defender, Talent.TacticalSuppressTracker.class);
+            }
+
             return Gun.this.proc(attacker, defender, damage);
         }
 
@@ -800,6 +821,9 @@ public class Gun extends MeleeWeapon {
             float ACC = super.adjacentAccFactor(owner, target);
             if (owner instanceof Hero && owner.buff(WireHook.PointBlankShot.class) != null) {
                 ACC *= 3f;
+            }
+            if (owner instanceof Hero && ((Hero)owner).hasTalent(Talent.HOSHINO_T3_2)) {
+                ACC *= 1+0.2f*((Hero)owner).pointsInTalent(Talent.HOSHINO_T3_2);
             }
             return ACC;
         }
