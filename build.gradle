@@ -23,8 +23,8 @@ allprojects {
         appName = 'Re Blue Archive Pixel Dungeon'
         appPackageName = 'com.shatteredpixel.rebluearchivepixeldungeoncn'
 
-        appVersionCode = 833
-        appVersionName = '3.0.2'
+        appVersionCode = 868
+        appVersionName = '3.2.3'
 
         appVersionCode += 107
         appVersionName += '_based_1.0.7_cn'
@@ -36,7 +36,7 @@ allprojects {
         appAndroidTargetSDK = 34
 
         gdxVersion = '1.12.1'
-        gdxControllersVersion = '2.2.4-SNAPSHOT'
+        gdxControllersVersion = '2.2.4'
         robovmVersion = '2.3.20'
     }
     version = appVersionName

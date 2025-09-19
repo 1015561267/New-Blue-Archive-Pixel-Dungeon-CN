@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,6 +120,8 @@ public class HeroIcon extends Image {
 	public static final int SPREAD_SHOT		= 128+3;
 	public static final int RABBIT_SQUAD	= 128+4;
 	public static final int SUPPORT_DRONE	= 128+5;
+	public static final int SHIELD_BASH		= 128+6;
+	public static final int DEFENSE_POSTURE	= 128+7;
 
 	//new armor abilities
 	public static final int ARIS_1			= 128+40;

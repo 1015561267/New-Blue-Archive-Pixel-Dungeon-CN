@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -259,6 +259,7 @@ public class Assets {
 		public static final String ARIS		= "splashes/aris.jpg";
 		public static final String NONOMI	= "splashes/nonomi.jpg";
 		public static final String MIYAKO	= "splashes/miyako.jpg";
+		public static final String HOSHINO	= "splashes/hoshino.jpg";
 
 		public static final String SEWERS   = "splashes/sewers.jpg";
 		public static final String PRISON   = "splashes/prison.jpg";

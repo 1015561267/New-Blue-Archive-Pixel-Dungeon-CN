@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2024 Evan Debenham
+ * Copyright (C) 2014-2025 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,10 +26,14 @@ import com.watabou.noosa.TextureFilm;
 
 public class ItemSpriteSheet {
 
-	private static final int WIDTH = 16;
 	public static final int SIZE = 16;
 
-	public static TextureFilm film = new TextureFilm( Assets.Sprites.ITEMS, SIZE, SIZE );
+	private static final int TX_WIDTH = 256;
+	private static final int TX_HEIGHT = 1024;
+
+	private static final int WIDTH = TX_WIDTH / SIZE;
+
+	public static TextureFilm film = new TextureFilm( TX_WIDTH, TX_HEIGHT, SIZE, SIZE );
 
 	private static int xy(int x, int y){
 		x -= 1; y -= 1;
@@ -157,7 +161,7 @@ public class ItemSpriteSheet {
 	static{
 		assignItemRect(ANKH,            10, 16);
 		assignItemRect(STYLUS,          12, 13);
-		
+
 		assignItemRect(SEAL,            15, 12);
 		assignItemRect(TORCH,           12, 15);
 		assignItemRect(BEACON,          16, 15);
@@ -174,7 +178,7 @@ public class ItemSpriteSheet {
 		assignItemRect(MASTERY,         13, 16);
 		assignItemRect(KIT,             16, 15);
 
-		assignItemRect(SEAL_SHARD,      11, 11);
+		assignItemRect(SEAL_SHARD,      12, 12);
 		assignItemRect(BROKEN_STAFF,    14, 10);
 		assignItemRect(CLOAK_SCRAP,      9,  9);
 		assignItemRect(BOW_FRAGMENT,    12,  9);
@@ -498,6 +502,7 @@ public class ItemSpriteSheet {
 	public static final int BLOOD_VIAL      = TRINKETS+12;
 	public static final int OBLIVION_SHARD  = TRINKETS+13;
 	public static final int CHAOTIC_CENSER  = TRINKETS+14;
+	public static final int FERRET_TUFT     = TRINKETS+15;
 	static{
 		assignItemRect(RAT_SKULL,       16, 11);
 		assignItemRect(PARCHMENT_SCRAP, 10, 14);
@@ -514,6 +519,7 @@ public class ItemSpriteSheet {
 		assignItemRect(BLOOD_VIAL,      6,  15);
 		assignItemRect(OBLIVION_SHARD,  7,  14);
 		assignItemRect(CHAOTIC_CENSER,  13, 15);
+		assignItemRect(FERRET_TUFT,     16, 15);
 	}
 
 	private static final int SCROLLS        =                               xy(1, 19);  //16 slots
@@ -801,10 +807,12 @@ public class ItemSpriteSheet {
 	public static final int SUPER_NOVA 		= UNIQUE_ITEM+0;
 	public static final int CLAYMORE 		= UNIQUE_ITEM+1;
 	public static final int GRENADE 		= UNIQUE_ITEM+2;
+	public static final int IRON_HORUS 		= UNIQUE_ITEM+3;
 	static {
 		assignItemRect(SUPER_NOVA, 	16, 16);
 		assignItemRect(CLAYMORE, 	13, 13);
 		assignItemRect(GRENADE, 	11, 11);
+		assignItemRect(IRON_HORUS, 	14, 14);
 	}
 
 	private static final int NEW_ARMOR 	= 								xy(1, 34);
