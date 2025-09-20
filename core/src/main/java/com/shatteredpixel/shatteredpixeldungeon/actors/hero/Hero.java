@@ -514,7 +514,7 @@ public class Hero extends Char {
 	@Override
 	public int attackSkill( Char target ) {
 		KindOfWeapon wep = belongings.attackingWeapon();
-		
+
 		float accuracy = 1;
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
 
@@ -524,12 +524,13 @@ public class Hero extends Char {
             return (int)(attackSkill * accuracy);
         }
 
-        if (wep instanceof MissileWeapon && !(wep instanceof Gun.Bullet)){
-			if (Dungeon.level.adjacent( pos, target.pos )) {
-				accuracy *= (0.5f + 0.2f*pointsInTalent(Talent.POINT_BLANK));
+        if (wep instanceof MissileWeapon && !(wep instanceof Gun.Bullet)) {
+			if (Dungeon.level.adjacent(pos, target.pos)) {
+				accuracy *= (0.5f + 0.2f * pointsInTalent(Talent.POINT_BLANK));
 			} else {
 				accuracy *= 1.5f;
 			}
+		}
 
 		//precise assault and liquid agility
 		if (!(wep instanceof MissileWeapon)) {
@@ -573,7 +574,7 @@ public class Hero extends Char {
 		if (buff(Scimitar.SwordDance.class) != null){
 			accuracy *= 1.50f;
 		}
-		
+
 		if (!RingOfForce.fightingUnarmed(this)) {
 			return Math.max(1, Math.round(attackSkill * accuracy * wep.accuracyFactor( this, target )));
 		} else {
