@@ -3,12 +3,16 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RabbitSquadBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SupportDrone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BulletParticle;
@@ -66,7 +70,16 @@ public class Claymore extends Grenade {
 
         private void blast(int cell) {
             int openUpMulti = 1;
-            if ((Dungeon.level.map[curUser.pos] == Terrain.DOOR || Dungeon.level.map[curUser.pos] == Terrain.OPEN_DOOR) && hero.hasTalent(Talent.MIYAKO_T3_2)) {
+
+            if (SPDSettings.rabbitEnhance()) {
+                if(Dungeon.level.map[cell] == Terrain.DOOR && hero.hasTalent(Talent.MIYAKO_T3_2)) {
+                    Dungeon.level.destroy(cell);
+                    GameScene.updateMap(cell);
+                    openUpMulti += hero.pointsInTalent(Talent.MIYAKO_T3_2);
+                    Dungeon.observe();
+                }
+            }
+            else if ((Dungeon.level.map[curUser.pos] == Terrain.DOOR || Dungeon.level.map[curUser.pos] == Terrain.OPEN_DOOR) && hero.hasTalent(Talent.MIYAKO_T3_2)) {
                 Dungeon.level.destroy(curUser.pos);
                 GameScene.updateMap( curUser.pos );
                 openUpMulti += hero.pointsInTalent(Talent.MIYAKO_T3_2);
@@ -101,12 +114,20 @@ public class Claymore extends Grenade {
                 if (Random.Float() < 0.4f + 0.1f*buffedLvl()) {
                     Buff.affect(ch, Cripple.class, 5f);
                 }
+
+                if(SPDSettings.rabbitEnhance() && hero.subClass== HeroSubClass.RABBIT_SQUAD && hero.hasTalent(Talent.MIYAKO_EX1_3) &&!ch.isAlive()){
+                    if(hero.buff(RabbitSquadBuff.MoeCooldown.class)!=null){
+                        hero.buff(RabbitSquadBuff.MoeCooldown.class).kill(5f * hero.pointsInTalent(Talent.MIYAKO_EX1_3));
+                    }else Buff.affect(hero, RabbitSquadBuff.MoeEnhance.class).stack();
+                }
             }
 
             hero.spendAndNext(1f);
             updateQuickslot();
             Sample.INSTANCE.play( Assets.Sounds.BLAST, 1, 1f - 0.1f*openUpMulti );
             Sample.INSTANCE.play( Assets.Sounds.HIT_CRUSH, 1, Random.Float(0.33f, 0.66f) );
+
+            Dungeon.observe();
         }
     }
 }

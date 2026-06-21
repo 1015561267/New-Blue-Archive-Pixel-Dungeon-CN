@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RabbitSquadBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShootAllBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SwiftMovement;
@@ -502,6 +503,11 @@ public class Gun extends MeleeWeapon {
             amount -= 1;
         }
 
+        //if (hero != null && hero.hasTalent(Talent.HOSHINO_T1_4)) {
+        //    amount -= hero.pointsInTalent(Talent.HOSHINO_T1_4);
+        //}
+
+
         amount = Math.max(0, amount);
         return amount;
     }
@@ -619,7 +625,16 @@ public class Gun extends MeleeWeapon {
     }
 
     public int bulletDamage() {
-        int damage = Random.NormalIntRange(bulletMin(), bulletMax());
+
+        int miyuEnhance = 1;
+        if(hero.buff(RabbitSquadBuff.MiyuDmgEnhance.class)!=null){
+            if (Dungeon.hero.hasTalent(Talent.MIYAKO_EX1_2)) {
+                miyuEnhance *= 1f+ (2f * Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_2) - 1f);
+            }
+            hero.buff(RabbitSquadBuff.MiyuDmgEnhance.class).detach();
+        }
+
+        int damage = Random.NormalIntRange(bulletMin()*miyuEnhance, bulletMax()*miyuEnhance);
 
         damage = augment.damageFactor(damage);  //증강에 따라 변화하는 효과
 

@@ -62,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RabbitSquadBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
@@ -76,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.El
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.hoshino.ShieldParry;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.shiroko.GPSRoute;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.nonomi.Bipod;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HallowedGround;
@@ -531,9 +533,23 @@ public class Hero extends Char {
 	@Override
 	public int attackSkill( Char target ) {
 		KindOfWeapon wep = belongings.attackingWeapon();
-		
+
 		float accuracy = 1;
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
+
+        if(buff(RabbitSquadBuff.MiyuAccEnhance.class) != null){
+            buff(RabbitSquadBuff.MiyuAccEnhance.class).detach();
+            accuracy *= Float.POSITIVE_INFINITY;
+            return (int)(attackSkill * accuracy);
+        }
+
+        if (wep instanceof MissileWeapon && !(wep instanceof Gun.Bullet)) {
+			if (Dungeon.level.adjacent(pos, target.pos)) {
+				accuracy *= (0.5f + 0.2f * pointsInTalent(Talent.POINT_BLANK));
+			} else {
+				accuracy *= 1.5f;
+			}
+		}
 
 		//precise assault and liquid agility
 		if (!(wep instanceof MissileWeapon)) {
@@ -605,7 +621,7 @@ public class Hero extends Char {
 		if (buff(Talent.TakingAimTracker.class) != null) {
 			accuracyBonus += (1+2*pointsInTalent(Talent.NOA_T1_3) * (int) buff(Talent.TakingAimTracker.class).count());
 		}
-		
+
 		if (!RingOfForce.fightingUnarmed(this)) {
 			return Math.max(1, Math.round((attackSkill + accuracyBonus) * accuracy * wep.accuracyFactor( this, target )));
 		} else {
@@ -1331,7 +1347,7 @@ public class Hero extends Char {
 				} else {
 					hasKey = true;
 				}
-				
+
 			} else if (door == Terrain.CRYSTAL_DOOR
 					&& Notes.keyCount(new CrystalKey(Dungeon.depth)) > 0) {
 
@@ -2021,7 +2037,7 @@ public class Hero extends Char {
 					bicycle.chargeUp();
 				}
 			}
-			
+
 			sprite.move(pos, step);
 			move(step);
 

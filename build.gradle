@@ -2,9 +2,18 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-    }
+        }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:9.1.0'
+        //gradle version packaged with AGP 8.5 causes crashes on Android 4.4-
+        //this won't be needed once the bundled R8 version is 8.7.11+ (should happen with AGP 8.6)
+        //classpath 'com.android.tools:r8:8.7.11'
+        //classpath 'com.android.tools.build:gradle:8.8.0'
+
+        //the R8 version bundled with AGP 8.1.0+ causes crashes on very old Android versions
+
+        //This affects ICS and Lollipop at least, maybe also KitKat
+        classpath 'com.android.tools.build:gradle:8.0.2'
     }
 }
 
@@ -12,29 +21,30 @@ allprojects {
 
     ext {
         appName = 'Re Blue Archive Pixel Dungeon'
-        appPackageName = 'com.shatteredpixel.rebluearchivepixeldungeon'
+        appPackageName = 'com.shatteredpixel.rebluearchivepixeldungeoncn'
 
         appVersionCode = 896
         appVersionName = '3.3.8'
 
         appVersionCode += 111
-        appVersionName += '_based_1.3.0'
+        appVersionName += '_based_1.3.0_cn'
 
-        appJavaCompatibility = JavaVersion.VERSION_11
+        appJavaCompatibility = JavaVersion.VERSION_1_8
 
-        appAndroidCompileSDK = 36   //Android 15
-        appAndroidMinSDK = 21       //Android 5.0
-        appAndroidTargetSDK = 36    //Android 15
+        appAndroidCompileSDK = 33 //compile SDK is still 33 atm as we're sticking with AGP 8.0.2
+        appAndroidMinSDK = 14
+        appAndroidTargetSDK = 34
 
-        gdxVersion = '1.14.0'
+        gdxVersion = '1.13.6-SNAPSHOT'
         gdxControllersVersion = '2.2.4'
-        robovmVersion = '2.3.24'
+        robovmVersion = '2.3.20'
     }
     version = appVersionName
 
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         maven { url 'https://central.sonatype.com/repository/maven-snapshots/' }
     }
 

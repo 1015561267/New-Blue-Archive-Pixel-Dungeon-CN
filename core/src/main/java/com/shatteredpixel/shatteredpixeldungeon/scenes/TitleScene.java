@@ -39,9 +39,12 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndSettings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats;
@@ -242,7 +245,11 @@ public class TitleScene extends PixelScene {
 			btnAbout.setRect(btnSettings.right()+2, btnSettings.top(), btnSettings.width(), BTN_HEIGHT);
 		}
 
-		version = new BitmapText( "v" + Game.version, pixelFont);
+        StyledButton btnLocalization = new LocalizationButton(GREY_TR, "译者注");
+        add(btnLocalization);
+        btnLocalization.setRect(0, h - BTN_HEIGHT, 50, BTN_HEIGHT);
+
+        version = new BitmapText( "v" + Game.version, pixelFont);
 		version.measure();
 		version.hardlight( 0x888888 );
 		version.x = insets.left + w - version.width() - (DeviceCompat.isDesktop() ? 4 : 8);
@@ -489,4 +496,82 @@ public class TitleScene extends PixelScene {
 			ShatteredPixelDungeon.switchNoFade(SupporterScene.class);
 		}
 	}
+
+    private static class LocalizationButton extends StyledButton {
+        public LocalizationButton(Chrome.Type type, String label) {
+            super(type, label);
+            icon(Icons.get(Icons.LANGS));
+        }
+
+        @Override
+        protected void onClick() {
+            ShatteredPixelDungeon.scene().add(new WndLocalization());
+        }
+
+        private static class WndLocalization extends Window {
+
+            private static final int WIDTH_P = 120;
+            private static final int WIDTH_L = 144;
+            private static final int MARGIN = 4;
+
+            private static final int BTN_HEIGHT = 20;
+
+            public WndLocalization() {
+                super();
+
+                String text =  "_怎么又是你？_\n" +
+                        "Man!what can I say?\n" +
+                        "_这回是什么版本？_\n" +
+                        "New-Blue-Archive-Pixel-Dungeon，简称NBPD，与之前的枪火重制版类似只不过是对BAPD做重置。\n" +
+                        "_Bug会变少吗？_\n" +
+                        "你问我，那我问你。\n" +
+                        "QQ：1015561267\n" +
+                        "QQ群：460655540\n" +
+                        "github项目地址：https://github.com/ \n" + "1015561267/New-Blue-Archive-Pixel-Dungeon-CN \n"+
+                        "——by _Teller_\n";
+
+                RenderedTextBlock.cnLocalizationFlag = true;
+
+                RenderedTextBlock info = PixelScene.renderTextBlock( text, 6 );
+                info.maxWidth((PixelScene.landscape() ? WIDTH_L : WIDTH_P) - MARGIN * 2);
+                info.setPos(MARGIN, MARGIN);
+                add( info );
+
+                RedButton bugButton = new BugButton("bug");
+                add(bugButton);
+                bugButton.setRect(0, info.height() + MARGIN, 50, BTN_HEIGHT);
+
+                resize(
+                        (int) (info.width() + MARGIN * 2),
+                        (int) (info.height() + BTN_HEIGHT + MARGIN * 3));
+
+                RenderedTextBlock.cnLocalizationFlag = false;
+            }
+
+
+            private static class BugButton extends RedButton {
+                public BugButton(String text) {
+                    super(text);
+                }
+
+                @Override
+                protected void onClick() {
+                    RenderedTextBlock.cnLocalizationFlag = true;
+                    ShatteredPixelDungeon.scene().add(new WndMessage(
+
+                            "_Bug会变少吗？_\n" +
+                                    "你问我，那我问你。（以下内容以该窗口最后编辑版本1.0.6为准）\n\n\n" +
+                                    "- 角色的2-1干饭天赋不能减少吃号角的时间，还是3回合\n" +
+                                    "- 枪支精准度写的一塌糊涂，霰弹枪全距离3倍精准\n" +
+                                    "- 爱丽丝2-3 +2 还会对武器的附魔起效\n" +
+                                    "- 爱丽丝ex1 3-5 实际使用任何近战武器均可触发\n" +
+                                    "- 宫子1-4 实际不造成眩晕而是额外伤害\n" +
+                                    "- 又漏了个0，宫子2-1 增加护盾为100%/150%的生命值上限\n" +
+                                    "- 宫子 铁丝钩爪 4-3 精准度加成全距离有效，而霰弹枪没有被加成\n"
+                    ));
+                    RenderedTextBlock.cnLocalizationFlag = false;
+                }
+            }
+        }
+    }
 }

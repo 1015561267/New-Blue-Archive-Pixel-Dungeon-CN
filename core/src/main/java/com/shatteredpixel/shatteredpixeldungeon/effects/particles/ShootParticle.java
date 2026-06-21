@@ -2,8 +2,12 @@ package com.shatteredpixel.shatteredpixeldungeon.effects.particles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RabbitSquadBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR;
 import com.watabou.noosa.particles.Emitter;
@@ -20,6 +24,16 @@ public class ShootParticle extends SnipeParticle {
         };
     }
 
+    public static Emitter.Factory enhancedFactory(Char target, KindOfWeapon heroWep, Callback callback) {
+        return new Emitter.Factory() {
+            @Override
+            public void emit(Emitter emitter, int index, float x, float y) {
+                if (target == null) return; //타겟이 없으면 아무것도 하지 않음
+                ((ShootParticle)emitter.recycle( ShootParticle.class )).reset( x, y, target, heroWep, callback );
+            }
+        };
+    }
+
     public ShootParticle() {
         super();
         color(0x000000);
@@ -31,6 +45,10 @@ public class ShootParticle extends SnipeParticle {
     int tier = 1;
     int lvl = 0;
     Callback callback;
+
+    boolean enhanceFlag;
+    KindOfWeapon heroWep;
+
     //총 발사 후 쉬는 구간 이후 마지막 구간 사이는 아무것도 하지 않음
 
     public void reset( float x, float y, Char target, int tier, int lvl, Callback callback) {
@@ -44,6 +62,20 @@ public class ShootParticle extends SnipeParticle {
         this.tier = tier;
         this.lvl = lvl;
         this.callback = callback;
+        this.enhanceFlag = false;
+    }
+
+    private void reset(float x, float y, Char target, KindOfWeapon heroWep, Callback callback) {
+        reset(x, y);
+
+        size(2f);
+
+        shoot = false;
+
+        this.enhanceFlag = true;
+        this.target = target;
+        this.heroWep = heroWep;
+        this.callback = callback;
     }
 
     @Override
@@ -51,10 +83,44 @@ public class ShootParticle extends SnipeParticle {
         super.update();
 
         if (!shoot && left <= lifespan- FIRST - MIDDLE_REST) { //left가 총 발사 타이밍과 완벽하게 일치하지 않아서 범위로 지정
-            Gun gun = Gun.getGun(SR.class, this.tier, this.lvl);
-            Gun.Bullet bullet = gun.knockBullet();
-            if (Dungeon.hero.hasTalent(Talent.MIYAKO_EX1_2)) {
-                bullet.setAccMulti(1f+(2f*Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_2)-1f));
+
+            Gun.Bullet bullet = null;
+            Gun gun = null;
+
+            if(enhanceFlag){
+                if(heroWep instanceof MeleeWeapon){
+                    gun = Gun.getGun(SR.class, this.tier, this.lvl);
+                    if(heroWep instanceof Gun){
+                        gun.barrelMod = ((Gun) heroWep).barrelMod;
+                        gun.magazineMod = ((Gun) heroWep).magazineMod;
+                        gun.bulletMod = ((Gun) heroWep).bulletMod;
+                        gun.weightMod = ((Gun) heroWep).weightMod;
+                        gun.attachMod = ((Gun) heroWep).attachMod;
+                        gun.enchantMod = ((Gun) heroWep).enchantMod;
+                        gun.inscribeMod = ((Gun) heroWep).inscribeMod;
+                    }
+                    gun.curseInfusionBonus = ((MeleeWeapon) heroWep).curseInfusionBonus;
+                    gun.enchant(((MeleeWeapon) heroWep).enchantment);
+                }else {
+                    gun = Gun.getGun(SR.class, 1, 0);
+                }
+
+                bullet = gun.knockBullet();
+
+                if(Dungeon.hero.STR() - gun.STRReq() >= 0){
+                    Buff.affect(Dungeon.hero, RabbitSquadBuff.MiyuAccEnhance.class);
+                }
+                Buff.affect(Dungeon.hero, RabbitSquadBuff.MiyuDmgEnhance.class);
+            }
+
+
+
+            else {
+                gun = Gun.getGun(SR.class, this.tier, this.lvl);
+                bullet = gun.knockBullet();
+                if (Dungeon.hero.hasTalent(Talent.MIYAKO_EX1_2)) {
+                    bullet.setAccMulti(1f + (2f * Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_2) - 1f));
+                }
             }
 
             bullet.throwSound();
