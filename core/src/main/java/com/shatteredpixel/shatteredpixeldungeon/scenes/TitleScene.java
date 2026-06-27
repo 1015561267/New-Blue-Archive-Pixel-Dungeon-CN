@@ -80,6 +80,8 @@ public class TitleScene extends PixelScene {
 	private StyledButton btnSettings;
 	private StyledButton btnAbout;
 
+	private StyledButton btnLocalization;
+
 	private BitmapText version;
 	private IconButton btnFade;
 	private ExitButton btnExit;
@@ -245,7 +247,7 @@ public class TitleScene extends PixelScene {
 			btnAbout.setRect(btnSettings.right()+2, btnSettings.top(), btnSettings.width(), BTN_HEIGHT);
 		}
 
-        StyledButton btnLocalization = new LocalizationButton(GREY_TR, "译者注");
+		btnLocalization = new LocalizationButton(GREY_TR, "译者注");
         add(btnLocalization);
         btnLocalization.setRect(0, h - BTN_HEIGHT, 50, BTN_HEIGHT);
 
@@ -317,8 +319,8 @@ public class TitleScene extends PixelScene {
 		float alpha = GameMath.gate(0f, uiAlpha, 1f);
 
 		title.am = alpha;
-		leftFB.am = alpha;
-		rightFB.am = alpha;
+		//leftFB.am = alpha;
+		//rightFB.am = alpha;
 		//signs.am = alpha; handles this itself
 
 		btnPlay.enable(alpha != 0);
@@ -329,6 +331,7 @@ public class TitleScene extends PixelScene {
 		btnChanges.enable(alpha != 0);
 		btnSettings.enable(alpha != 0);
 		btnAbout.enable(alpha != 0);
+		btnLocalization.enable(alpha != 0);
 
 		btnPlay.alpha(alpha);
 		btnSupport.alpha(alpha);
@@ -338,6 +341,7 @@ public class TitleScene extends PixelScene {
 		btnChanges.alpha(alpha);
 		btnSettings.alpha(alpha);
 		btnAbout.alpha(alpha);
+		btnLocalization.alpha(alpha);
 
 		version.alpha(alpha);
 		btnFade.icon().alpha(alpha);
@@ -560,14 +564,8 @@ public class TitleScene extends PixelScene {
                     ShatteredPixelDungeon.scene().add(new WndMessage(
 
                             "_Bug会变少吗？_\n" +
-                                    "你问我，那我问你。（以下内容以该窗口最后编辑版本1.0.6为准）\n\n\n" +
-                                    "- 角色的2-1干饭天赋不能减少吃号角的时间，还是3回合\n" +
-                                    "- 枪支精准度写的一塌糊涂，霰弹枪全距离3倍精准\n" +
-                                    "- 爱丽丝2-3 +2 还会对武器的附魔起效\n" +
-                                    "- 爱丽丝ex1 3-5 实际使用任何近战武器均可触发\n" +
-                                    "- 宫子1-4 实际不造成眩晕而是额外伤害\n" +
-                                    "- 又漏了个0，宫子2-1 增加护盾为100%/150%的生命值上限\n" +
-                                    "- 宫子 铁丝钩爪 4-3 精准度加成全距离有效，而霰弹枪没有被加成\n"
+                                    "你问我，那我问你。（以下内容以该窗口最后编辑版本1.2.0为准）\n\n\n" +
+                                    "- 版本过久，待重新收集\n"
                     ));
                     RenderedTextBlock.cnLocalizationFlag = false;
                 }
