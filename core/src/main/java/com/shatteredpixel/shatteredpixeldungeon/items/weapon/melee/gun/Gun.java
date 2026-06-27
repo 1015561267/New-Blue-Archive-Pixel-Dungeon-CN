@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.ConversionKit;
 import com.shatteredpixel.shatteredpixeldungeon.items.GunSmithingTool;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.IronHorus;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
@@ -426,6 +427,10 @@ public class Gun extends MeleeWeapon {
         if (round == 0 && hero.hasTalent(Talent.NOA_T2_4)) {
             Buff.affect(hero, GreaterHaste.class).set(hero.pointsInTalent(Talent.NOA_T2_4));
         }
+
+        if (hero.hasTalent(Talent.NOA_EX1_1) && hero.belongings.secondWep() instanceof Gun) {
+            ((Gun)hero.belongings.secondWep()).manualReload(hero.pointsInTalent(Talent.NOA_EX1_1), false);
+        }
     }
 
     public void quickReload() {	//다른 것들을 작동시키지 않고 탄창만 완전히 재장전하는 메서드
@@ -503,10 +508,9 @@ public class Gun extends MeleeWeapon {
             amount -= 1;
         }
 
-        //if (hero != null && hero.hasTalent(Talent.HOSHINO_T1_4)) {
-        //    amount -= hero.pointsInTalent(Talent.HOSHINO_T1_4);
-        //}
-
+        if (hero != null && hero.belongings.secondWep() == this) {
+            amount += 1;
+        }
 
         amount = Math.max(0, amount);
         return amount;
@@ -828,6 +832,30 @@ public class Gun extends MeleeWeapon {
         return super.upgrade();
     }
 
+    private static boolean evaluatingTwinUpgrades = false;
+    @Override
+    public int buffedLvl() {
+        if (!evaluatingTwinUpgrades && Dungeon.hero != null && isEquipped(Dungeon.hero) && Dungeon.hero.hasTalent(Talent.NOA_EX1_2)){
+            KindOfWeapon other = null;
+            if (Dungeon.hero.belongings.weapon() != this) other = Dungeon.hero.belongings.weapon();
+            if (Dungeon.hero.belongings.secondWep() != this) other = Dungeon.hero.belongings.secondWep();
+
+            if (other instanceof Gun) {
+                evaluatingTwinUpgrades = true;
+                int otherLevel = other.buffedLvl();
+                evaluatingTwinUpgrades = false;
+
+                //weaker weapon needs to be 2/1/0 tiers lower, based on talent level
+                if ((tier() + (3 - Dungeon.hero.pointsInTalent(Talent.NOA_EX1_2))) <= ((Gun) other).tier()
+                        && otherLevel > super.buffedLvl()) {
+                    return otherLevel;
+                }
+
+            }
+        }
+        return super.buffedLvl();
+    }
+
     public class Bullet extends MissileWeapon {
 
         private boolean specialShot = false;
@@ -995,11 +1023,17 @@ public class Gun extends MeleeWeapon {
         @Override
         protected float adjacentAccFactor(Char owner, Char target) {
             float ACC = super.adjacentAccFactor(owner, target);
-            if (owner instanceof Hero && owner.buff(WireHook.PointBlankShot.class) != null) {
-                ACC *= 3f;
-            }
-            if (owner instanceof Hero && ((Hero)owner).hasTalent(Talent.HOSHINO_T3_2)) {
-                ACC *= 1+0.5f*((Hero)owner).pointsInTalent(Talent.HOSHINO_T3_2);
+            if (owner instanceof Hero) {
+                Hero hero = (Hero) owner;
+                if (hero.buff(WireHook.PointBlankShot.class) != null) {
+                    ACC *= 3f;
+                }
+                if (hero.hasTalent(Talent.HOSHINO_T3_2)) {
+                    ACC *= 1+0.5f*((Hero)owner).pointsInTalent(Talent.HOSHINO_T3_2);
+                }
+                if (hero.pointsInTalent(Talent.NOA_EX1_3) >= 2 && isSpecialShot()) {
+                    return Char.INFINITE_ACCURACY;
+                }
             }
             return ACC;
         }

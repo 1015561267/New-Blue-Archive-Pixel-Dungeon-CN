@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Conversation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
@@ -872,6 +873,10 @@ public abstract class Mob extends Char {
 				if (Dungeon.hero.subClass == HeroSubClass.MONK){
 					Buff.affect(Dungeon.hero, MonkEnergy.class).gainEnergy(this);
 				}
+
+				if (Dungeon.hero.subClass == HeroSubClass.CONVERSATION) {
+					Buff.affect(Dungeon.hero, Conversation.class).charge();
+				}
 			}
 		}
 	}
@@ -934,6 +939,11 @@ public abstract class Mob extends Char {
 			Buff.affect(Dungeon.hero, Barrier.class).setShield(2+3*Dungeon.hero.pointsInTalent(Talent.SHIROKO_T1_4));
 		}
 
+		if (cause == Dungeon.hero && Dungeon.hero.pointsInTalent(Talent.NOA_EX1_3) >= 3 && Dungeon.level.adjacent(this.pos, Dungeon.hero.pos)) {
+			if (Dungeon.hero.belongings.weapon() instanceof Gun) ((Gun) Dungeon.hero.belongings.weapon()).quickReload();
+			if (Dungeon.hero.belongings.secondWep() instanceof Gun) ((Gun) Dungeon.hero.belongings.secondWep()).quickReload();
+		}
+		
 		boolean soulMarked = buff(SoulMark.class) != null;
 
 		super.die( cause );

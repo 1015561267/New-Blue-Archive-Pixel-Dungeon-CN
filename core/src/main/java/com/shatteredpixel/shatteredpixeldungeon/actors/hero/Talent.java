@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Conversation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
@@ -1343,6 +1344,9 @@ public enum Talent {
 				Dungeon.level.drop(scroll, hero.pos).sprite.drop(hero.pos);
 			}
 		}
+		if (hero.subClass == HeroSubClass.CONVERSATION && hero.hasTalent(Talent.NOA_EX2_1)) {
+			Buff.affect(hero, Conversation.class).charge(2*factor);
+		}
 	}
 
 	public static void onRunestoneUsed( Hero hero, int pos, Class<?extends Item> cls ){
@@ -1361,6 +1365,10 @@ public enum Talent {
 					GLog.p(Messages.get(Talent.class, RECALL_INSCRIPTION.name() + ".refunded"));
 				}
 			}
+		}
+
+		if (hero.subClass == HeroSubClass.CONVERSATION && hero.pointsInTalent(Talent.NOA_EX2_1) >= 2) {
+			Buff.affect(hero, Conversation.class).charge();
 		}
 	}
 
@@ -1968,7 +1976,7 @@ public enum Talent {
 			case DOUBLE_BARREL:
 				Collections.addAll(tierTalents, NOA_EX1_1, NOA_EX1_2, NOA_EX1_3);
 				break;
-			case AUTO_SEAR:
+			case CONVERSATION:
 				Collections.addAll(tierTalents, NOA_EX2_1, NOA_EX2_2, NOA_EX2_3);
 				break;
 			case BERSERKER:
