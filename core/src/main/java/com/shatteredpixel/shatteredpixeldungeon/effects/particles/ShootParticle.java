@@ -24,12 +24,11 @@ public class ShootParticle extends SnipeParticle {
         };
     }
 
-    public static Emitter.Factory enhancedFactory(Char target, KindOfWeapon heroWep, Callback callback) {
+    public static Emitter.Factory factory(Char target, Gun.Bullet bullet, Callback callback) {
         return new Emitter.Factory() {
             @Override
             public void emit(Emitter emitter, int index, float x, float y) {
-                if (target == null) return; //타겟이 없으면 아무것도 하지 않음
-                ((ShootParticle)emitter.recycle( ShootParticle.class )).reset( x, y, target, heroWep, callback );
+                ((ShootParticle)emitter.recycle( ShootParticle.class )).reset( x, y, target, bullet, callback );
             }
         };
     }
@@ -42,8 +41,9 @@ public class ShootParticle extends SnipeParticle {
 
     boolean shoot; //총 발사 여부
     Char target = null;
-    int tier = 1;
-    int lvl = 0;
+    int tier = -1;
+    int lvl = -1;
+    Gun.Bullet bullet = null;
     Callback callback;
 
     boolean enhanceFlag;
@@ -78,53 +78,36 @@ public class ShootParticle extends SnipeParticle {
         this.callback = callback;
     }
 
+    public void reset(float x, float y, Char target, Gun.Bullet bullet, Callback callback) {
+        reset(x, y);
+
+        size(2f);
+
+        shoot = false;
+
+        this.target = target;
+        this.bullet = bullet;
+        this.callback = callback;
+    }
+
     @Override
     public void update() {
         super.update();
 
         if (!shoot && left <= lifespan- FIRST - MIDDLE_REST) { //left가 총 발사 타이밍과 완벽하게 일치하지 않아서 범위로 지정
-
-            Gun.Bullet bullet = null;
-            Gun gun = null;
-
-            if(enhanceFlag){
-                if(heroWep instanceof MeleeWeapon){
-                    gun = Gun.getGun(SR.class, this.tier, this.lvl);
-                    if(heroWep instanceof Gun){
-                        gun.barrelMod = ((Gun) heroWep).barrelMod;
-                        gun.magazineMod = ((Gun) heroWep).magazineMod;
-                        gun.bulletMod = ((Gun) heroWep).bulletMod;
-                        gun.weightMod = ((Gun) heroWep).weightMod;
-                        gun.attachMod = ((Gun) heroWep).attachMod;
-                        gun.enchantMod = ((Gun) heroWep).enchantMod;
-                        gun.inscribeMod = ((Gun) heroWep).inscribeMod;
-                    }
-                    gun.curseInfusionBonus = ((MeleeWeapon) heroWep).curseInfusionBonus;
-                    gun.enchant(((MeleeWeapon) heroWep).enchantment);
-                }else {
-                    gun = Gun.getGun(SR.class, 1, 0);
-                }
-
-                bullet = gun.knockBullet();
-
-                if(Dungeon.hero.STR() - gun.STRReq() >= 0){
-                    Buff.affect(Dungeon.hero, RabbitSquadBuff.MiyuAccEnhance.class);
-                }
-                Buff.affect(Dungeon.hero, RabbitSquadBuff.MiyuDmgEnhance.class);
-            }
-
-
-
-            else {
-                gun = Gun.getGun(SR.class, this.tier, this.lvl);
-                bullet = gun.knockBullet();
+            Gun.Bullet attackingBullet;
+            if (bullet != null) {
+                attackingBullet = bullet;
+            } else {
+                Gun gun = Gun.getGun(SR.class, this.tier, this.lvl);
+                attackingBullet = gun.knockBullet();
                 if (Dungeon.hero.hasTalent(Talent.MIYAKO_EX1_2)) {
-                    bullet.setAccMulti(1f + (2f * Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_2) - 1f));
+                    attackingBullet.setAccMulti(1f+(2f*Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_2)-1f));
                 }
             }
 
-            bullet.throwSound();
-            bullet.shoot(this.target.pos, false);
+            attackingBullet.throwSound();
+            attackingBullet.shoot(this.target.pos, true);
             CellEmitter.center(this.target.pos).burst(BlastParticle.FACTORY, 4);
             shoot = true;
         }

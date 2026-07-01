@@ -60,11 +60,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.NoticeTracker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RabbitSquadBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Snipe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SupportDrone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeStasis;
@@ -108,6 +110,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.Bicycle;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.Grenade;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.IronHorus;
+import com.shatteredpixel.shatteredpixeldungeon.items.active.TrashBin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
@@ -717,6 +720,10 @@ public class Hero extends Char {
 			return Messages.get(Monk.class, "parried");
 		}
 
+		if (buff(TrashBin.EvasionBuff.class) != null){
+			buff(TrashBin.EvasionBuff.class).detach();
+		}
+
 		if (hasTalent(Talent.MIYAKO_T2_4)) {
 			if (belongings.weapon() instanceof Gun && Random.Float() < 0.25f * pointsInTalent(Talent.MIYAKO_T2_4)) {
 				((Gun)belongings.weapon()).manualReload();
@@ -845,6 +852,14 @@ public class Hero extends Char {
 
 		if (buff(GPSRoute.RouteBuff.class) != null && buff(GPSRoute.RouteBuff.class).onPath()) {
 			speed *= 3f;
+		}
+
+		if (pointsInTalent(Talent.MIYU_EX2_3) >= 3) {
+			int t = Dungeon.level.map[pos];
+			if (t == Terrain.FURROWED_GRASS || t == Terrain.HIGH_GRASS) {
+				speed *= 2f;
+				sprite.emitter().startDelayed(Speck.factory(Speck.GREEN_LIGHT), 0.02f, Random.IntRange(1, 3), 0.05f);
+			}
 		}
 
 		speed = AscensionChallenge.modifyHeroSpeed(speed);
@@ -1047,6 +1062,8 @@ public class Hero extends Char {
 		if (hasTalent(Talent.NONOMI_T3_2) && belongings.weapon instanceof Gun) {
 			if (Random.Float() < 0.05f * pointsInTalent(Talent.NONOMI_T3_2)) ((Gun)belongings.weapon).manualReload();
 		}
+
+		if (buff(NoticeTracker.class) != null) Item.updateQuickslot();
 
 		return actResult;
 	}
@@ -2890,5 +2907,43 @@ public class Hero extends Char {
 		if (subClass == HeroSubClass.SUPPORT_DRONE) {
 			Buff.affect(this, SupportDrone.class).kill();
 		}
+		if (hasTalent(Talent.HOSHINO_T2_5)) {
+			Buff.affect(this, Talent.IntimidateBonusDamageBuff.class).set();
+		}
+		if (buff(Bicycle.DriftCooldown.class) != null) {
+			buff(Bicycle.DriftCooldown.class).kill();
+		}
+		if (this.hasTalent(Talent.SHIROKO_T1_4)) {
+			Buff.affect(this, Barrier.class).setShield(2+3*pointsInTalent(Talent.SHIROKO_T1_4));
+		}
+		if (pointsInTalent(Talent.NOA_EX1_3) >= 3 && Dungeon.level.adjacent(mob.pos, pos)) {
+			if (belongings.weapon() instanceof Gun) ((Gun) belongings.weapon()).quickReload();
+			if (belongings.secondWep() instanceof Gun) ((Gun) belongings.secondWep()).quickReload();
+		}
+		if (hasTalent(Talent.MIYU_T2_4)) {
+			Buff.affect(this, GreaterHaste.class).set(1+2*pointsInTalent(Talent.MIYU_T2_4));
+		}
+		if (subClass == HeroSubClass.TELESCOPE) {
+			Buff.affect(this, Snipe.class);
+		}
+		if (hasTalent(Talent.MIYU_EX2_1) && buff(TrashBin.TrashBinCooldown.class) != null
+				&& Random.Float() < (float)pointsInTalent(Talent.MIYU_EX2_1)/3) {
+			buff(TrashBin.TrashBinCooldown.class).detach();
+		}
+	}
+
+	@Override
+	public float stealth() {
+		float stealth = super.stealth();
+
+		if (heroClass == HeroClass.MIYU) {
+			stealth += 2;
+		}
+
+		if (subClass == HeroSubClass.CAMOUFLAGE) {
+			stealth += this.lvl/3f;
+		}
+
+		return stealth;
 	}
 }

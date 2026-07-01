@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.NoticeTracker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RabbitSquadBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
@@ -71,6 +72,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.Bicycle;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.IronHorus;
+import com.shatteredpixel.shatteredpixeldungeon.items.active.TrashBin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
@@ -100,6 +102,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.MG.MG;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.MG.MG_SP;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SG.SG;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SMG.SMG;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -592,6 +595,48 @@ public enum Talent {
 	NOA_ARMOR3_2(24, 5, 4),
 	NOA_ARMOR3_3(25, 5, 4),
 
+	//Miyu T1
+	MIYU_T1_1(0, 6, 2),
+	MIYU_T1_2(1, 6, 2),
+	MIYU_T1_3(2, 6, 2),
+	MIYU_T1_4(3, 6, 2),
+
+	//Miyu T2
+	MIYU_T2_1(4, 6, 2),
+	MIYU_T2_2(5, 6, 2),
+	MIYU_T2_3(6, 6, 2),
+	MIYU_T2_4(7, 6, 2),
+	MIYU_T2_5(8, 6, 2),
+
+	//Miyu T3
+	MIYU_T3_1(9, 6, 3),
+	MIYU_T3_2(10, 6, 3),
+
+	//Telescope T3
+	MIYU_EX1_1(11, 6, 3),
+	MIYU_EX1_2(12, 6, 3),
+	MIYU_EX1_3(13, 6, 3),
+
+	//Camouflage T3
+	MIYU_EX2_1(14, 6, 3),
+	MIYU_EX2_2(15, 6, 3),
+	MIYU_EX2_3(16, 6, 3),
+
+	//Armor Ability 1 T4
+	MIYU_ARMOR1_1(17, 6, 4),
+	MIYU_ARMOR1_2(18, 6, 4),
+	MIYU_ARMOR1_3(19, 6, 4),
+
+	//Armor Ability 2 T4
+	MIYU_ARMOR2_1(20, 6, 4),
+	MIYU_ARMOR2_2(21, 6, 4),
+	MIYU_ARMOR2_3(22, 6, 4),
+
+	//Armor Ability 3 T4
+	MIYU_ARMOR3_1(23, 6, 4),
+	MIYU_ARMOR3_2(24, 6, 4),
+	MIYU_ARMOR3_3(25, 6, 4),
+
 	//universal T4
 	HEROIC_ENERGY(26, 0, 4), //See icon() and title() for special logic for this one
 	//Ratmogrify T4
@@ -872,9 +917,9 @@ public enum Talent {
 				case NOA:
 					y = 5;
 					break;
-//				case MIYU:
-//					y = 6;
-//					break;
+				case MIYU:
+					y = 6;
+					break;
 //				case YUZU:
 //					y = 7;
 //					break;
@@ -1073,6 +1118,19 @@ public enum Talent {
 			}
 		}
 
+		if (talent == MIYU_T1_2 && !ShardOfOblivion.passiveIDDisabled()) {
+			if (hero.pointsInTalent(MIYU_T1_2) == 1) {
+				if (hero.belongings.weapon() instanceof SR)  {
+					hero.belongings.weapon.identify();
+				}
+			}
+			if (hero.pointsInTalent(MIYU_T1_2) == 2) {
+				for (Item i : hero.belongings.getAllItems(SR.class)) {
+					i.identify();
+				}
+			}
+		}
+
 		if (talent == NONOMI_T3_1 && hero.pointsInTalent(NONOMI_T3_1) == 1) {
 			new MG_SP().identify().collect();
 		}
@@ -1091,11 +1149,16 @@ public enum Talent {
 		if (talent == MIYAKO_T2_5) {
 			hero.updateHT(true);
 		}
+
+		if (talent == MIYU_T3_2) {
+			Buff.affect(hero, NoticeTracker.class);
+			Item.updateQuickslot();
+		}
 	}
 
 	public static class CachedRationsDropped extends CounterBuff{{revivePersists = true;}};
 	public static class NatureBerriesDropped extends CounterBuff{{revivePersists = true;}};
-
+	public static class HardTackDropped extends CounterBuff{{revivePersists = true;}};
 	public static void onFoodEaten( Hero hero, float foodVal, Item foodSource ){
 		if (hero.hasTalent(HEARTY_MEAL)){
 			//4/6 HP healed, when hero is below 33% health (with a little rounding up)
@@ -1217,6 +1280,9 @@ public enum Talent {
 		if (hero.hasTalent(Talent.NOA_T2_1)) {
 			Buff.affect(hero, Healing.class).setHeal(2+3*hero.pointsInTalent(Talent.NOA_T2_1), 0, 1);
 		}
+		if (hero.hasTalent(Talent.MIYU_T2_1)) {
+			Buff.affect(hero, Invisibility.class, 2+3*hero.pointsInTalent(Talent.MIYU_T2_1));
+		}
 	}
 
 	public static class WarriorFoodImmunity extends FlavourBuff{
@@ -1309,6 +1375,42 @@ public enum Talent {
 				hero.sprite.centerEmitter().burst(EnergyParticle.FACTORY, 10);
 				Item.updateQuickslot();
 			}
+		}
+		if (hero.hasTalent(Talent.MIYU_T2_2)) {
+			ArrayList<Integer> grassCells = new ArrayList<>();
+			for (int i : PathFinder.NEIGHBOURS9){
+				grassCells.add(cell+i);
+			}
+			Random.shuffle(grassCells);
+			for (int grassCell : grassCells){
+				Char ch = Actor.findChar(grassCell);
+				if (ch != null && ch.alignment == Char.Alignment.ENEMY){
+					//1/2 turns of roots
+					Buff.affect(ch, Roots.class, factor * hero.pointsInTalent(MIYU_T2_2));
+				}
+				if (Dungeon.level.map[grassCell] == Terrain.EMPTY ||
+						Dungeon.level.map[grassCell] == Terrain.EMBERS ||
+						Dungeon.level.map[grassCell] == Terrain.EMPTY_DECO){
+					Level.set(grassCell, Terrain.GRASS);
+					GameScene.updateMap(grassCell);
+				}
+				CellEmitter.get(grassCell).burst(LeafParticle.LEVEL_SPECIFIC, 4);
+			}
+			// 4/6 cells total
+			int totalGrassCells = (int) (factor * (2 + 2 * hero.pointsInTalent(MIYU_T2_2)));
+			while (grassCells.size() > totalGrassCells){
+				grassCells.remove(0);
+			}
+			for (int grassCell : grassCells){
+				int t = Dungeon.level.map[grassCell];
+				if ((t == Terrain.EMPTY || t == Terrain.EMPTY_DECO || t == Terrain.EMBERS
+						|| t == Terrain.GRASS || t == Terrain.FURROWED_GRASS)
+						&& Dungeon.level.plants.get(grassCell) == null){
+					Level.set(grassCell, Terrain.HIGH_GRASS);
+					GameScene.updateMap(grassCell);
+				}
+			}
+			Dungeon.observe();
 		}
 	}
 
@@ -1432,6 +1534,9 @@ public enum Talent {
 		if (hero.hasTalent(NOA_T1_2) && (item instanceof HG)){
 			identify = true;
 		}
+		if (hero.hasTalent(MIYU_T1_2) && (item instanceof SR)){
+			identify = true;
+		}
 
 		if (identify) {
 			if (ShardOfOblivion.passiveIDDisabled()) {
@@ -1475,6 +1580,10 @@ public enum Talent {
 			identify = true;
 		}
 
+		if (hero.pointsInTalent(MIYU_T1_2) == 2 && (item instanceof SR)){
+			identify = true;
+		}
+
 		if (identify && !ShardOfOblivion.passiveIDDisabled()){
 			item.identify();
 		}
@@ -1504,6 +1613,14 @@ public enum Talent {
 				&& enemy.buff(SuckerPunchTracker.class) == null){
 			dmg += Random.IntRange(hero.pointsInTalent(Talent.SUCKER_PUNCH) , 2);
 			Buff.affect(enemy, SuckerPunchTracker.class);
+		}
+
+		if (hero.hasTalent(Talent.MIYU_T1_3)
+				&& enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)
+				&& enemy.buff(AmbushShotTracker.class) == null
+				&& hero.belongings.attackingWeapon() instanceof Gun.Bullet){
+			dmg += 1+hero.pointsInTalent(Talent.MIYU_T1_3);
+			Buff.affect(enemy, AmbushShotTracker.class);
 		}
 
 		if (hero.hasTalent(Talent.FOLLOWUP_STRIKE) && enemy.isAlive() && enemy.alignment == Char.Alignment.ENEMY) {
@@ -1630,6 +1747,27 @@ public enum Talent {
 		}
 
 		return damage;
+	}
+
+	public static void onTrampleGrass(Hero hero) {
+		if (hero.hasTalent(Talent.MIYU_T1_4)) {
+			Buff.affect(hero, Barrier.class).setShield(1+hero.pointsInTalent(Talent.MIYU_T1_4));
+		}
+
+		if (hero.hasTalent(Talent.MIYU_T2_3)) {
+			Buff.affect(hero, Invisibility.class, 1+hero.pointsInTalent(Talent.MIYU_T2_3));
+		}
+
+		if (hero.hasTalent(Talent.MIYU_EX2_3)) {
+			Buff.affect(hero, TrashBin.EvasionBuff.class, TrashBin.EvasionBuff.DURATION);
+		}
+	}
+
+	public static void onKill(Object cause, Mob mob) {
+		Hero hero = Dungeon.hero;
+		if (cause == hero) {
+			hero.onEnemyKill(mob);
+		}
 	}
 
 	public static class FirstAidCooldown extends FlavourBuff {
@@ -1764,6 +1902,8 @@ public enum Talent {
 		}
 	}
 
+	public static class AmbushShotTracker extends Buff {}
+
 	//new buff here
 
 	public static final int MAX_TALENT_TIERS = 4;
@@ -1802,6 +1942,9 @@ public enum Talent {
 				break;
 			case NOA:
 				Collections.addAll(tierTalents, NOA_T1_1, NOA_T1_2, NOA_T1_3, NOA_T1_4);
+				break;
+			case MIYU:
+				Collections.addAll(tierTalents, MIYU_T1_1, MIYU_T1_2, MIYU_T1_3, MIYU_T1_4);
 				break;
 			case WARRIOR:
 				Collections.addAll(tierTalents, HEARTY_MEAL, VETERANS_INTUITION, PROVOKED_ANGER, IRON_WILL);
@@ -1850,6 +1993,9 @@ public enum Talent {
 			case NOA:
 				Collections.addAll(tierTalents, NOA_T2_1, NOA_T2_2, NOA_T2_3, NOA_T2_4, NOA_T2_5);
 				break;
+			case MIYU:
+				Collections.addAll(tierTalents, MIYU_T2_1, MIYU_T2_2, MIYU_T2_3, MIYU_T2_4, MIYU_T2_5);
+				break;
 			case WARRIOR:
 				Collections.addAll(tierTalents, IRON_STOMACH, LIQUID_WILLPOWER, RUNIC_TRANSFERENCE, LETHAL_MOMENTUM, IMPROVISED_PROJECTILES);
 				break;
@@ -1896,6 +2042,9 @@ public enum Talent {
 				break;
 			case NOA:
 				Collections.addAll(tierTalents, NOA_T3_1, NOA_T3_2);
+				break;
+			case MIYU:
+				Collections.addAll(tierTalents, MIYU_T3_1, MIYU_T3_2);
 				break;
 			case WARRIOR:
 				Collections.addAll(tierTalents, HOLD_FAST, STRONGMAN);
@@ -1978,6 +2127,12 @@ public enum Talent {
 				break;
 			case CONVERSATION:
 				Collections.addAll(tierTalents, NOA_EX2_1, NOA_EX2_2, NOA_EX2_3);
+				break;
+			case TELESCOPE:
+				Collections.addAll(tierTalents, MIYU_EX1_1, MIYU_EX1_2, MIYU_EX1_3);
+				break;
+			case CAMOUFLAGE:
+				Collections.addAll(tierTalents, MIYU_EX2_1, MIYU_EX2_2, MIYU_EX2_3);
 				break;
 			case BERSERKER:
 				Collections.addAll(tierTalents, ENDLESS_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST);

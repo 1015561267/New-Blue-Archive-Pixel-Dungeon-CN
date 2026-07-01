@@ -13,13 +13,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RabbitSquadBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.NoticeTracker;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShootAllBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Snipe;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SwiftMovement;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.miyako.WireHook;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.miyu.AntiMaterialRifle;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.miyu.HPBullet;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.nonomi.Bipod;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -72,12 +77,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SMG.SMG_T
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SMG.SMG_T4;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SMG.SMG_T5;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_SP;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_T1;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_T2;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_T3;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_T4;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_T5;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -91,7 +98,10 @@ import com.watabou.utils.Random;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Gun extends MeleeWeapon {
@@ -381,6 +391,15 @@ public class Gun extends MeleeWeapon {
     @Override
     public boolean doEquip(Hero hero) {
         IronHorus.detachBuff(hero);
+        if (hero.buff(AntiMaterialRifle.GotRifleTracker.class) != null) {
+            Item sr = hero.belongings.getItem(SR_SP.class);
+            if (sr != null) {
+                int slot = Dungeon.quickslot.getSlot(sr);
+                Buff.affect(hero, AntiMaterialRifle.QuickSlotSet.class).set(this, slot);
+            } else {
+                hero.buff(AntiMaterialRifle.GotRifleTracker.class).detach();
+            }
+        }
         return super.doEquip(hero);
     }
 
@@ -499,6 +518,14 @@ public class Gun extends MeleeWeapon {
         float amount = reload_time;
 
         amount = this.magazineMod.reloadTimeFactor(amount);
+
+        if (hero != null && hero.pointsInTalent(Talent.MIYU_EX2_3) >= 2) {
+            int t = Dungeon.level.map[hero.pos];
+            if (t == Terrain.FURROWED_GRASS || t == Terrain.HIGH_GRASS) {
+                amount -= 2;
+            }
+            amount = Math.max(1, amount);
+        }
 
         if (hero != null && hero.hasTalent(Talent.NONOMI_EX1_1)) {
             amount += 1;
@@ -835,10 +862,11 @@ public class Gun extends MeleeWeapon {
     private static boolean evaluatingTwinUpgrades = false;
     @Override
     public int buffedLvl() {
-        if (!evaluatingTwinUpgrades && Dungeon.hero != null && isEquipped(Dungeon.hero) && Dungeon.hero.hasTalent(Talent.NOA_EX1_2)){
+        int level = super.buffedLvl();
+        if (!evaluatingTwinUpgrades && hero != null && isEquipped(hero) && hero.hasTalent(Talent.NOA_EX1_2)){
             KindOfWeapon other = null;
-            if (Dungeon.hero.belongings.weapon() != this) other = Dungeon.hero.belongings.weapon();
-            if (Dungeon.hero.belongings.secondWep() != this) other = Dungeon.hero.belongings.secondWep();
+            if (hero.belongings.weapon() != this) other = hero.belongings.weapon();
+            if (hero.belongings.secondWep() != this) other = hero.belongings.secondWep();
 
             if (other instanceof Gun) {
                 evaluatingTwinUpgrades = true;
@@ -846,19 +874,24 @@ public class Gun extends MeleeWeapon {
                 evaluatingTwinUpgrades = false;
 
                 //weaker weapon needs to be 2/1/0 tiers lower, based on talent level
-                if ((tier() + (3 - Dungeon.hero.pointsInTalent(Talent.NOA_EX1_2))) <= ((Gun) other).tier()
+                if ((tier() + (3 - hero.pointsInTalent(Talent.NOA_EX1_2))) <= ((Gun) other).tier()
                         && otherLevel > super.buffedLvl()) {
                     return otherLevel;
                 }
 
             }
         }
-        return super.buffedLvl();
+        if (hero != null && hero.buff(NoticeTracker.class) != null && !NoticeTracker.isNoticed() && this.isEquipped(hero)) {
+            level += hero.pointsInTalent(Talent.MIYU_T3_2);
+        }
+
+        return level;
     }
 
     public class Bullet extends MissileWeapon {
 
         private boolean specialShot = false;
+        private boolean snipeShot = false;
 
         {
             image = ItemSpriteSheet.SINGLE_BULLET;
@@ -891,6 +924,14 @@ public class Gun extends MeleeWeapon {
 
         public boolean isSpecialShot() {
             return this.specialShot;
+        }
+
+        public void setSnipeShot(boolean isSnipe) {
+            this.snipeShot = isSnipe;
+        }
+
+        public boolean isSnipeShot() {
+            return this.snipeShot;
         }
 
         @Override
@@ -980,6 +1021,38 @@ public class Gun extends MeleeWeapon {
         @Override
         public int damageRoll(Char owner) {
             int damage = bulletDamage();
+            if (owner instanceof Hero && ((Hero)owner).hasTalent(Talent.MIYU_T3_1)) {
+                Hero hero = (Hero)owner;
+                Char enemy = hero.attackTarget();
+                if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
+                    //deals 25/33/50% toward max to max on surprise, instead of min to max.
+                    int diff = max() - min();
+                    damage = augment.damageFactor(Hero.heroDamageIntRange(
+                            min() + Math.round(diff/(float)(5-((Hero)owner).pointsInTalent(Talent.MIYU_T3_1))),
+                            max()));
+                    int exStr = hero.STR() - STRReq();
+                    if (exStr > 0) {
+                        damage += Hero.heroDamageIntRange(0, exStr);
+                    }
+                }
+            }
+            if (isSnipeShot()) {
+                Char enemy = hero.attackTarget();
+                switch ((Dungeon.level.distance(owner.pos, enemy.pos)-1) / 3 + 1) {
+                    case 1:
+                        damage = Math.round(damage * 1.1f);
+                        break;
+                    case 2:
+                        damage = Math.round(damage * 1.2f);
+                        break;
+                    case 3:
+                        damage = Math.round(damage * 1.35f);
+                        break;
+                    case 4: default:
+                        damage = Math.round(damage * 1.5f);
+                        break;
+                }
+            }
             return damage;
         }
 
@@ -1008,6 +1081,8 @@ public class Gun extends MeleeWeapon {
 
         @Override
         public float accuracyFactor(Char owner, Char target) {
+            if (isSnipeShot()) return Char.INFINITE_ACCURACY;
+
             float ACC = super.accuracyFactor(owner, target);
             ACC *= shootingAccuracy * accMulti;
             if (Gun.this.attachMod == AttachMod.LASER_ATTACH) {
@@ -1070,6 +1145,10 @@ public class Gun extends MeleeWeapon {
 
             boolean willAggroEnemy = true; //어그로를 끌지 않는 경우에 false
 
+            if (hero.hasTalent(Talent.MIYU_T2_5) && Random.Float() < 0.5f*hero.pointsInTalent(Talent.MIYU_T2_5)) {
+                willAggroEnemy = false;
+            }
+
             if (willAggroEnemy) {
                 aggro();
             }
@@ -1096,9 +1175,18 @@ public class Gun extends MeleeWeapon {
                     CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 2);
                     CellEmitter.center(cell).burst(BlastParticle.FACTORY, 2);
                 } else {
-                    if (!curUser.shoot( enemy, this )) {
-                        CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 2);
-                        CellEmitter.center(cell).burst(BlastParticle.FACTORY, 2);
+                    if (curUser.buff(HPBullet.HPBulletBuff.class) != null) {
+                        if (!curUser.buff(HPBullet.HPBulletBuff.class).proc(enemy, damageRoll(curUser))) {
+                            if (!curUser.shoot( enemy, this )) {
+                                CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 2);
+                                CellEmitter.center(cell).burst(BlastParticle.FACTORY, 2);
+                            }
+                        }
+                    } else {
+                        if (!curUser.shoot( enemy, this )) {
+                            CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 2);
+                            CellEmitter.center(cell).burst(BlastParticle.FACTORY, 2);
+                        }
                     }
                 }
             }
@@ -1134,7 +1222,11 @@ public class Gun extends MeleeWeapon {
 
             for (Char target : targets){
                 for (int i = 0; i < shotPerShoot(); i++) {
-                    curUser.shoot(target, this);
+                    if (curUser.buff(HPBullet.HPBulletBuff.class) != null) {
+                        if (!curUser.buff(HPBullet.HPBulletBuff.class).proc(target, damageRoll(curUser))) curUser.shoot(target, this);
+                    } else {
+                        curUser.shoot(target, this);
+                    }
                 }
                 if (!target.isAlive()) {
                     killedEnemy = true;
@@ -1188,7 +1280,13 @@ public class Gun extends MeleeWeapon {
                 if (target == curUser.pos) {
                     execute(hero, AC_RELOAD);
                 } else {
-                    knockBullet().cast(curUser, target);
+                    if (curUser.buff(Snipe.ScopedArea.class) != null && curUser.buff(Snipe.ScopedArea.class).posInArea(target) && Actor.findChar(target) != null) {
+                        if (curUser.buff(Snipe.ScopedArea.class).posInArea(target)) {
+                            curUser.buff(Snipe.ScopedArea.class).snipe(target, Actor.findChar(target), knockBullet());
+                        }
+                    } else {
+                        knockBullet().cast(curUser, target);
+                    }
                 }
             }
         }

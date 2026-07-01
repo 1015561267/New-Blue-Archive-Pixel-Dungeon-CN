@@ -711,6 +711,7 @@ public class ItemSpriteSheet {
 	public static final int BERRY           = FOOD+10;
 	public static final int PHANTOM_MEAT    = FOOD+11;
 	public static final int SUPPLY_RATION   = FOOD+12;
+	public static final int HARD_BISCUIT   	= FOOD+13;
 	static{
 		assignItemRect(MEAT,            15, 11);
 		assignItemRect(STEAK,           15, 11);
@@ -725,6 +726,7 @@ public class ItemSpriteSheet {
 		assignItemRect(BERRY,           9,  11);
 		assignItemRect(PHANTOM_MEAT,    15, 11);
 		assignItemRect(SUPPLY_RATION,   16, 12);
+		assignItemRect(HARD_BISCUIT,    14, 12);
 	}
 
 	private static final int HOLIDAY_FOOD   =                               xy(1, 29);  //16 slots
@@ -816,6 +818,8 @@ public class ItemSpriteSheet {
 	public static final int IRON_HORUS 		= UNIQUE_ITEM+3;
 	public static final int BICYCLE 		= UNIQUE_ITEM+4;
 	public static final int CONVERSION_KIT	= UNIQUE_ITEM+5;
+	public static final int TRASH_BIN		= UNIQUE_ITEM+6;
+	public static final int FLASHBANG_GRENADE	= UNIQUE_ITEM+7;
 	static {
 		assignItemRect(SUPER_NOVA, 	16, 16);
 		assignItemRect(CLAYMORE, 	13, 13);
@@ -823,6 +827,8 @@ public class ItemSpriteSheet {
 		assignItemRect(IRON_HORUS, 	14, 14);
 		assignItemRect(BICYCLE, 	16, 16);
 		assignItemRect(CONVERSION_KIT, 	12, 13);
+		assignItemRect(TRASH_BIN, 	16, 16);
+		assignItemRect(FLASHBANG_GRENADE, 	13, 13);
 	}
 
 	private static final int NEW_ARMOR 	= 								xy(1, 34);
@@ -983,12 +989,14 @@ public class ItemSpriteSheet {
 	public static final int SR_TIER_3	= SR+2;
 	public static final int SR_TIER_4	= SR+3;
 	public static final int SR_TIER_5	= SR+4;
+	public static final int SR_SPECIAL	= SR+5;
 	static{
 		assignItemRect(SR_TIER_1,	13, 16);
 		assignItemRect(SR_TIER_2,	13, 16);
 		assignItemRect(SR_TIER_3,	15, 16);
 		assignItemRect(SR_TIER_4,	15, 16);
 		assignItemRect(SR_TIER_5, 	15, 16);
+		assignItemRect(SR_SPECIAL, 	15, 16);
 	}
 
 	//for smaller 8x8 icons that often accompany an item sprite

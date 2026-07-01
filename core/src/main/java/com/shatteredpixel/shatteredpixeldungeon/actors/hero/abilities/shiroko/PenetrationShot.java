@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.shiroko;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -23,6 +24,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
@@ -75,6 +77,7 @@ public class PenetrationShot extends ArmorAbility {
         Ballistica aim = new Ballistica(hero.pos, target, Ballistica.STOP_TARGET); //현재 위치에서 지정한 위치에 벽을 무시하고 도달하는 직선 경로
         int finalPos = finalPos(aim, 2*hero.pointsInTalent(Talent.SHIROKO_ARMOR1_1)); //벽 관통을 계산한 탄환의 최종 도달 위치
 
+        Sample.INSTANCE.play( Assets.Sounds.HIT_CRUSH, 1, Random.Float(0.33f, 0.66f) );
         knockBullet(gun, true).cast(hero, finalPos);
 
         ArrayList<Integer> chCells = getCharPositions(aim, finalPos);
@@ -99,14 +102,15 @@ public class PenetrationShot extends ArmorAbility {
         ArrayList<Integer> chCells = new ArrayList<>(); //캐릭터가 있는 위치 저장 배열
         for (int cell : trail.path) { //발사한 탄환이 이동한 경로의 각 셀에 대해 계산
             //만약 캐릭터가 있다면 배열에 그 위치를 추가하지만, 최종 위치는 제외. 최종 위치는 투명 탄환이 아닌 처음에 발사한 탄환이 명중하기 때문
-            if (Actor.findChar(cell) != null && !(Actor.findChar(cell) instanceof Hero) && (cell != trail.collisionPos)) {
+            Char ch = Actor.findChar(cell);
+            if (ch != null && !(ch instanceof Hero) && (cell != trail.collisionPos)) {
                 chCells.add(cell);
             }
         }
         return chCells;
     }
 
-    private int finalPos(Ballistica path, int wallPenetration) { //벽 관통을 계산하고 최종 도달 위치를 반환
+    public static int finalPos(Ballistica path, int wallPenetration) { //벽 관통을 계산하고 최종 도달 위치를 반환
         int prevPos = path.sourcePos;
 
         for (int cell : path.path) {
@@ -165,7 +169,7 @@ public class PenetrationShot extends ArmorAbility {
         @Override
         protected void onThrow(int cell) {
             Char ch = Actor.findChar(cell);
-            if (ch != null) {
+            if (ch != null && !(ch instanceof Hero)) {
                 int atkNum = (1+curUser.pointsInTalent(Talent.SHIROKO_ARMOR1_3)); //총 공격 횟수
                 float dmgMulti = (0.9f+0.1f*atkNum)/atkNum; //공격력 배율. 총 피해 증가량: 1타: +0%, 2타: +10%, 3타: +20%, 4타: +30%, 5타: +40%
                 for (int attacks = 0; attacks < gun.shotPerShoot() * (1+curUser.pointsInTalent(Talent.SHIROKO_ARMOR1_3)); attacks++) {
