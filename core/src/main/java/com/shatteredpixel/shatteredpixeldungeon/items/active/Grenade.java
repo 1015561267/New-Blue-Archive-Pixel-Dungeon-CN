@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.active;
 
+
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -9,6 +10,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RabbitSquadBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -86,7 +88,7 @@ public class Grenade extends Item {
 
     @Override
     public int level() {
-        int level = Dungeon.hero == null ? 0 : Dungeon.hero.lvl/5;
+        int level = hero == null ? 0 : hero.lvl/5;
         return level;
     }
 
@@ -108,7 +110,7 @@ public class Grenade extends Item {
 
         max += this.buffedLvl();
 
-        if (Dungeon.hero.hasTalent(Talent.MIYAKO_T2_2)) max++;
+        if (hero.hasTalent(Talent.MIYAKO_T2_2)) max++;
 
         return max;
     }
@@ -131,7 +133,7 @@ public class Grenade extends Item {
         Item.updateQuickslot();
         if (oldAmt != amount) {
             if (!special) {
-                Dungeon.hero.sprite.showStatus(CharSprite.BLUE, TXT_ADD, amount-oldAmt, this.name());
+                hero.sprite.showStatus(CharSprite.BLUE, TXT_ADD, amount-oldAmt, this.name());
             }
         }
     }
@@ -174,7 +176,9 @@ public class Grenade extends Item {
         }
 
         //needs to be overridden
-        protected void activate(int cell) {}
+        protected void activate(int cell) {
+            Invisibility.dispel();
+        }
 
         @Override
         public int throwPos(Hero user, int dst) {
@@ -260,7 +264,7 @@ public class Grenade extends Item {
                 effectsOnChar(ch);
             }
 
-            if (ch == Dungeon.hero && !ch.isAlive()) {
+            if (ch == hero && !ch.isAlive()) {
                 GLog.n(Messages.get(this, "ondeath"));
                 Dungeon.fail(this);
             }

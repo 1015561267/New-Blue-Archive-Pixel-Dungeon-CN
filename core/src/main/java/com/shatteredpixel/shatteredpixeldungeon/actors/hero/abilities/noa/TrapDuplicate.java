@@ -112,14 +112,8 @@ public class TrapDuplicate extends ArmorAbility {
             }
 
         } else {
-
             if (target == hero.pos) {
-                //hero.buff(ReclaimedTrap.class).detach();
-
-                //TODO cocoa has had detach it before so here return null,just need to repeat if talent conserve it
-                Buff temp = hero.buff(ReclaimedTrap.class);
-                if(temp!=null) temp.detach();
-
+                GLog.i(Messages.get(this, "trap_removed"));
                 hero.sprite.operate(hero.pos);
                 Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
                 CellEmitter.get(hero.pos).burst(LightSmokeParticle.FACTORY, 3);
