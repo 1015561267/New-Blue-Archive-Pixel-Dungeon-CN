@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
@@ -39,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.NoticeTracker;
@@ -53,6 +55,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SuperNovaCharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SupportDrone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.YuzuStatus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.aris.Division;
@@ -75,9 +78,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.active.IronHorus;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.TrashBin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.EmptyScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
@@ -96,6 +101,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SuperNova;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.AR.AR;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.GL.GL;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.HG.HG;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.MG.MG;
@@ -637,6 +643,48 @@ public enum Talent {
 	MIYU_ARMOR3_2(24, 6, 4),
 	MIYU_ARMOR3_3(25, 6, 4),
 
+	//Yuzu T1
+	YUZU_T1_1(0, 7, 2),
+	YUZU_T1_2(1, 7, 2),
+	YUZU_T1_3(2, 7, 2),
+	YUZU_T1_4(3, 7, 2),
+
+	//Yuzu T2
+	YUZU_T2_1(4, 7, 2),
+	YUZU_T2_2(5, 7, 2),
+	YUZU_T2_3(6, 7, 2),
+	YUZU_T2_4(7, 7, 2),
+	YUZU_T2_5(8, 7, 2),
+
+	//Yuzu T3
+	YUZU_T3_1(9, 7, 3),
+	YUZU_T3_2(10, 7, 3),
+
+	//Neo Avant-Garde T3
+	YUZU_EX1_1(11, 7, 3),
+	YUZU_EX1_2(12, 7, 3),
+	YUZU_EX1_3(13, 7, 3),
+
+	//Wallet Warrior T3
+	YUZU_EX2_1(14, 7, 3),
+	YUZU_EX2_2(15, 7, 3),
+	YUZU_EX2_3(16, 7, 3),
+
+	//Armor Ability 1 T4
+	YUZU_ARMOR1_1(17, 7, 4),
+	YUZU_ARMOR1_2(18, 7, 4),
+	YUZU_ARMOR1_3(19, 7, 4),
+
+	//Armor Ability 2 T4
+	YUZU_ARMOR2_1(20, 7, 4),
+	YUZU_ARMOR2_2(21, 7, 4),
+	YUZU_ARMOR2_3(22, 7, 4),
+
+	//Armor Ability 3 T4
+	YUZU_ARMOR3_1(23, 7, 4),
+	YUZU_ARMOR3_2(24, 7, 4),
+	YUZU_ARMOR3_3(25, 7, 4),
+
 	//universal T4
 	HEROIC_ENERGY(26, 0, 4), //See icon() and title() for special logic for this one
 	//Ratmogrify T4
@@ -920,9 +968,9 @@ public enum Talent {
 				case MIYU:
 					y = 6;
 					break;
-//				case YUZU:
-//					y = 7;
-//					break;
+				case YUZU:
+					y = 7;
+					break;
 //				case IZUNA:
 //					y = 8;
 //					break;
@@ -1131,6 +1179,19 @@ public enum Talent {
 			}
 		}
 
+		if (talent == YUZU_T1_2 && !ShardOfOblivion.passiveIDDisabled()) {
+			if (hero.pointsInTalent(YUZU_T1_2) == 1) {
+				if (hero.belongings.weapon() instanceof GL)  {
+					hero.belongings.weapon.identify();
+				}
+			}
+			if (hero.pointsInTalent(YUZU_T1_2) == 2) {
+				for (Item i : hero.belongings.getAllItems(GL.class)) {
+					i.identify();
+				}
+			}
+		}
+
 		if (talent == NONOMI_T3_1 && hero.pointsInTalent(NONOMI_T3_1) == 1) {
 			new MG_SP().identify().collect();
 		}
@@ -1282,6 +1343,12 @@ public enum Talent {
 		}
 		if (hero.hasTalent(Talent.MIYU_T2_1)) {
 			Buff.affect(hero, Invisibility.class, 2+3*hero.pointsInTalent(Talent.MIYU_T2_1));
+		}
+		if (hero.hasTalent(Talent.YUZU_T1_1)) {
+			Buff.affect(hero, YuzuStatus.CertainCritBuff.class).countUp(1+hero.pointsInTalent(Talent.YUZU_T1_1));
+		}
+		if (hero.hasTalent(Talent.YUZU_T2_1)) {
+			PotionOfCleansing.cleanseDebuff(hero, hero.pointsInTalent(Talent.YUZU_T2_1) == 2 ? 2 : 0);
 		}
 	}
 
@@ -1449,6 +1516,10 @@ public enum Talent {
 		if (hero.subClass == HeroSubClass.CONVERSATION && hero.hasTalent(Talent.NOA_EX2_1)) {
 			Buff.affect(hero, Conversation.class).charge(2*factor);
 		}
+		if (hero.hasTalent(Talent.YUZU_T2_2)) {
+			int distance = 4+4*hero.pointsInTalent(Talent.YUZU_T2_2);
+			StoneOfClairvoyance.mapping(pos, (int)Math.ceil(distance*factor));
+		}
 	}
 
 	public static void onRunestoneUsed( Hero hero, int pos, Class<?extends Item> cls ){
@@ -1537,6 +1608,9 @@ public enum Talent {
 		if (hero.hasTalent(MIYU_T1_2) && (item instanceof SR)){
 			identify = true;
 		}
+		if (hero.hasTalent(YUZU_T1_2) && (item instanceof GL)){
+			identify = true;
+		}
 
 		if (identify) {
 			if (ShardOfOblivion.passiveIDDisabled()) {
@@ -1581,6 +1655,10 @@ public enum Talent {
 		}
 
 		if (hero.pointsInTalent(MIYU_T1_2) == 2 && (item instanceof SR)){
+			identify = true;
+		}
+
+		if (hero.pointsInTalent(YUZU_T1_2) == 2 && (item instanceof GL)){
 			identify = true;
 		}
 
@@ -1744,6 +1822,10 @@ public enum Talent {
 
 		if (hero.buff(SpikeShield.SpikeShieldBuff.class) != null && (hero.buff(IronHorus.TacticalShieldBuff.class) != null || hero.buff(IronHorus.LightTacticalShieldBuff.class) != null)) {
 			hero.buff(SpikeShield.SpikeShieldBuff.class).onHit(hero, enemy);
+		}
+
+		if (hero.hasTalent(Talent.YUZU_T2_3)) {
+			Viscosity.applyViscosity(hero, 1+2*hero.pointsInTalent(Talent.YUZU_T2_3));
 		}
 
 		return damage;
@@ -1946,6 +2028,9 @@ public enum Talent {
 			case MIYU:
 				Collections.addAll(tierTalents, MIYU_T1_1, MIYU_T1_2, MIYU_T1_3, MIYU_T1_4);
 				break;
+			case YUZU:
+				Collections.addAll(tierTalents, YUZU_T1_1, YUZU_T1_2, YUZU_T1_3, YUZU_T1_4);
+				break;
 			case WARRIOR:
 				Collections.addAll(tierTalents, HEARTY_MEAL, VETERANS_INTUITION, PROVOKED_ANGER, IRON_WILL);
 				break;
@@ -1996,6 +2081,9 @@ public enum Talent {
 			case MIYU:
 				Collections.addAll(tierTalents, MIYU_T2_1, MIYU_T2_2, MIYU_T2_3, MIYU_T2_4, MIYU_T2_5);
 				break;
+			case YUZU:
+				Collections.addAll(tierTalents, YUZU_T2_1, YUZU_T2_2, YUZU_T2_3, YUZU_T2_4, YUZU_T2_5);
+				break;
 			case WARRIOR:
 				Collections.addAll(tierTalents, IRON_STOMACH, LIQUID_WILLPOWER, RUNIC_TRANSFERENCE, LETHAL_MOMENTUM, IMPROVISED_PROJECTILES);
 				break;
@@ -2045,6 +2133,9 @@ public enum Talent {
 				break;
 			case MIYU:
 				Collections.addAll(tierTalents, MIYU_T3_1, MIYU_T3_2);
+				break;
+			case YUZU:
+				Collections.addAll(tierTalents, YUZU_T3_1, YUZU_T3_2);
 				break;
 			case WARRIOR:
 				Collections.addAll(tierTalents, HOLD_FAST, STRONGMAN);
@@ -2133,6 +2224,12 @@ public enum Talent {
 				break;
 			case CAMOUFLAGE:
 				Collections.addAll(tierTalents, MIYU_EX2_1, MIYU_EX2_2, MIYU_EX2_3);
+				break;
+			case NEO_AVANT_GARDE:
+				Collections.addAll(tierTalents, YUZU_EX1_1, YUZU_EX1_2, YUZU_EX1_3);
+				break;
+			case WALLET_WARRIOR:
+				Collections.addAll(tierTalents, YUZU_EX2_1, YUZU_EX2_2, YUZU_EX2_3);
 				break;
 			case BERSERKER:
 				Collections.addAll(tierTalents, ENDLESS_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST);
