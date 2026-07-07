@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.YuzuConsoleContent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.shops.YuzuShopContent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell;
 import com.watabou.noosa.Image;
@@ -129,7 +130,7 @@ public class HeroIcon extends Image {
 	public static final int CONVERSATION	= 128+11;
 	public static final int TELESCOPE	 	= 128+12;
 	public static final int CAMOUFLAGE	 	= 128+13;
-	public static final int NEO_AVANT_GARDE = 128+14;
+	public static final int AVANT_GARDE_KUN = 128+14;
 	public static final int WALLET_WARRIOR	= 128+15;
 
 	//new armor abilities
@@ -170,6 +171,7 @@ public class HeroIcon extends Image {
   	public static final int DOUBLE_BARREL_ACTION		= 128+72;
   	public static final int CONVERSATION_ACTION			= 128+73;
   	public static final int TELESCOPE_ACTION			= 128+74;
+  	public static final int AVANT_GARDE_KUN_ACTION		= 128+75;
 
 	//Yuzu abilities
 	public static final int SHOP_1			= 128 + 88;
@@ -182,6 +184,18 @@ public class HeroIcon extends Image {
 	public static final int SHOP_8			= 128 + 95;
 	public static final int SHOP_9			= 128 + 96;
 	public static final int SHOP_10			= 128 + 97;
+	public static final int SHOP_11			= 128 + 98;
+	public static final int SHOP_12			= 128 + 99;
+	public static final int SHOP_13			= 128 + 100;
+	public static final int SHOP_14			= 128 + 101;
+	public static final int SHOP_15			= 128 + 102;
+
+	public static final int FIGHTER_1		= 128 + 112;
+	public static final int FIGHTER_2		= 128 + 113;
+	public static final int FIGHTER_3		= 128 + 114;
+	public static final int FIGHTER_4		= 128 + 115;
+
+
 
 	public HeroIcon(HeroSubClass subCls){
 		super( Assets.Interfaces.HERO_ICONS );
@@ -216,6 +230,14 @@ public class HeroIcon extends Image {
 	}
 
 	public HeroIcon(YuzuShopContent content){
+		super( Assets.Interfaces.HERO_ICONS );
+		if (film == null){
+			film = new TextureFilm(texture, SIZE, SIZE);
+		}
+		frame(film.get(content.icon()));
+	}
+
+	public HeroIcon(YuzuConsoleContent content){
 		super( Assets.Interfaces.HERO_ICONS );
 		if (film == null){
 			film = new TextureFilm(texture, SIZE, SIZE);

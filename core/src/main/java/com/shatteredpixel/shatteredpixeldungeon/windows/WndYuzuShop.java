@@ -68,7 +68,7 @@ public class WndYuzuShop extends Window {
 
 		int top = (int)msg.bottom()+4;
 
-		for (int i = 1; i <= 2; i++) {
+		for (int i = 1; i <= 3; i++) {
 
 			ArrayList<YuzuShopContent> contents = YuzuShopContent.getContentList(yuzu, i);
 
@@ -208,8 +208,8 @@ public class WndYuzuShop extends Window {
 
 		public void executeContent() {
 			hide();
-			content.onContentSelect(laptop, Dungeon.hero, info);
 			content.onSelect(Dungeon.hero);
+			content.onContentSelect(laptop, Dungeon.hero, info);
 			Item.updateQuickslot();
 		}
 	}

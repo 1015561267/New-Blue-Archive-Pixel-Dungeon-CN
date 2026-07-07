@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AvantGardeKunBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
@@ -659,6 +660,11 @@ public class Hero extends Char {
 			return INFINITE_EVASION;
 		}
 
+		if (buff(YuzuStatus.UZQMode.class) != null) {
+			buff(YuzuStatus.UZQMode.class).detach();
+			return INFINITE_EVASION;
+		}
+
 		float evasion = defenseSkill;
 		
 		evasion *= RingOfEvasion.evasionMultiplier( this );
@@ -768,6 +774,10 @@ public class Hero extends Char {
 
 		if (IronHorus.hasBuff(this)) {
 			dr += IronHorus.drRoll(this);
+		}
+
+		if (buff(AvantGardeKunBuff.OnBoard.class) != null) {
+			dr += buff(AvantGardeKunBuff.OnBoard.class).drRoll();
 		}
 
 		return dr;
@@ -2266,6 +2276,8 @@ public class Hero extends Char {
 				Dungeon.hero.yellP("levelup_" + (1 + Random.Int(5)));
 			}
 
+			AvantGardeKunBuff.onLevelUp(this);
+
 			Item.updateQuickslot();
 			
 			Badges.validateLevelReached();
@@ -2934,6 +2946,9 @@ public class Hero extends Char {
 		if (hasTalent(Talent.MIYU_EX2_1) && buff(TrashBin.TrashBinCooldown.class) != null
 				&& Random.Float() < (float)pointsInTalent(Talent.MIYU_EX2_1)/3) {
 			buff(TrashBin.TrashBinCooldown.class).detach();
+		}
+		if (hasTalent(Talent.YUZU_EX1_1)) {
+			AvantGardeKunBuff.repairRobot(this, pointsInTalent(Talent.YUZU_EX1_1));
 		}
 	}
 
