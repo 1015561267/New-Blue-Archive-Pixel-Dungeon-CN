@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
@@ -271,6 +272,12 @@ public class ScrollOfTransmutation extends InventoryScroll {
 			((MissileWeapon) n).damage(100 - ((MissileWeapon)w).durabilityLeft());
 		}
 
+		//FIXME cocoa forget that gun can be changed,and kit can be lost during this,this is a patch for that case
+		if(w instanceof Gun && n instanceof Gun){
+			if(((Gun) w).kit !=null ){
+				((Gun)n).kit = ((Gun) w).kit;
+			}
+		}
 		return n;
 		
 	}

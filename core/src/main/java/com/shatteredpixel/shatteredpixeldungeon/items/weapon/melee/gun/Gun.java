@@ -117,7 +117,7 @@ public class Gun extends MeleeWeapon {
     protected boolean spread = false; //산탄 여부. 멀리 떨어지면 탄환 위력이 감소한다.
     public static final String TXT_STATUS = "%d/%d";
 
-    ConversionKit kit;
+    public ConversionKit kit;
 
     public boolean isEmpowered = false;
 
