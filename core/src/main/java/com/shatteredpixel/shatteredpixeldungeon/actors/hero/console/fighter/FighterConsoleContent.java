@@ -2,11 +2,10 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.YuzuConsoleContent;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.console.Console;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndYuzuFighterConsole;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
@@ -14,7 +13,7 @@ import com.watabou.utils.Bundle;
 public abstract class FighterConsoleContent extends YuzuConsoleContent {
 
     @Override
-    public boolean execute(Hero hero) {
+    public boolean execute(Hero hero, int target) {
         if (!hero.ready) return false;
         if (hero.buff(FighterConsoleBuff.class) == null) return false;
         return true;
@@ -42,16 +41,6 @@ public abstract class FighterConsoleContent extends YuzuConsoleContent {
         @Override
         public void tintIcon(Image icon) {
             icon.hardlight(1f, 0, 0);
-        }
-
-        @Override
-        public float iconFadePercent() {
-            return Math.max(0, (10-count())/10f);
-        }
-
-        @Override
-        public String iconTextDisplay() {
-            return Integer.toString((int)count());
         }
 
         @Override
@@ -101,7 +90,7 @@ public abstract class FighterConsoleContent extends YuzuConsoleContent {
     }
 
     public static int damageRoll( Hero hero ){
-        int level = 1;
+        int level = 1+2*(hero.pointsInTalent(Talent.YUZU_EX2_1)-1);
         float tier = tier(hero.STR());
         int dmg = Hero.heroDamageIntRange(min(level, tier), max(level, tier));
         return dmg;

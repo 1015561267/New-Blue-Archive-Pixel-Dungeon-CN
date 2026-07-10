@@ -131,7 +131,7 @@ public class HeroIcon extends Image {
 	public static final int TELESCOPE	 	= 128+12;
 	public static final int CAMOUFLAGE	 	= 128+13;
 	public static final int AVANT_GARDE_KUN = 128+14;
-	public static final int WALLET_WARRIOR	= 128+15;
+	public static final int GAME_START		= 128+15;
 
 	//new armor abilities
 	public static final int ARIS_1			= 128+24;
@@ -184,10 +184,10 @@ public class HeroIcon extends Image {
 	public static final int SHOP_8			= 128 + 95;
 	public static final int SHOP_9			= 128 + 96;
 	public static final int SHOP_10			= 128 + 97;
-	public static final int SHOP_11			= 128 + 98;
-	public static final int SHOP_12			= 128 + 99;
-	public static final int SHOP_13			= 128 + 100;
-	public static final int SHOP_14			= 128 + 101;
+	public static final int CONTINUE_CONSOLE= 128 + 98;
+	public static final int FIGHTER_CONSOLE	= 128 + 99;
+	public static final int FANTASY_CONSOLE = 128 + 100;
+	public static final int SANDBOX_CONSOLE	= 128 + 101;
 	public static final int SHOP_15			= 128 + 102;
 
 	public static final int FIGHTER_WEAK_ATK= 128 + 112;
@@ -198,6 +198,17 @@ public class HeroIcon extends Image {
 	public static final int FIGHTER_DOWN	= 128 + 117;
 	public static final int FIGHTER_RIGHT	= 128 + 118;
 
+	public static final int FANTASY_FIREBALL= 128 + 119;
+	public static final int FANTASY_HYDROPUMP= 128 + 120;
+	public static final int FANTASY_LIGHTNING= 128 + 121;
+	public static final int FANTASY_ICE_LANCE= 128 + 122;
+	public static final int FANTASY_BLACKHOLE= 128 + 123;
+
+	public static final int SANDBOX_FARMING	= 128 + 124;
+	public static final int SANDBOX_BARRICADE	= 128 + 125;
+	public static final int SANDBOX_BRIDGE	= 128 + 126;
+	public static final int SANDBOX_DIG		= 128 + 127;
+	public static final int SANDBOX_WELL	= 128 + 128;
 
 
 	public HeroIcon(HeroSubClass subCls){

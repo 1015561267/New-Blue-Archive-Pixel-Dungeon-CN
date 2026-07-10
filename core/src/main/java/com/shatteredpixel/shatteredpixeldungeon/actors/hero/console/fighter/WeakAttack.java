@@ -14,8 +14,8 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class FighterConsoleWeakAttack extends FighterConsoleContent {
-    public static final FighterConsoleWeakAttack INSTANCE = new FighterConsoleWeakAttack();
+public class WeakAttack extends FighterConsoleContent {
+    public static final WeakAttack INSTANCE = new WeakAttack();
 
     @Override
     public int icon() {
@@ -23,8 +23,8 @@ public class FighterConsoleWeakAttack extends FighterConsoleContent {
     }
 
     @Override
-    public boolean execute(Hero hero) {
-        if (!super.execute(hero)) return false;
+    public boolean execute(Hero hero, int target) {
+        if (!super.execute(hero, target)) return false;
 
         ArrayList<Mob> adjacentMobs = new ArrayList<>();
         for (Char ch : Actor.chars()) {

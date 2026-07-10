@@ -4,8 +4,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 
-public class FighterConsoleCharge extends FighterConsoleContent {
-    public static final FighterConsoleCharge INSTANCE = new FighterConsoleCharge();
+public class Charge extends FighterConsoleContent {
+    public static final Charge INSTANCE = new Charge();
 
     @Override
     public int icon() {
@@ -13,8 +13,8 @@ public class FighterConsoleCharge extends FighterConsoleContent {
     }
 
     @Override
-    public boolean execute(Hero hero) {
-        if (!super.execute(hero)) return false;
+    public boolean execute(Hero hero, int target) {
+        if (!super.execute(hero, target)) return false;
 
         if (isEnhanced(hero)) Buff.affect(hero, FighterConsoleBuff.class).countUp(1);
         Buff.affect(hero, FighterConsoleBuff.class).enhance();

@@ -4,27 +4,27 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.YuzuConsoleContent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fantasy.FantasyConsoleContent;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter.FighterConsoleContent;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndYuzuFighterConsole;
 
-public class FighterConsole extends Console {
+public class FantasyConsole extends Console {
     {
-        image = ItemSpriteSheet.FIGHTER_CONSOLE;
+        image = ItemSpriteSheet.FANTASY_CONSOLE;
     }
 
     @Override
     public void showWindow(Hero hero) {
         for (Buff b: hero.buffs()) {
-            if (b instanceof YuzuConsoleContent.ConsoleBuff && !(b instanceof FighterConsoleContent.FighterConsoleBuff)) {
+            if (b instanceof YuzuConsoleContent.ConsoleBuff && !(b instanceof FantasyConsoleContent.FantasyConsoleBuff)) {
                 b.detach();
             }
         }
-        Buff.affect(hero, FighterConsoleContent.FighterConsoleBuff.class).set();
+        if (hero.buff(FantasyConsoleContent.FantasyConsoleBuff.class) != null) {
+            hero.buff(FantasyConsoleContent.FantasyConsoleBuff.class).enhance();
+        }
+        Buff.affect(hero, FantasyConsoleContent.FantasyConsoleBuff.class).set();
         BuffIndicator.refreshHero();
-        GameScene.show(new WndYuzuFighterConsole(this, hero));
+        super.showWindow(hero);
         detach(hero.belongings.backpack);
     }
 
@@ -32,4 +32,5 @@ public class FighterConsole extends Console {
     public int value() {
         return 300/5;
     }
+
 }

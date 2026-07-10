@@ -138,7 +138,7 @@ public class AvantGardeKunBuff extends Buff implements ActionIndicator.Action {
             if (target == hero.pos) {
                 AvantGardeKunBuff.this.HP = buff.offBoard();
             } else if (Dungeon.level.adjacent(hero.pos, target)) {
-                if (Actor.findById(target) != null) {
+                if (Actor.findChar(target) != null) {
                     //근접 공격
                     meleeAttack(hero, target);
                 } else if (hero.hasTalent(Talent.YUZU_EX1_3)
@@ -176,8 +176,6 @@ public class AvantGardeKunBuff extends Buff implements ActionIndicator.Action {
         }
 
         hero.busy();
-        hero.spend(1f);
-
         if (hero.hasTalent(Talent.YUZU_EX1_2)) {
             Buff.affect(hero, GunUpgradeBuff.class);
             Item.updateQuickslot();
@@ -197,6 +195,9 @@ public class AvantGardeKunBuff extends Buff implements ActionIndicator.Action {
 
                 @Override
                 protected void onComplete() {
+                    if (finalShot == MAX_SHOT) {
+                        hero.spend(1f);
+                    }
                     Gun.Bullet bullet = gun.knockBullet();
                     bullet.setSpecialShot(true);
                     bullet.cast(hero, cell);
@@ -230,6 +231,11 @@ public class AvantGardeKunBuff extends Buff implements ActionIndicator.Action {
     }
 
     public void breakWall(Hero hero, int cell) {
+        if (Dungeon.depth % 5 == 0 || Dungeon.depth == 26) {
+            hero.yellW("cannot_do_boss");
+            return;
+        }
+
         hero.sprite.attack(cell, new Callback() {
             @Override
             public void call() {
@@ -240,6 +246,7 @@ public class AvantGardeKunBuff extends Buff implements ActionIndicator.Action {
                 for (int i : PathFinder.NEIGHBOURS9) {
                     Dungeon.level.discoverable[cell+i] = true;
                 }
+                Dungeon.level.losBlocking[cell] = false;
 
                 Sample.INSTANCE.play(Assets.Sounds.ROCKS);
                 GameScene.updateMap(cell);

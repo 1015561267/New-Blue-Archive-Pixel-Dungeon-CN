@@ -1,24 +1,35 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero.console;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter.FighterConsoleCharge;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter.FighterConsoleContent;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter.FighterConsoleDown;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter.FighterConsoleLeft;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter.FighterConsoleRight;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter.FighterConsoleStrongAttack;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter.FighterConsoleUp;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter.FighterConsoleWeakAttack;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fantasy.BlackHole;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fantasy.FireBall;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fantasy.Hydropump;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fantasy.IceLance;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fantasy.Thunder;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter.Charge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter.MoveDown;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter.MoveLeft;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter.MoveRight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter.StrongAttack;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter.MoveUp;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fighter.WeakAttack;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.sandbox.BarricadeBuild;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.sandbox.BridgeBuild;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.sandbox.Farming;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.sandbox.WallDig;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.sandbox.WellDig;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.console.Console;
+import com.shatteredpixel.shatteredpixeldungeon.items.active.console.FantasyConsole;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.console.FighterConsole;
+import com.shatteredpixel.shatteredpixeldungeon.items.active.console.SandboxConsole;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndYuzuConsole;
 import com.watabou.utils.Bundle;
 
@@ -26,20 +37,20 @@ import java.util.ArrayList;
 
 public abstract class YuzuConsoleContent {
     public void onSelect(Hero hero) {
-        if (useTargeting()) {
+        if (usesTargeting()) {
             GameScene.selectCell(selector);
         } else {
-            if (execute(hero)) {
+            if (execute(hero, -1)) {
                 onContentExecuted(hero);
             }
         }
     };
 
-    public abstract boolean execute(Hero hero);
+    public abstract boolean execute(Hero hero, int target);
 
     public abstract boolean canSelect( Hero hero );
 
-    public boolean useTargeting() {
+    public boolean usesTargeting() {
         return false;
     }
 
@@ -76,32 +87,48 @@ public abstract class YuzuConsoleContent {
         ArrayList<YuzuConsoleContent> contents = new ArrayList<>();
 
         if (console instanceof FighterConsole) {
-            contents.add(FighterConsoleWeakAttack.INSTANCE);
-            contents.add(FighterConsoleStrongAttack.INSTANCE);
-            contents.add(FighterConsoleCharge.INSTANCE);
-            contents.add(FighterConsoleLeft.INSTANCE);
-            contents.add(FighterConsoleUp.INSTANCE);
-            contents.add(FighterConsoleDown.INSTANCE);
-            contents.add(FighterConsoleRight.INSTANCE);
+            contents.add(WeakAttack.INSTANCE);
+            contents.add(StrongAttack.INSTANCE);
+            contents.add(Charge.INSTANCE);
+            contents.add(MoveLeft.INSTANCE);
+            contents.add(MoveUp.INSTANCE);
+            contents.add(MoveDown.INSTANCE);
+            contents.add(MoveRight.INSTANCE);
+        } else if (console instanceof FantasyConsole) {
+            contents.add(FireBall.INSTANCE);
+            contents.add(Hydropump.INSTANCE);
+            contents.add(Thunder.INSTANCE);
+            contents.add(IceLance.INSTANCE);
+            contents.add(BlackHole.INSTANCE);
+        } else if (console instanceof SandboxConsole) {
+            contents.add(Farming.INSTANCE);
+            contents.add(BarricadeBuild.INSTANCE);
+            contents.add(BridgeBuild.INSTANCE);
+            contents.add(WallDig.INSTANCE);
+            contents.add(WellDig.INSTANCE);
         }
 
         return contents;
     }
 
-    protected static CellSelector.Listener selector = new CellSelector.Listener() {
+    protected CellSelector.Listener selector = new CellSelector.Listener() {
         @Override
         public void onSelect(Integer cell) {
-            //do nothing by default
+            if (cell == null) return;
+            if (YuzuConsoleContent.this.execute(Dungeon.hero, cell)) {
+                YuzuConsoleContent.this.onContentExecuted(Dungeon.hero);
+            }
         }
 
         @Override
         public String prompt() {
-            return "";
+            return Messages.get(YuzuConsoleContent.this, "prompt");
         }
     };
 
     public static class ConsoleBuff extends CounterBuff {
-        private static final int MAX_COUNT = 10;
+        public static final int MAX_COUNT = 15;
+        private static final int SET_COUNT = 10;
         private boolean enhanced = false;
 
         {
@@ -113,8 +140,22 @@ public abstract class YuzuConsoleContent {
             return BuffIndicator.CONSOLE;
         }
 
+        @Override
+        public float iconFadePercent() {
+            return Math.max(0, (MAX_COUNT-count())/(float)MAX_COUNT);
+        }
+
+        @Override
+        public String iconTextDisplay() {
+            return Integer.toString((int)count());
+        }
+
         public void set() {
-            countUp(MAX_COUNT);
+            countUp(SET_COUNT);
+        }
+
+        public void set(int amount) {
+            countUp(amount);
         }
 
         @Override

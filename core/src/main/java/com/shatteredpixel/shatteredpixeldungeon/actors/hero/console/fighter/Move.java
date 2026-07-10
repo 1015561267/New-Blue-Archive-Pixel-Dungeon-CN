@@ -10,12 +10,12 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 
-public abstract class FighterConsoleMove extends FighterConsoleContent {
+public abstract class Move extends FighterConsoleContent {
     public abstract int targetPos(Hero hero);
 
     @Override
-    public boolean execute(Hero hero) {
-        if (!super.execute(hero)) return false;
+    public boolean execute(Hero hero, int target) {
+        if (!super.execute(hero, target)) return false;
 
         if (!(Dungeon.level.passable[targetPos(hero)] || Dungeon.level.avoid[targetPos(hero)])
                 || Actor.findChar(targetPos(hero)) != null) return false;
