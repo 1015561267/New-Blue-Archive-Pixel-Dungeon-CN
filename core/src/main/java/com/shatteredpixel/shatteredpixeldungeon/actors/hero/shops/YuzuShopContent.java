@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.Laptop;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -47,7 +48,9 @@ public abstract class YuzuShopContent {
     public void onContentSelect(Laptop laptop, Hero hero, boolean info) {
         Dungeon.gold -= creditUse(hero);
         if (hero.hasTalent(Talent.YUZU_T2_5)) {
-            new Gold(Math.round(creditUse(hero)*0.05f*hero.pointsInTalent(Talent.YUZU_T2_5))).doPickUp(hero, hero.pos);
+            Item i = new Gold(Math.round(creditUse(hero)*0.05f*hero.pointsInTalent(Talent.YUZU_T2_5)));
+            hero.spend(-i.pickupDelay()); //골드 획득에 턴 소모를 제거
+            i.doPickUp(hero, hero.pos);
         } else {
             Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
         }
@@ -84,6 +87,16 @@ public abstract class YuzuShopContent {
                 contents.add(BuyFighterConsole.INSTANCE);
                 contents.add(BuyFantasyConsole.INSTANCE);
                 contents.add(BuySandboxConsole.INSTANCE);
+            }
+        } else if (tier == 4) {
+            if (yuzu.hasTalent(Talent.YUZU_ARMOR3_1)) {
+                contents.add(Invulnerable.INSTANCE);
+            }
+            if (yuzu.hasTalent(Talent.YUZU_ARMOR3_2)) {
+                contents.add(InfiniteAmmo.INSTANCE);
+            }
+            if (yuzu.hasTalent(Talent.YUZU_ARMOR3_3)) {
+                contents.add(CreditDuplicate.INSTANCE);
             }
         }
 
