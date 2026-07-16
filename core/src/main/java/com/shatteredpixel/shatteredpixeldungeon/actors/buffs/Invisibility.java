@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.NinjaCape;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
@@ -51,6 +52,9 @@ public class Invisibility extends FlavourBuff {
 			}
 			if (target instanceof Hero && ((Hero) target).hasTalent(Talent.PROTECTIVE_SHADOWS)){
 				Buff.affect(target, Talent.ProtectiveShadowsTracker.class);
+			}
+			if (target instanceof Hero && ((Hero) target).hasTalent(Talent.IZUNA_T1_4)){
+				Buff.affect(target, Talent.ShadowHideTracker.class);
 			}
 			return true;
 		} else {
@@ -95,6 +99,10 @@ public class Invisibility extends FlavourBuff {
 		CloakOfShadows.cloakStealth cloakBuff = ch.buff( CloakOfShadows.cloakStealth.class );
 		if (cloakBuff != null) {
 			cloakBuff.dispel();
+		}
+		NinjaCape.capeStealth capeBuff = ch.buff( NinjaCape.capeStealth.class );
+		if (capeBuff != null) {
+			capeBuff.dispel();
 		}
 
 		//these aren't forms of invisibility, but do dispel at the same time as it.

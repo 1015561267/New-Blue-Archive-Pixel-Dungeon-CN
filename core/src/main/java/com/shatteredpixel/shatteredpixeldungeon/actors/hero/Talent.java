@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
@@ -65,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EnergyParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
@@ -80,6 +82,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.NinjaCape;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.EmptyScroll;
@@ -683,6 +686,48 @@ public enum Talent {
 	YUZU_ARMOR3_2(24, 7, 4),
 	YUZU_ARMOR3_3(25, 7, 4),
 
+	//Izuna T1
+	IZUNA_T1_1(0, 8, 2),
+	IZUNA_T1_2(1, 8, 2),
+	IZUNA_T1_3(2, 8, 2),
+	IZUNA_T1_4(3, 8, 2),
+
+	//Izuna T2
+	IZUNA_T2_1(4, 8, 2),
+	IZUNA_T2_2(5, 8, 2),
+	IZUNA_T2_3(6, 8, 2),
+	IZUNA_T2_4(7, 8, 2),
+	IZUNA_T2_5(8, 8, 2),
+
+	//Izuna T3
+	IZUNA_T3_1(9, 8, 3),
+	IZUNA_T3_2(10, 8, 3),
+
+	//Shadow Image T3
+	IZUNA_EX1_1(11, 8, 3),
+	IZUNA_EX1_2(12, 8, 3),
+	IZUNA_EX1_3(13, 8, 3),
+
+	//Chase T3
+	IZUNA_EX2_1(14, 8, 3),
+	IZUNA_EX2_2(15, 8, 3),
+	IZUNA_EX2_3(16, 8, 3),
+
+	//Armor Ability 1 T4
+	IZUNA_ARMOR1_1(17, 8, 4),
+	IZUNA_ARMOR1_2(18, 8, 4),
+	IZUNA_ARMOR1_3(19, 8, 4),
+
+	//Armor Ability 2 T4
+	IZUNA_ARMOR2_1(20, 8, 4),
+	IZUNA_ARMOR2_2(21, 8, 4),
+	IZUNA_ARMOR2_3(22, 8, 4),
+
+	//Armor Ability 3 T4
+	IZUNA_ARMOR3_1(23, 8, 4),
+	IZUNA_ARMOR3_2(24, 8, 4),
+	IZUNA_ARMOR3_3(25, 8, 4),
+
 	//universal T4
 	HEROIC_ENERGY(26, 0, 4), //See icon() and title() for special logic for this one
 	//Ratmogrify T4
@@ -710,6 +755,43 @@ public enum Talent {
 				Barrier barrier = Buff.affect(target, Barrier.class);
 				if (barrier.shielding() < 1 + 2*((Hero)target).pointsInTalent(Talent.PROTECTIVE_SHADOWS)) {
 					barrierInc += 0.5f * ((Hero) target).pointsInTalent(Talent.PROTECTIVE_SHADOWS);
+				}
+				if (barrierInc >= 1){
+					barrierInc = 0;
+					barrier.incShield(1);
+				} else {
+					barrier.incShield(0); //resets barrier decay
+				}
+			} else {
+				detach();
+			}
+			spend( TICK );
+			return true;
+		}
+
+		private static final String BARRIER_INC = "barrier_inc";
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put( BARRIER_INC, barrierInc);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			barrierInc = bundle.getFloat( BARRIER_INC );
+		}
+	}
+	public static class ShadowHideTracker extends Buff {
+		float barrierInc = 0.5f;
+
+		@Override
+		public boolean act() {
+			//barrier every 2/1 turns, to a max of 3/5
+			if (((Hero)target).hasTalent(Talent.IZUNA_T1_4) && target.invisible > 0){
+				Barrier barrier = Buff.affect(target, Barrier.class);
+				if (barrier.shielding() < 1 + 2*((Hero)target).pointsInTalent(Talent.IZUNA_T1_4)) {
+					barrierInc += 0.5f * ((Hero) target).pointsInTalent(Talent.IZUNA_T1_4);
 				}
 				if (barrierInc >= 1){
 					barrierInc = 0;
@@ -969,9 +1051,9 @@ public enum Talent {
 				case YUZU:
 					y = 7;
 					break;
-//				case IZUNA:
-//					y = 8;
-//					break;
+				case IZUNA:
+					y = 8;
+					break;
 			}
 			if (Ratmogrify.useRatroicEnergy){
 				y = 9;
@@ -1045,11 +1127,25 @@ public enum Talent {
 			Buff.affect(hero, Talent.ProtectiveShadowsTracker.class);
 		}
 
+		if (talent == IZUNA_T1_4 && hero.invisible > 0){
+			Buff.affect(hero, Talent.ShadowHideTracker.class);
+		}
+
 		if (talent == LIGHT_CLOAK && hero.heroClass == HeroClass.ROGUE){
 			for (Item item : Dungeon.hero.belongings.backpack){
 				if (item instanceof CloakOfShadows){
 					if (!hero.belongings.lostInventory() || item.keptThroughLostInventory()) {
 						((CloakOfShadows) item).activate(Dungeon.hero);
+					}
+				}
+			}
+		}
+
+		if (talent == IZUNA_T3_2 && hero.heroClass == HeroClass.IZUNA){
+			for (Item item : Dungeon.hero.belongings.backpack){
+				if (item instanceof NinjaCape){
+					if (!hero.belongings.lostInventory() || item.keptThroughLostInventory()) {
+						((NinjaCape) item).activate(Dungeon.hero);
 					}
 				}
 			}
@@ -1193,15 +1289,9 @@ public enum Talent {
 		if (talent == NONOMI_T3_1 && hero.pointsInTalent(NONOMI_T3_1) == 1) {
 			new MG_SP().identify().collect();
 		}
-		if (talent == NONOMI_T3_1) {
-			Item.updateQuickslot();
-		}
-
-		if (talent == NONOMI_EX1_1) {
-			Item.updateQuickslot();
-		}
-
-		if (talent == MIYAKO_T2_2) {
+		if (talent == NONOMI_T3_1 || talent == NONOMI_EX1_1
+				|| talent == MIYAKO_T2_2
+				|| talent == IZUNA_T1_1 || talent == IZUNA_EX2_3) {
 			Item.updateQuickslot();
 		}
 
@@ -1254,6 +1344,10 @@ public enum Talent {
 		if (hero.hasTalent(MYSTICAL_MEAL)){
 			//3/5 turns of recharging
 			artifactChargeTurns += 1 + 2*hero.pointsInTalent(MYSTICAL_MEAL);
+		}
+		if (hero.hasTalent(IZUNA_T2_1)){
+			//3/5 turns of recharging
+			artifactChargeTurns += 1 + 2*hero.pointsInTalent(IZUNA_T2_1);
 		}
 		if (hero.hasTalent(INVIGORATING_MEAL)){
 			//effectively 1/2 turns of haste
@@ -1381,6 +1475,10 @@ public enum Talent {
 		if (item instanceof Ring){
 			factor *= 1f + hero.pointsInTalent(THIEFS_INTUITION);
 		}
+		// 3x/instant speed with Huntress talent (see MissileWeapon.proc)
+		if (item instanceof MissileWeapon){
+			factor *= 1f + 2.0f*hero.pointsInTalent(IZUNA_T1_2);
+		}
 		return factor;
 	}
 
@@ -1501,7 +1599,7 @@ public enum Talent {
 			}
 		}
 		if (hero.hasTalent(Talent.HOSHINO_T2_2)) {
-			int distance = 4+4*hero.pointsInTalent(Talent.HOSHINO_T2_2);
+			int distance = 2+4*hero.pointsInTalent(Talent.HOSHINO_T2_2);
 
 			StoneOfClairvoyance.mapping(pos, (int)Math.ceil(distance*factor));
 		}
@@ -1515,9 +1613,13 @@ public enum Talent {
 			Buff.affect(hero, Conversation.class).charge(2*factor);
 		}
 		if (hero.hasTalent(Talent.YUZU_T2_2)) {
-			int distance = 4+4*hero.pointsInTalent(Talent.YUZU_T2_2);
+			int distance = 2+4*hero.pointsInTalent(Talent.YUZU_T2_2);
 
 			StoneOfClairvoyance.mapping(pos, (int)Math.ceil(distance*factor));
+		}
+		if (hero.hasTalent(Talent.IZUNA_T2_2)) {
+			int barrierInc = 5+5*hero.pointsInTalent(Talent.IZUNA_T2_2);
+			Buff.affect(hero, Barrier.class).setShield((int)Math.ceil(barrierInc*factor));
 		}
 	}
 
@@ -1827,6 +1929,12 @@ public enum Talent {
 			Viscosity.applyViscosity(hero, 1+2*hero.pointsInTalent(Talent.YUZU_T2_3));
 		}
 
+		if (hero.hasTalent(Talent.IZUNA_T1_3)) {
+			if (Random.Float() < 0.5f) {
+				Buff.affect(enemy, Bleeding.class).set(Random.IntRange(1, hero.pointsInTalent(Talent.IZUNA_T1_3)));
+			}
+		}
+
 		return damage;
 	}
 
@@ -1845,10 +1953,20 @@ public enum Talent {
 	}
 
 	public static void onKill(Object cause, Mob mob) {
-		Hero hero = Dungeon.hero;
-		if (cause == hero) {
-			hero.onEnemyKill(mob);
+		if (cause instanceof Hero || cause instanceof Weapon || cause instanceof Weapon.Enchantment) {
+			Dungeon.hero.onEnemyKill(mob);
 		}
+	}
+
+	public static float speedBoost(Hero hero){
+		float speedFactor = 1f;
+
+		if (hero.hasTalent(Talent.IZUNA_T2_3) && Dungeon.level.water[hero.pos]) {
+			speedFactor += 0.5f*hero.pointsInTalent(Talent.IZUNA_T2_3);
+			hero.sprite.emitter().startDelayed(Speck.factory(Speck.BLUE_LIGHT), 0.02f, 1+hero.pointsInTalent(Talent.IZUNA_T2_3), 0.05f);
+		}
+
+		return speedFactor;
 	}
 
 	public static class FirstAidCooldown extends FlavourBuff {
@@ -2004,6 +2122,50 @@ public enum Talent {
 		}
 	}
 
+	public static class InstantThrowTracker extends FlavourBuff {
+		@Override
+		public int icon() {
+			return BuffIndicator.THROWN_WEP;
+		}
+
+		@Override
+		public void tintIcon(Image icon) {
+			icon.hardlight(0xFDA082);
+		}
+
+		@Override
+		public void detach() {
+			Buff.affect(target, InstantThrowCooldown.class, 20f-5f*Dungeon.hero.pointsInTalent(Talent.IZUNA_EX2_1));
+			super.detach();
+		}
+
+		@Override
+		public String iconTextDisplay() {
+			return "";
+		}
+	}
+
+	public static class InstantThrowCooldown extends FlavourBuff {
+
+		public static int DURATION = 15;
+
+		@Override
+		public int icon() {
+			return BuffIndicator.TIME;
+		}
+
+		@Override
+		public void tintIcon(Image icon) {
+			icon.hardlight(0xFDA082);
+		}
+
+		@Override
+		public float iconFadePercent() {
+			return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+		}
+
+	}
+
 	//new buff here
 
 	public static final int MAX_TALENT_TIERS = 4;
@@ -2048,6 +2210,9 @@ public enum Talent {
 				break;
 			case YUZU:
 				Collections.addAll(tierTalents, YUZU_T1_1, YUZU_T1_2, YUZU_T1_3, YUZU_T1_4);
+				break;
+			case IZUNA:
+				Collections.addAll(tierTalents, IZUNA_T1_1, IZUNA_T1_2, IZUNA_T1_3, IZUNA_T1_4);
 				break;
 			case WARRIOR:
 				Collections.addAll(tierTalents, HEARTY_MEAL, VETERANS_INTUITION, PROVOKED_ANGER, IRON_WILL);
@@ -2102,6 +2267,9 @@ public enum Talent {
 			case YUZU:
 				Collections.addAll(tierTalents, YUZU_T2_1, YUZU_T2_2, YUZU_T2_3, YUZU_T2_4, YUZU_T2_5);
 				break;
+			case IZUNA:
+				Collections.addAll(tierTalents, IZUNA_T2_1, IZUNA_T2_2, IZUNA_T2_3, IZUNA_T2_4, IZUNA_T2_5);
+				break;
 			case WARRIOR:
 				Collections.addAll(tierTalents, IRON_STOMACH, LIQUID_WILLPOWER, RUNIC_TRANSFERENCE, LETHAL_MOMENTUM, IMPROVISED_PROJECTILES);
 				break;
@@ -2154,6 +2322,9 @@ public enum Talent {
 				break;
 			case YUZU:
 				Collections.addAll(tierTalents, YUZU_T3_1, YUZU_T3_2);
+				break;
+			case IZUNA:
+				Collections.addAll(tierTalents, IZUNA_T3_1, IZUNA_T3_2);
 				break;
 			case WARRIOR:
 				Collections.addAll(tierTalents, HOLD_FAST, STRONGMAN);
@@ -2248,6 +2419,12 @@ public enum Talent {
 				break;
 			case GAME_START:
 				Collections.addAll(tierTalents, YUZU_EX2_1, YUZU_EX2_2, YUZU_EX2_3);
+				break;
+			case SWITCHING:
+				Collections.addAll(tierTalents, IZUNA_EX1_1, IZUNA_EX1_2, IZUNA_EX1_3);
+				break;
+			case CHASE:
+				Collections.addAll(tierTalents, IZUNA_EX2_1, IZUNA_EX2_2, IZUNA_EX2_3);
 				break;
 			case BERSERKER:
 				Collections.addAll(tierTalents, ENDLESS_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST);

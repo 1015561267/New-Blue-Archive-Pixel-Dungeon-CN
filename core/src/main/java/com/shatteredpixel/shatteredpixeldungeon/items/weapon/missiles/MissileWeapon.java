@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
@@ -43,6 +44,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Explosive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.quick.AssassinsKunai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -130,16 +133,25 @@ abstract public class MissileWeapon extends Weapon {
 		if (masteryPotionBonus){
 			req -= 2;
 		}
+		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.IZUNA) {
+			req -= 1;
+		}
 		return req;
 	}
 
 	//use the parent item if this has been thrown from a parent
 	public int buffedLvl(){
+		int lvl;
 		if (parent != null) {
-			return parent.buffedLvl();
+			lvl = parent.buffedLvl();
 		} else {
-			return super.buffedLvl();
+			lvl = super.buffedLvl();
 		}
+		if (Dungeon.hero != null && Dungeon.hero.hasTalent(Talent.IZUNA_EX2_3) && Dungeon.hero.belongings.getItem(AssassinsKunai.class) != null) {
+			int lvlBonus = Math.min(Dungeon.hero.belongings.getItem(AssassinsKunai.class).buffedLvl(), 2*Dungeon.hero.pointsInTalent(Talent.IZUNA_EX2_3));
+			lvl += Math.max(0, lvlBonus-lvl);
+		}
+		return lvl;
 	}
 
 	public Item upgrade( boolean enchant ) {
@@ -290,6 +302,10 @@ abstract public class MissileWeapon extends Weapon {
 
 			}
 		}
+
+		if (curUser.buff(Talent.InstantThrowTracker.class) != null) {
+			curUser.buff(Talent.InstantThrowTracker.class).detach();
+		}
 	}
 
 	@Override
@@ -309,6 +325,12 @@ abstract public class MissileWeapon extends Weapon {
 
 		//instant ID with the right talent
 		if (attacker == Dungeon.hero && Dungeon.hero.pointsInTalent(Talent.SURVIVALISTS_INTUITION) == 2){
+			usesLeftToID = Math.min(usesLeftToID, 0);
+			availableUsesToID =  Math.max(usesLeftToID, 0);
+		}
+
+		//instant ID with the right talent
+		if (attacker == Dungeon.hero && Dungeon.hero.pointsInTalent(Talent.IZUNA_T1_2) == 2){
 			usesLeftToID = Math.min(usesLeftToID, 0);
 			availableUsesToID =  Math.max(usesLeftToID, 0);
 		}
@@ -333,6 +355,10 @@ abstract public class MissileWeapon extends Weapon {
 
 		if (attacker == Dungeon.hero && !isIdentified() && ShardOfOblivion.passiveIDDisabled()){
 			Buff.prolong(Dungeon.hero, ShardOfOblivion.ThrownUseTracker.class, 50f);
+		}
+
+		if (attacker == Dungeon.hero && Dungeon.hero.hasTalent(Talent.IZUNA_T3_1) && !(this instanceof Gun.Bullet)) {
+			Buff.append(attacker, TalismanOfForesight.CharAwareness.class, 5*Dungeon.hero.pointsInTalent(Talent.IZUNA_T3_1)).charID = defender.id();
 		}
 
 		return result;
@@ -394,6 +420,9 @@ abstract public class MissileWeapon extends Weapon {
 	
 	@Override
 	public float castDelay(Char user, int cell) {
+		if (user.buff(Talent.InstantThrowTracker.class) != null) {
+			return 0;
+		}
 		if (Actor.findChar(cell) != null && Actor.findChar(cell) != user){
 			return delayFactor( user );
 		} else {
@@ -451,6 +480,9 @@ abstract public class MissileWeapon extends Weapon {
 		}
 		if (holster) {
 			usages *= MagicalHolster.HOLSTER_DURABILITY_FACTOR;
+		}
+		if (Dungeon.hero != null && Dungeon.hero.hasTalent(Talent.IZUNA_T1_1)) {
+			usages += 1+2*Dungeon.hero.pointsInTalent(Talent.IZUNA_T1_1);
 		}
 
 		//+50% durability on speed aug, -33% durability on damage aug

@@ -46,11 +46,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChaseMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.DoubleBarrelMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
@@ -80,6 +84,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Ch
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.hoshino.ShieldParry;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.izuna.Blink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.shiroko.GPSRoute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.nonomi.Bipod;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
@@ -125,6 +130,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.NinjaCape;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -834,6 +840,7 @@ public class Hero extends Char {
 		float speed = super.speed();
 
 		speed *= RingOfHaste.speedMultiplier(this);
+		speed *= Talent.speedBoost(this);
 		
 		if (belongings.armor() != null) {
 			speed = belongings.armor().speedFactor(this, speed);
@@ -1698,6 +1705,25 @@ public class Hero extends Char {
 				});
 			}
 			break;
+			case CHASE:
+				if (wep instanceof MissileWeapon && !(wep instanceof Gun.Bullet) && enemy != this) {
+					Actor.add(new Actor() {
+
+						{
+							actPriority = VFX_PRIO;
+						}
+
+						@Override
+						protected boolean act() {
+							if (enemy.isAlive()) {
+								Buff.prolong(Hero.this, ChaseMark.class, ChaseMark.DURATION+wep.buffedLvl()).set(enemy);
+							}
+							Actor.remove(this);
+							return true;
+						}
+					});
+				}
+				break;
 		default:
 		}
 		
@@ -2844,6 +2870,8 @@ public class Hero extends Char {
 				}
 			} else if (i instanceof MagesStaff && i.keptThroughLostInventory()){
 				((MagesStaff) i).applyWandChargeBuff(this);
+			} else if (i instanceof NinjaCape && i.keptThroughLostInventory() && hasTalent(Talent.IZUNA_T3_2)) {
+				((NinjaCape) i).activate(this);
 			}
 		}
 
@@ -2949,6 +2977,26 @@ public class Hero extends Char {
 		}
 		if (hasTalent(Talent.YUZU_EX1_1)) {
 			AvantGardeKunBuff.repairRobot(this, pointsInTalent(Talent.YUZU_EX1_1));
+		}
+		if (hasTalent(Talent.IZUNA_T2_5) && !Dungeon.level.adjacent(pos, mob.pos)) {
+			Buff.affect(this, GreaterHaste.class).set(1+2*pointsInTalent(Talent.IZUNA_T2_5));
+		}
+		if (hasTalent(Talent.IZUNA_EX2_2) && buff(ChaseMark.ChaseTracker.class) != null) {
+			new FlavourBuff() {
+				{
+					actPriority = VFX_PRIO;
+				}
+
+				public boolean act() {
+					Buff.affect(target, Invisibility.class, pointsInTalent(Talent.IZUNA_EX2_2));
+					Buff.affect(target, Haste.class, pointsInTalent(Talent.IZUNA_EX2_2));
+					return super.act();
+				}
+			}.attachTo(this);
+		}
+		if (Dungeon.hero.buff(Blink.PerfectAssassination.class) != null) {
+			Dungeon.hero.buff(Blink.PerfectAssassination.class).detach();
+			Buff.affect(Dungeon.hero, Talent.LethalMomentumTracker.class, 0f);
 		}
 	}
 

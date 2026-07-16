@@ -44,6 +44,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.hoshino.Sp
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpectralBlades;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.izuna.Blink;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.izuna.SmokeSpread;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.izuna.ThrowingThunder;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.ElementalBlast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic;
@@ -89,6 +92,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.NinjaCape;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -128,6 +132,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.MG.MG_T1;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SG.SG_T1;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SMG.SMG_T1;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_T1;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.quick.AssassinsKunai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
@@ -145,6 +150,7 @@ public enum HeroClass {
 	NOA(HeroSubClass.DOUBLE_BARREL, HeroSubClass.CONVERSATION),
 	MIYU(HeroSubClass.TELESCOPE, HeroSubClass.CAMOUFLAGE),
 	YUZU(HeroSubClass.AVANT_GARDE_KUN, HeroSubClass.GAME_START),
+	IZUNA(HeroSubClass.SWITCHING, HeroSubClass.CHASE),
 
 	WARRIOR( HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ),
 	MAGE( HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ),
@@ -225,6 +231,10 @@ public enum HeroClass {
 
 			case YUZU:
 				initYuzu( hero );
+				break;
+
+			case IZUNA:
+				initIzuna( hero );
 				break;
 
 
@@ -399,6 +409,30 @@ public enum HeroClass {
 		new ScrollOfRage().identify();
 	}
 
+	private static void initIzuna(Hero hero) {
+		SMG_T1 smgT1 = new SMG_T1();
+		(hero.belongings.weapon = smgT1).identify();
+
+		NinjaCape cape = new NinjaCape();
+		(hero.belongings.artifact = cape).identify();
+		hero.belongings.artifact.activate( hero );
+
+		AssassinsKunai kunai = new AssassinsKunai();
+		kunai.identify().collect();
+
+		ThrowingKnife knives = new ThrowingKnife();
+		knives.identify().collect();
+
+		Dungeon.quickslot.setSlot(0, smgT1);
+		Dungeon.quickslot.setSlot(1, cape);
+		Dungeon.quickslot.setSlot(2, kunai);
+		Dungeon.quickslot.setSlot(3, knives);
+
+
+		new PotionOfHealing().identify();
+		new ScrollOfRage().identify();
+	}
+
 	private static void initWarrior( Hero hero ) {
 		(hero.belongings.weapon = new WornShortsword()).identify();
 		ThrowingStone stones = new ThrowingStone();
@@ -522,6 +556,8 @@ public enum HeroClass {
 				return new ArmorAbility[]{new Flashbang(), new HPBullet(), new AntiMaterialRifle()};
 			case YUZU:
 				return new ArmorAbility[]{new PVP(), new Cabinet(), new VIPMembership()};
+			case IZUNA:
+				return new ArmorAbility[]{new SmokeSpread(), new Blink(), new ThrowingThunder()};
 
 			case WARRIOR:
 				return new ArmorAbility[]{new HeroicLeap(), new Shockwave(), new Endure()};
@@ -556,6 +592,8 @@ public enum HeroClass {
 				return Assets.Sprites.MIYU;
 			case YUZU:
 				return Assets.Sprites.YUZU;
+			case IZUNA:
+				return Assets.Sprites.IZUNA;
 			case WARRIOR:
 				return Assets.Sprites.WARRIOR;
 			case MAGE:
@@ -589,6 +627,8 @@ public enum HeroClass {
 				return Assets.Splashes.MIYU;
 			case YUZU:
 				return Assets.Splashes.YUZU;
+			case IZUNA:
+				return Assets.Splashes.IZUNA;
 			case WARRIOR:
 				return Assets.Splashes.WARRIOR;
 			case MAGE:

@@ -257,14 +257,15 @@ public class Assets {
 		public static final String HUNTRESS = "splashes/huntress.jpg";
 		public static final String DUELIST  = "splashes/duelist.jpg";
 		public static final String CLERIC   = "splashes/cleric.jpg";
-		public static final String ARIS		= "splashes/aris.jpg";
-		public static final String NONOMI	= "splashes/nonomi.jpg";
-		public static final String MIYAKO	= "splashes/miyako.jpg";
-		public static final String HOSHINO	= "splashes/hoshino.jpg";
-		public static final String SHIROKO	= "splashes/shiroko.jpg";
-		public static final String NOA		= "splashes/noa.jpg";
-		public static final String MIYU		= "splashes/miyu.jpg";
-		public static final String YUZU		= "splashes/yuzu.jpg";
+		public static final String ARIS		= "splashes/aris.png";
+		public static final String NONOMI	= "splashes/nonomi.png";
+		public static final String MIYAKO	= "splashes/miyako.png";
+		public static final String HOSHINO	= "splashes/hoshino.png";
+		public static final String SHIROKO	= "splashes/shiroko.png";
+		public static final String NOA		= "splashes/noa.png";
+		public static final String MIYU		= "splashes/miyu.png";
+		public static final String YUZU		= "splashes/yuzu.png";
+		public static final String IZUNA	= "splashes/izuna.png";
 
 		public static final String SEWERS   = "splashes/sewers.jpg";
 		public static final String PRISON   = "splashes/prison.jpg";
@@ -298,6 +299,7 @@ public class Assets {
 		public static final String NOA	 	= "sprites/noa.png";
 		public static final String MIYU	 	= "sprites/miyu.png";
 		public static final String YUZU	 	= "sprites/yuzu.png";
+		public static final String IZUNA	= "sprites/izuna.png";
 		public static final String AVATARS  = "sprites/avatars.png";
 		public static final String PET      = "sprites/pet.png";
 		public static final String AMULET   = "sprites/amulet.png";
@@ -368,6 +370,7 @@ public class Assets {
 		public static final String FUNGAL_CORE      = "sprites/fungal_core.png";
 		public static final String SAKI     = "sprites/saki.png";
 		public static final String AVANT_GARDE_KUN 	= "sprites/avantgardekun.png";
+		public static final String FOX_DOLL 	= "sprites/foxdoll.png";
 
 		public static final String CHERINO  = "sprites/cherino.png";
 		public static final String YUKINO  = "sprites/yukino.png";
