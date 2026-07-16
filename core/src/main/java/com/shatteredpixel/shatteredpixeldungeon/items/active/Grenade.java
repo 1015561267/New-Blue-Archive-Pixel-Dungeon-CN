@@ -110,7 +110,7 @@ public class Grenade extends Item {
 
         max += this.buffedLvl();
 
-        if (hero.hasTalent(Talent.MIYAKO_T2_2)) max++;
+        if (Dungeon.hero!=null && hero.hasTalent(Talent.MIYAKO_T2_2)) max++;
 
         return max;
     }

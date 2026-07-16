@@ -33,6 +33,15 @@ public class ShootParticle extends SnipeParticle {
         };
     }
 
+    public static Emitter.Factory enhancedFactory(Char target, KindOfWeapon heroWep, Callback callback) {
+        return new Emitter.Factory() {
+            @Override
+            public void emit(Emitter emitter, int index, float x, float y) {
+                ((ShootParticle)emitter.recycle( ShootParticle.class )).reset( x, y, target, heroWep, callback );
+            }
+        };
+    }
+
     public ShootParticle() {
         super();
         color(0x000000);
