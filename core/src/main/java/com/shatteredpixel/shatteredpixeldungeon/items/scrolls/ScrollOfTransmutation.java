@@ -287,11 +287,12 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		}
 
 		//FIXME cocoa forget that gun can be changed,and kit can be lost during this,this is a patch for that case
-		if(w instanceof Gun && n instanceof Gun){
-			if(((Gun) w).kit !=null ){
-				((Gun)n).kit = ((Gun) w).kit;
-			}
-		}
+		//if(w instanceof Gun && n instanceof Gun){
+		//	if(((Gun) w).kit !=null ){
+		//		((Gun)n).kit = ((Gun) w).kit;
+		//	}
+		//
+		// }
 		return n;
 		
 	}

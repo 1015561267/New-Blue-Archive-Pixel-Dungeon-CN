@@ -1177,9 +1177,37 @@ public class ItemSpriteSheet {
 			assignIconRect( POTION_CLEANSE,     7, 7 );
 			assignIconRect( POTION_DIVINE,      7, 7 );
 		}
-
 		                                                                                //16 free slots
-
 	}
 
+	public static class NBARemains {
+		//to manage added hero remains separately
+		private static final int WIDTH = 16;
+		public static final int SIZE = 16;
+
+		public static TextureFilm film = new TextureFilm( Assets.Sprites.ITEM_ICONS, SIZE, SIZE );
+
+		private static int xy(int x, int y){
+			x -= 1; y -= 1;
+			return x + WIDTH*y;
+		}
+
+		private static void assignIconRect( int item, int width, int height ){
+			int x = (item % WIDTH) * SIZE;
+			int y = (item / WIDTH) * SIZE;
+			film.add( item, x, y, x+width, y+height);
+		}
+
+		private static final int MISC_CONSUMABLE = xy(0, 0);   //32 slots
+
+		public static final int ARIS_REMAIN     = MISC_CONSUMABLE +23;
+		public static final int NONOMI_REMAIN   = MISC_CONSUMABLE +24;
+		public static final int MIYAKO_REMAIN   = MISC_CONSUMABLE +25;
+		public static final int HOSHINO_REMAIN  = MISC_CONSUMABLE +26;
+		public static final int SHIROKO_REMAIN  = MISC_CONSUMABLE +27;
+		public static final int NOA_REMAIN      = MISC_CONSUMABLE +28;
+		public static final int MIYU_REMAIN     = MISC_CONSUMABLE +29;
+		public static final int YUZU_REMAIN     = MISC_CONSUMABLE +30;
+		public static final int IZUNA_REMAIN    = MISC_CONSUMABLE +31;
+	}
 }

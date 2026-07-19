@@ -90,16 +90,16 @@ public class Helicopter extends ArmorAbility {
                 @Override
                 public void call() {
                     if (hero.hasTalent(Talent.MIYAKO_ARMOR2_2) && Random.Float() < 0.25f*hero.pointsInTalent(Talent.MIYAKO_ARMOR2_2)) {
-                        System.out.println("---Jump---");
-                        System.out.println("startCell: "+startCell);
-                        System.out.println("dest: "+dest);
+                        //System.out.println("---Jump---");
+                        //System.out.println("startCell: "+startCell);
+                        //System.out.println("dest: "+dest);
                         Ballistica finalRoute = new Ballistica(startCell, dest, Ballistica.STOP_TARGET);
                         float delay = 0f;
                         Gun gun = (Gun) hero.belongings.weapon().duplicate(); //현재 장착한 총기와 똑같은 무기를 생성한다. 영웅이 장착한 무기를 직접 사용할 경우 탄환을 소모하기 때문
-                        System.out.println("path dist: "+finalRoute.dist);
-                        System.out.println("---for---");
+                        //System.out.println("path dist: "+finalRoute.dist);
+                        //System.out.println("---for---");
                         for (int c : finalRoute.subPath(1, finalRoute.dist)) {
-                            System.out.println("path pos: "+c);
+                            //System.out.println("path pos: "+c);
                             Char enemy = Actor.findChar(c);
                             if (enemy != null
                                     && enemy.alignment == Char.Alignment.ENEMY
@@ -117,7 +117,7 @@ public class Helicopter extends ArmorAbility {
                                         bullet.setIgnoreWall(true);
                                         bullet.cast(hero, enemy.pos);
                                         hero.spend(-bullet.delayFactor(hero)); //투척에 필요한 턴 수를 뺀다.
-                                        System.out.println("enemy pos: "+enemy.pos);
+                                        //System.out.println("enemy pos: "+enemy.pos);
                                     }
                                 });
                             }

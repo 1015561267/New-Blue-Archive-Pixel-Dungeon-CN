@@ -25,6 +25,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.ArisRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.HoshinoRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.IzunaRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.MiyakoRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.MiyuRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.NoaRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.NonomiRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.ShirokoRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.YuzuRemain;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 
 import java.util.ArrayList;
@@ -92,6 +101,25 @@ public abstract class RemainsItem extends Item {
 				return new BrokenHilt();
 			case CLERIC:
 				return new TornPage();
+
+			case ARIS:
+				return new ArisRemain();
+			case NONOMI:
+				return new NonomiRemain();
+			case MIYAKO:
+				return new MiyakoRemain();
+			case HOSHINO:
+				return new HoshinoRemain();
+			case SHIROKO:
+				return new ShirokoRemain();
+			case NOA:
+				return new NoaRemain();
+			case MIYU:
+				return new MiyuRemain();
+			case YUZU:
+				return new YuzuRemain();
+			case IZUNA:
+				return new IzunaRemain();
 		}
 	}
 
