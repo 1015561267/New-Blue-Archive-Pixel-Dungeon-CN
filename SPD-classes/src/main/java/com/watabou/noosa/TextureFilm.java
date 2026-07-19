@@ -143,4 +143,24 @@ public class TextureFilm {
 	public float height( RectF frame ) {
 		return frame.height() * texHeight;
 	}
+
+	public TextureFilm( Object tx, int txWidth, int txHeight,int width, int height ) {
+
+		SmartTexture texture = TextureCache.get( tx );
+
+		texWidth = txWidth;
+		texHeight = txHeight;
+
+		float uw = (float)width / texWidth;
+		float vh = (float)height / texHeight;
+		int cols = texWidth / width;
+		int rows = texHeight / height;
+
+		for (int i=0; i < rows; i++) {
+			for (int j=0; j < cols; j++) {
+				RectF rect = new RectF( j * uw, i * vh, (j+1) * uw, (i+1) * vh );
+				add( i * cols + j, rect );
+			}
+		}
+	}
 }

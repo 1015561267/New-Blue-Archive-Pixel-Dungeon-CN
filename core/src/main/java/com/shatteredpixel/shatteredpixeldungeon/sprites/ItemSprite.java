@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.NbaRemainsItem;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -81,11 +82,21 @@ public class ItemSprite extends MovieClip {
 	
 	public ItemSprite( Heap heap ){
 		super(Assets.Sprites.ITEMS);
+
+		if(heap.peek() instanceof NbaRemainsItem){
+			texture( Assets.Sprites.NBA_REMAIINS );
+		}
+
 		view( heap );
 	}
 	
 	public ItemSprite( Item item ) {
 		super(Assets.Sprites.ITEMS);
+
+		if(item instanceof NbaRemainsItem){
+			texture( Assets.Sprites.NBA_REMAIINS );
+		}
+
 		view( item );
 	}
 	
@@ -95,7 +106,6 @@ public class ItemSprite extends MovieClip {
 	
 	public ItemSprite( int image, Glowing glowing ) {
 		super( Assets.Sprites.ITEMS );
-		
 		view(image, glowing);
 	}
 	
@@ -199,7 +209,11 @@ public class ItemSprite extends MovieClip {
 	}
 
 	public ItemSprite view( Item item ){
-		view(item.image(), item.glowing());
+		if(item instanceof NbaRemainsItem){
+			viewNbaRemainsItem(item.image(), item.glowing());
+		}
+		else {view(item.image(), item.glowing());}
+
 		Emitter emitter = item.emitter();
 		if (emitter != null && parent != null) {
 			emitter.pos( this );
@@ -246,9 +260,23 @@ public class ItemSprite extends MovieClip {
 		return this;
 	}
 
+	public ItemSprite viewNbaRemainsItem( int image, Glowing glowing ) {
+		texture( Assets.Sprites.NBA_REMAIINS );
+		if (this.emitter != null) this.emitter.killAndErase();
+		emitter = null;
+		frame( ItemSpriteSheet.NBARemains.film.get( image ));
+		float height = ItemSpriteSheet.NBARemains.film.height( image );
+		//adds extra raise to very short items, so they are visible
+		if (height < 8f){
+			perspectiveRaise =  (5 + 8 - height) / 16f;
+		}
+		glow( glowing );
+		return this;
+	}
+
+
 	public void frame( int image ){
 		frame( ItemSpriteSheet.film.get( image ));
-
 		float height = ItemSpriteSheet.film.height( image );
 		//adds extra raise to very short items, so they are visible
 		if (height < 8f){

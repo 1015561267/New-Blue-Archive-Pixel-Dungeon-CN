@@ -1185,29 +1185,41 @@ public class ItemSpriteSheet {
 		private static final int WIDTH = 16;
 		public static final int SIZE = 16;
 
-		public static TextureFilm film = new TextureFilm( Assets.Sprites.ITEM_ICONS, SIZE, SIZE );
+		public static TextureFilm film = new TextureFilm( Assets.Sprites.NBA_REMAIINS,  SIZE*16 ,SIZE , SIZE, SIZE );
 
 		private static int xy(int x, int y){
 			x -= 1; y -= 1;
 			return x + WIDTH*y;
 		}
 
-		private static void assignIconRect( int item, int width, int height ){
+		private static void assignItemRect( int item, int width, int height ){
 			int x = (item % WIDTH) * SIZE;
 			int y = (item / WIDTH) * SIZE;
 			film.add( item, x, y, x+width, y+height);
 		}
 
-		private static final int MISC_CONSUMABLE = xy(0, 0);   //32 slots
+		private static final int NBA_REMAINS = xy(1, 1);
 
-		public static final int ARIS_REMAIN     = MISC_CONSUMABLE +23;
-		public static final int NONOMI_REMAIN   = MISC_CONSUMABLE +24;
-		public static final int MIYAKO_REMAIN   = MISC_CONSUMABLE +25;
-		public static final int HOSHINO_REMAIN  = MISC_CONSUMABLE +26;
-		public static final int SHIROKO_REMAIN  = MISC_CONSUMABLE +27;
-		public static final int NOA_REMAIN      = MISC_CONSUMABLE +28;
-		public static final int MIYU_REMAIN     = MISC_CONSUMABLE +29;
-		public static final int YUZU_REMAIN     = MISC_CONSUMABLE +30;
-		public static final int IZUNA_REMAIN    = MISC_CONSUMABLE +31;
+		public static final int ARIS_REMAIN     = NBA_REMAINS +0;
+		public static final int NONOMI_REMAIN   = NBA_REMAINS +1;
+		public static final int MIYAKO_REMAIN   = NBA_REMAINS +2;
+		public static final int HOSHINO_REMAIN  = NBA_REMAINS +3;
+		public static final int SHIROKO_REMAIN  = NBA_REMAINS +4;
+		public static final int NOA_REMAIN      = NBA_REMAINS +5;
+		public static final int MIYU_REMAIN     = NBA_REMAINS +6;
+		public static final int YUZU_REMAIN     = NBA_REMAINS +7;
+		public static final int IZUNA_REMAIN    = NBA_REMAINS +8;
+
+		static {
+			assignItemRect( ARIS_REMAIN,     15, 12 );
+			assignItemRect( NONOMI_REMAIN,   16, 16 );
+			assignItemRect( MIYAKO_REMAIN,   12, 11 );
+			assignItemRect( HOSHINO_REMAIN,   14, 14 );
+			assignItemRect( SHIROKO_REMAIN,   14, 13 );
+			assignItemRect( NOA_REMAIN,    13, 9 );
+			assignItemRect( MIYU_REMAIN,     11, 11 );
+			assignItemRect( YUZU_REMAIN,   15, 14 );
+			assignItemRect( IZUNA_REMAIN,   15, 15 );
+		}
 	}
 }
