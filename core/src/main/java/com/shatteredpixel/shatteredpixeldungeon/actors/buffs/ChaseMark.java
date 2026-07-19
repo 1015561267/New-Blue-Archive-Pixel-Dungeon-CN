@@ -57,6 +57,10 @@ public class ChaseMark extends FlavourBuff implements ActionIndicator.Action {
         enemyID = enemy.id();
     }
 
+    public int getEnemyID() {
+        return enemyID;
+    }
+
     @Override
     public String actionName() {
         return Messages.get(this, "action_name");
@@ -107,7 +111,7 @@ public class ChaseMark extends FlavourBuff implements ActionIndicator.Action {
             }
 
             if (dest == -1 || PathFinder.distance[dest] == Integer.MAX_VALUE){
-                Dungeon.hero.yellW("too_far");
+                Dungeon.hero.yellW("distance");
                 return;
             }
 

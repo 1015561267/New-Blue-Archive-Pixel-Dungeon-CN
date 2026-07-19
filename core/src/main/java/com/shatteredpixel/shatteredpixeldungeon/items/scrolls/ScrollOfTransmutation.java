@@ -71,6 +71,10 @@ public class ScrollOfTransmutation extends InventoryScroll {
 
 	@Override
 	protected boolean usableOnItem(Item item) {
+		//특정 아이템에 한해 변환 불가능 우선 적용
+		if (!item.transmutable()) {
+			return false;
+		}
 		//all melee weapons, except pickaxe when in a mining level
 		if (item instanceof MeleeWeapon){
 			return !(item instanceof Pickaxe && Dungeon.level instanceof MiningLevel);
@@ -264,6 +268,16 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		n.cursed = w.cursed;
 		n.augment = w.augment;
 		n.enchantHardened = w.enchantHardened;
+
+		if (n instanceof Gun && w instanceof Gun) {
+			if (((Gun) w).checkKit() != null) {
+				//만약 키트가 강화되어 있다면 키트에 의해 추가로 증가한 강화수치를 1 감소시킴
+				if (((Gun) w).checkKit().level() > 0) {
+					n.degrade( ((Gun) w).checkKit().level() );
+				}
+				((Gun) n).affixKit(((Gun) w).checkKit());
+			}
+		}
 
 		//technically a new set, ensure old one is destroyed (except for darts)
 		if (w instanceof MissileWeapon && w.isUpgradable()){
