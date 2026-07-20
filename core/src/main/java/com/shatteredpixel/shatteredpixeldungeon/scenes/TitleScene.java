@@ -526,14 +526,15 @@ public class TitleScene extends PixelScene {
                 String text =  "_怎么又是你？_\n" +
                         "Man!what can I say?\n" +
                         "_这回是什么版本？_\n" +
-                        "New-Blue-Archive-Pixel-Dungeon，简称NBPD，与之前的枪火重制版类似只不过是对BAPD做重置。\n" +
+                        "New-Blue-Archive-Pixel-Dungeon，简称NBAPD，与之前的枪火重制版类似只不过是对BAPD做重置。\n" +
                         "_Bug会变少吗？_\n" +
                         "你问我，那我问你。\n" +
                         "QQ：1015561267\n" +
                         "QQ群：460655540\n" +
                         "github项目地址：https://github.com/ \n" + "1015561267/New-Blue-Archive-Pixel-Dungeon-CN \n"+
-                        "——by _Teller_\n";
-
+						"学生遗物程序由译者完成，贴图素材由QQ用户3933367362提供，设计由QQ用户3059117107提供，测试阶段可能出现bug，如发现请与译者联系。\n" +
+						"——by _Teller_\n"
+						;
                 RenderedTextBlock.cnLocalizationFlag = true;
 
                 RenderedTextBlock info = PixelScene.renderTextBlock( text, 6 );
