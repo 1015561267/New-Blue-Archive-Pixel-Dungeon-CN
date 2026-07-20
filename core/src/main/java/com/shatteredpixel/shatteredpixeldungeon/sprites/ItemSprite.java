@@ -108,7 +108,13 @@ public class ItemSprite extends MovieClip {
 		super( Assets.Sprites.ITEMS );
 		view(image, glowing);
 	}
-	
+
+	public ItemSprite(int image, Glowing glowing, boolean b) {
+		//this is a rough trick to handle journal button,don't copy this
+		super( Assets.Sprites.NBA_REMAIINS );
+		viewNbaRemainsItem(image, glowing);
+	}
+
 	public void link() {
 		link(heap);
 	}
@@ -253,6 +259,7 @@ public class ItemSprite extends MovieClip {
 	}
 	
 	public ItemSprite view( int image, Glowing glowing ) {
+		texture(Assets.Sprites.ITEMS);//this is not necessary,however with remains below,without this will cause sprite issues
 		if (this.emitter != null) this.emitter.killAndErase();
 		emitter = null;
 		frame( image );

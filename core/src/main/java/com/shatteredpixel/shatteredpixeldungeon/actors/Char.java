@@ -530,6 +530,10 @@ public abstract class Char extends Actor {
 			if (this instanceof Hero && this.buff(YuzuStatus.class) != null) {
 				dmg = this.buff(YuzuStatus.class).criticalDamage((Hero)this, enemy, dmg);
 			}
+			else if( this instanceof Hero && this.buff(YuzuStatus.CertainCritBuff.class) != null ){
+				hero.buff(YuzuStatus.CertainCritBuff.class).countDown(1);
+				dmg *= 1.2f;
+			}
 
 			int effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
 			//do not trigger on-hit logic if defenseProc returned a negative value

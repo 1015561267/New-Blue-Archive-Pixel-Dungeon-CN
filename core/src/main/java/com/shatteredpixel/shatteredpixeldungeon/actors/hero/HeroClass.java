@@ -105,11 +105,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.ArisRemain;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.HoshinoRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.IzunaRemain;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.MiyakoRemain;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.MiyuRemain;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.NoaRemain;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.NonomiRemain;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.ShirokoRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.YuzuRemain;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
@@ -204,13 +206,15 @@ public enum HeroClass {
 			new KingsCrown().collect();
 			new MagicalInfusion().quantity(10).collect();
 
-			new ArisRemain().collect();
-			new NonomiRemain().collect();
+			//new ArisRemain().collect();
+			//new NonomiRemain().collect();
 			new MiyakoRemain().collect();
-			new HoshinoRemain().collect();
+			//new HoshinoRemain().collect();
 			//new ShirokoRemain().collect();
 			//new NoaRemain().collect();
 			//new MiyuRemain().collect();
+			//new YuzuRemain().collect();
+			new IzunaRemain().collect();
 		}
 
 		new ScrollOfIdentify().identify();

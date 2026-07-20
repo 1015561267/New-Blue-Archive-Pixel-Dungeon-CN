@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.NbaRemainsItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
@@ -768,7 +769,13 @@ public class WndJournal extends WndTabbed {
 					}
 				}
 
-				sprite = new ItemSprite(item.image, seen ? item.glowing() : null);
+				if(item instanceof NbaRemainsItem){
+					sprite = new ItemSprite(item.image,seen ? item.glowing() : null,true);
+				}
+				else {
+					sprite = new ItemSprite(item.image, seen ? item.glowing() : null);
+				}
+
 				if (!seen)  {
 					if (item instanceof ExoticPotion){
 						sprite.frame(ItemSpriteSheet.POTION_CRIMSON);

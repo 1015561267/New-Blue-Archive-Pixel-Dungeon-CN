@@ -99,6 +99,15 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Embers;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.ArisRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.HoshinoRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.IzunaRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.MiyakoRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.MiyuRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.NoaRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.NonomiRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.ShirokoRemain;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.YuzuRemain;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
@@ -266,8 +275,8 @@ public enum Catalog {
 				TrinketCatalyst.class, Stylus.class, Torch.class, Honeypot.class, Ankh.class,
 				CorpseDust.class, Embers.class, CeremonialCandle.class, DarkGold.class, DwarfToken.class,
 				GooBlob.class, TengusMask.class, MetalShard.class, KingsCrown.class,
-				LiquidMetal.class, ArcaneResin.class);
-
+				LiquidMetal.class, ArcaneResin.class,
+				ArisRemain.class, NonomiRemain.class, MiyakoRemain.class, HoshinoRemain.class, ShirokoRemain.class, NoaRemain.class, MiyuRemain.class, YuzuRemain.class, IzunaRemain.class);
 	}
 
 	//old badges for pre-2.5
