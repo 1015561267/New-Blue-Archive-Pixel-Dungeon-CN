@@ -1,9 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -69,8 +67,8 @@ public class GunSmithingTool extends Item {
     }
 
     protected static void onItemSelected() {
-        curUser.spend( 1f );
         curUser.busy();
+        curUser.spend( 1f );
         (curUser.sprite).operate( curUser.pos );
 
         Sample.INSTANCE.play( Assets.Sounds.EVOKE );
@@ -97,7 +95,7 @@ public class GunSmithingTool extends Item {
 
     @Override
     public int value() {
-        return (30+20)*quantity;
+        return 30*quantity;
     }
 
     public static class WndModSelect extends WndOptions {
@@ -228,30 +226,7 @@ public class GunSmithingTool extends Item {
                                 @Override
                                 protected void onClick() {
                                     hide();
-//                                    switch (toMod.weightMod) {
-//                                        case NORMAL_WEIGHT:
-//                                            if (weight == Gun.WeightMod.LIGHT_WEIGHT) {
-//                                                toMod.tier -= 1;
-//                                            } else {
-//                                                toMod.tier += 1;
-//                                            }
-//                                            break;
-//                                        case LIGHT_WEIGHT:
-//                                            if (weight == Gun.WeightMod.NORMAL_WEIGHT) {
-//                                                toMod.tier += 1;
-//                                            } else {
-//                                                toMod.tier += 2;
-//                                            }
-//                                            break;
-//                                        case HEAVY_WEIGHT:
-//                                            if (weight == Gun.WeightMod.NORMAL_WEIGHT) {
-//                                                toMod.tier -= 1;
-//                                            } else {
-//                                                toMod.tier -= 2;
-//                                            }
-//                                            break;
-//                                    }
-                                    toMod.weightMod=weight;
+                                    toMod.weightMod = weight;
                                     onItemSelected();
                                 }
                             };
@@ -347,10 +322,10 @@ public class GunSmithingTool extends Item {
     public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
         {
-            inputs =  new Class[]{StoneOfAugmentation.class, LiquidMetal.class};
-            inQuantity = new int[]{1, 20};
+            inputs =  new Class[]{StoneOfAugmentation.class};
+            inQuantity = new int[]{1};
 
-            cost = 3;
+            cost = 4;
 
             output = GunSmithingTool.class;
             outQuantity = 1;
