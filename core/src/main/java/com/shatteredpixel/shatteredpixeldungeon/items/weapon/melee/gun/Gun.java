@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.AR.AR_T2;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.AR.AR_T3;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.AR.AR_T4;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.AR.AR_T5;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.AR.UniqueIdea;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.GL.GL;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.GL.GL_T1;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.GL.GL_T2;
@@ -84,6 +85,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_T3;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_T4;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_T5;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -114,6 +116,7 @@ public class Gun extends MeleeWeapon {
     protected float shootingSpeed = 1f; //발사 시 소모하는 턴의 배율. 낮을수록 빠르다
     protected float shootingAccuracy = 1f; //발사 시 탄환 정확성의 배율. 높을 수록 정확하다.
     protected boolean explode = false; //탄환 폭발 여부
+    protected boolean selfHarm = true; //탄환 폭발의 자가 피해 여부
     protected boolean spread = false; //산탄 여부. 멀리 떨어지면 탄환 위력이 감소한다.
     public static final String TXT_STATUS = "%d/%d";
 
@@ -256,6 +259,7 @@ public class Gun extends MeleeWeapon {
     private static final String SHOOTING_SPEED = "shootingSpeed";
     private static final String SHOOTING_ACCURACY = "shootingAccuracy";
     private static final String EXPLODE = "explode";
+    private static final String SELF_HARM = "selfHarm";
     private static final String SPREAD = "spread";
     private static final String RIOT = "riot";
     private static final String SHOOTALL = "shootAll";
@@ -277,6 +281,7 @@ public class Gun extends MeleeWeapon {
         bundle.put(SHOOTING_SPEED, shootingSpeed);
         bundle.put(SHOOTING_ACCURACY, shootingAccuracy);
         bundle.put(EXPLODE, explode);
+        bundle.put(SELF_HARM, selfHarm);
         bundle.put(SPREAD, spread);
         bundle.put(BARREL_MOD, barrelMod);
         bundle.put(MAGAZINE_MOD, magazineMod);
@@ -298,6 +303,7 @@ public class Gun extends MeleeWeapon {
         shootingSpeed = bundle.getFloat(SHOOTING_SPEED);
         shootingAccuracy = bundle.getFloat(SHOOTING_ACCURACY);
         explode = bundle.getBoolean(EXPLODE);
+        selfHarm = bundle.getBoolean(SELF_HARM);
         spread = bundle.getBoolean(SPREAD);
         barrelMod = bundle.getEnum(BARREL_MOD, BarrelMod.class);
         magazineMod = bundle.getEnum(MAGAZINE_MOD, MagazineMod.class);
@@ -603,9 +609,13 @@ public class Gun extends MeleeWeapon {
 
     }
 
+    protected int baseBulletMin(int lvl) {
+        return tier() + lvl;
+    }
+
     public int bulletMin(int lvl) {
         if (hero != null) {
-            int damage = tier() + lvl + RingOfSharpshooting.levelDamageBonus(hero);
+            int damage = baseBulletMin(lvl) + RingOfSharpshooting.levelDamageBonus(hero);
 
             if (hero.buff(Talent.IntimidateBonusDamageBuff.class) != null) {
                 damage += hero.buff(Talent.IntimidateBonusDamageBuff.class).dmgBonus();
@@ -613,7 +623,7 @@ public class Gun extends MeleeWeapon {
 
             return damage;
         } else {
-            return tier() + lvl;
+            return baseBulletMin(lvl);
         }
 
     }
@@ -1101,19 +1111,24 @@ public class Gun extends MeleeWeapon {
 
         @Override
         protected float adjacentAccFactor(Char owner, Char target) {
-            float ACC = super.adjacentAccFactor(owner, target);
-            if (owner instanceof Hero) {
-                Hero hero = (Hero) owner;
-                if (hero.buff(WireHook.PointBlankShot.class) != null) {
-                    ACC *= 3f;
-                }
-                if (hero.hasTalent(Talent.HOSHINO_T3_2)) {
-                    ACC *= 1+0.5f*((Hero)owner).pointsInTalent(Talent.HOSHINO_T3_2);
-                }
-                if (hero.pointsInTalent(Talent.NOA_EX1_3) >= 2 && isSpecialShot()) {
-                    return Char.INFINITE_ACCURACY;
+            float ACC = 1f;
+            if (Dungeon.level.adjacent( owner.pos, target.pos )) {
+                ACC *= 0.5f;
+
+                if (owner instanceof Hero){
+                    Hero hero = (Hero) owner;
+                    if (hero.buff(WireHook.PointBlankShot.class) != null) {
+                        ACC *= 3f;
+                    }
+                    if (hero.hasTalent(Talent.HOSHINO_T3_2)) {
+                        ACC *= 1+0.5f*((Hero)owner).pointsInTalent(Talent.HOSHINO_T3_2);
+                    }
+                    if (hero.pointsInTalent(Talent.NOA_EX1_3) >= 2 && isSpecialShot()) {
+                        return Char.INFINITE_ACCURACY;
+                    }
                 }
             }
+
             return ACC;
         }
 
@@ -1223,7 +1238,9 @@ public class Gun extends MeleeWeapon {
                     }
                     Char ch = Actor.findChar(c);
                     if (ch != null && !targets.contains(ch)) {
-                        targets.add(ch);
+                        if (!(ch instanceof Hero && !selfHarm)) {
+                            targets.add(ch);
+                        }
                     }
                 }
             }
@@ -1331,7 +1348,7 @@ public class Gun extends MeleeWeapon {
                 MG_T1::new, MG_T2::new, MG_T3::new, MG_T4::new, MG_T5::new
         });
         gunMap.put(AR.class, new Supplier[]{
-                AR_T1::new, AR_T2::new, AR_T3::new, AR_T4::new, AR_T5::new
+                AR_T1::new, AR_T2::new, AR_T3::new, AR_T4::new, AR_T5::new, UniqueIdea::new
         });
         gunMap.put(GL.class, new Supplier[]{
                 GL_T1::new, GL_T2::new, GL_T3::new, GL_T4::new, GL_T5::new
@@ -1351,5 +1368,22 @@ public class Gun extends MeleeWeapon {
         }
 
         return new AR_T1(); //만약 아무것도 반환하지 않을 경우 기본적으로 1티어 AR을 반환함
+    }
+
+    public static class PlaceHolder extends Gun {
+        @Override
+        public boolean isSimilar(Item item) {
+            return !(item instanceof SpecialGun);
+        }
+
+        @Override
+        public String status() {
+            return null;
+        }
+
+        @Override
+        public String info() {
+            return "";
+        }
     }
 }

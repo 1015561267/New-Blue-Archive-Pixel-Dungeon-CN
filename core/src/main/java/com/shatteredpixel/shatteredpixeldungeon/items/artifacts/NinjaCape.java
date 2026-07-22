@@ -15,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -39,9 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -129,6 +128,11 @@ public class NinjaCape extends Artifact {
 					maxBlinkDistance += 1;
 				}
 
+				if (Dungeon.level.solid[target] && !Dungeon.level.passable[target]) {
+					hero.yellW("solid");
+					return;
+				}
+
 				if ((!Dungeon.level.heroFOV[target] && hero.pointsInTalent(Talent.IZUNA_EX1_3) < 2)
 						|| !(Dungeon.level.visited[target] || Dungeon.level.mapped[target])) {
 					hero.yellW("fov");
@@ -173,8 +177,9 @@ public class NinjaCape extends Artifact {
 				GameScene.updateFog();
 
 				if (hero.pointsInTalent(Talent.IZUNA_EX1_3) < 3) {
-					hero.spend( 1f );
+					Buff.affect(hero, GreaterHaste.class).set(2);
 				}
+				hero.spend( 1f );
 				Sample.INSTANCE.play(Assets.Sounds.MELD);
 				activeBuff = activeBuff();
 				activeBuff.attachTo(hero);
@@ -506,8 +511,8 @@ public class NinjaCape extends Artifact {
 
 		@Override
 		public int defenseProc( Char enemy, int damage ) {
-			if (Dungeon.hero.hasTalent(Talent.IZUNA_EX1_2) && Random.Float() < Dungeon.hero.pointsInTalent(Talent.IZUNA_EX1_2)/3f) {
-				Buff.affect(Dungeon.hero, GreaterHaste.class).set(2);
+			if (Dungeon.hero.hasTalent(Talent.IZUNA_EX1_2)) {
+				Buff.affect(enemy, Vulnerable.class, Dungeon.hero.pointsInTalent(Talent.IZUNA_EX1_2));
 			}
 
 			return super.defenseProc(enemy, damage);

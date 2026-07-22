@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.AR;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -35,6 +36,17 @@ public class AR extends Gun {
     public class ARBullet extends Bullet {
         {
             image = ItemSpriteSheet.SINGLE_BULLET;
+        }
+    }
+
+    public static class PlaceHolder extends Gun.PlaceHolder {
+        {
+            image = ItemSpriteSheet.AR_PLACEHOLDER;
+        }
+
+        @Override
+        public boolean isSimilar(Item item) {
+            return super.isSimilar(item) && item instanceof AR;
         }
     }
 }

@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.MG;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -26,7 +27,7 @@ public class MG extends Gun {
     @Override
     public int baseBulletMax(int lvl) {
         return 2 * (tier()+2) +
-                Math.round(0.5f * lvl * (tier()+2)); //2강 당 3/4/5/6/7 증가
+                Math.round(0.5f * lvl * (tier()+1)); //2강 당 2/3/4/5/6 증가
     }
 
     @Override
@@ -37,6 +38,17 @@ public class MG extends Gun {
     public class MGBullet extends Bullet {
         {
             image = ItemSpriteSheet.TRIPLE_BULLET;
+        }
+    }
+
+    public static class PlaceHolder extends Gun.PlaceHolder {
+        {
+            image = ItemSpriteSheet.MG_PLACEHOLDER;
+        }
+
+        @Override
+        public boolean isSimilar(Item item) {
+            return super.isSimilar(item) && item instanceof MG;
         }
     }
 

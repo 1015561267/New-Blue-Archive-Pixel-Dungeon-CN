@@ -88,7 +88,7 @@ public class Grenade extends Item {
 
     @Override
     public int level() {
-        int level = hero == null ? 0 : hero.lvl/5;
+        int level = Dungeon.hero == null ? 0 : Dungeon.hero.lvl/5;
         return level;
     }
 
@@ -110,7 +110,7 @@ public class Grenade extends Item {
 
         max += this.buffedLvl();
 
-        if (Dungeon.hero!=null && hero.hasTalent(Talent.MIYAKO_T2_2)) max++;
+        if (Dungeon.hero != null && Dungeon.hero.hasTalent(Talent.MIYAKO_T2_2)) max++;
 
         return max;
     }
@@ -133,7 +133,7 @@ public class Grenade extends Item {
         Item.updateQuickslot();
         if (oldAmt != amount) {
             if (!special) {
-                hero.sprite.showStatus(CharSprite.BLUE, TXT_ADD, amount-oldAmt, this.name());
+                Dungeon.hero.sprite.showStatus(CharSprite.BLUE, TXT_ADD, amount-oldAmt, this.name());
             }
         }
     }
@@ -264,7 +264,7 @@ public class Grenade extends Item {
                 effectsOnChar(ch);
             }
 
-            if (ch == hero && !ch.isAlive()) {
+            if (ch == Dungeon.hero && !ch.isAlive()) {
                 GLog.n(Messages.get(this, "ondeath"));
                 Dungeon.fail(this);
             }

@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -24,8 +25,13 @@ public class SR extends Gun {
     }
 
     @Override
+    protected int baseBulletMin(int lvl) {
+        return super.baseBulletMin(lvl)*2;
+    }
+
+    @Override
     public int baseBulletMax(int lvl) {
-        return 4 * (tier()+2) +
+        return 5 * (tier()+2) +
                 lvl * (tier()+2);
     }
 
@@ -37,6 +43,17 @@ public class SR extends Gun {
     public class SRBullet extends Bullet {
         {
             image = ItemSpriteSheet.SNIPER_BULLET;
+        }
+    }
+
+    public static class PlaceHolder extends Gun.PlaceHolder {
+        {
+            image = ItemSpriteSheet.SR_PLACEHOLDER;
+        }
+
+        @Override
+        public boolean isSimilar(Item item) {
+            return super.isSimilar(item) && item instanceof SR;
         }
     }
 }

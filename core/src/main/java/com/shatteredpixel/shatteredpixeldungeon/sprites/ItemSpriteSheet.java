@@ -978,11 +978,11 @@ public class ItemSpriteSheet {
 	public static final int SG_TIER_4 = SG+3;
 	public static final int SG_TIER_5 = SG+4;
 	static{
-		assignItemRect(SG_TIER_1,	12, 13);
-		assignItemRect(SG_TIER_2,	14, 15);
-		assignItemRect(SG_TIER_3,	14, 16);
+		assignItemRect(SG_TIER_1,	10, 14);
+		assignItemRect(SG_TIER_2,	12, 13);
+		assignItemRect(SG_TIER_3,	14, 15);
 		assignItemRect(SG_TIER_4,	14, 16);
-		assignItemRect(SG_TIER_5, 	15, 16);
+		assignItemRect(SG_TIER_5,	15, 16);
 	}
 
 	private static final int SMG  =                                   xy(9, 40);  //8 slots
@@ -1013,6 +1013,42 @@ public class ItemSpriteSheet {
 		assignItemRect(SR_TIER_4,	15, 16);
 		assignItemRect(SR_TIER_5, 	15, 16);
 		assignItemRect(SR_SPECIAL, 	15, 16);
+	}
+
+	private static final int GUN_PLACEHOLDERS = 					xy(9, 41); //8 slots
+	public static final int AR_PLACEHOLDER = GUN_PLACEHOLDERS+0;
+	public static final int GL_PLACEHOLDER = GUN_PLACEHOLDERS+1;
+	public static final int HG_PLACEHOLDER = GUN_PLACEHOLDERS+2;
+	public static final int MG_PLACEHOLDER = GUN_PLACEHOLDERS+3;
+	public static final int SG_PLACEHOLDER = GUN_PLACEHOLDERS+4;
+	public static final int SMG_PLACEHOLDER = GUN_PLACEHOLDERS+5;
+	public static final int SR_PLACEHOLDER = GUN_PLACEHOLDERS+6;
+	static {
+		assignItemRect(AR_PLACEHOLDER, 	15, 16);
+		assignItemRect(GL_PLACEHOLDER, 	16, 16);
+		assignItemRect(HG_PLACEHOLDER, 	15, 16);
+		assignItemRect(MG_PLACEHOLDER, 	16, 15);
+		assignItemRect(SG_PLACEHOLDER, 	15, 16);
+		assignItemRect(SMG_PLACEHOLDER, 15, 16);
+		assignItemRect(SR_PLACEHOLDER, 	15, 16);
+	}
+
+	private static final int SPECIAL_GUNS = 						xy(1, 42); //16 slots
+	public static final int PIETY 				= SPECIAL_GUNS+0;
+	public static final int SHOOTING_STAR 		= SPECIAL_GUNS+1;
+	public static final int JUSTICE_INCARNATE	= SPECIAL_GUNS+2;
+	public static final int TWIN_DRAGON			= SPECIAL_GUNS+3;
+	public static final int MULLIGAN			= SPECIAL_GUNS+4;
+	public static final int UNIQUE_IDEA			= SPECIAL_GUNS+5;
+	public static final int FUNNY_FIREWORK		= SPECIAL_GUNS+6;
+	static {
+		assignItemRect(PIETY, 				12, 15);
+		assignItemRect(SHOOTING_STAR, 		14, 15);
+		assignItemRect(JUSTICE_INCARNATE, 	15, 16);
+		assignItemRect(TWIN_DRAGON, 		15, 16);
+		assignItemRect(MULLIGAN, 			14, 16);
+		assignItemRect(UNIQUE_IDEA, 		15, 16);
+		assignItemRect(FUNNY_FIREWORK, 		10, 13);
 	}
 
 	//for smaller 8x8 icons that often accompany an item sprite
