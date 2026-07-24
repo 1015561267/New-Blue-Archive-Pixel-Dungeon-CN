@@ -629,9 +629,6 @@ public class Gun extends MeleeWeapon {
     }
 
     public int bulletMin() {
-        if (hero != null) {
-            return bulletMin(this.buffedLvl());
-        }
         return bulletMin(this.buffedLvl());
     }
 
@@ -715,7 +712,7 @@ public class Gun extends MeleeWeapon {
         //근접 무기의 설명을 모두 가져옴, 여기에서 할 것은 근접 무기의 설명에 추가로 생기는 문장을 더하는 것
         if (levelKnown) { //감정되어 있을 때
             info += "\n\n" + Messages.get(Gun.class, "gun_desc",
-                    shotPerShoot(), augment.damageFactor(bulletMin(Dungeon.hero != null ? buffedLvl()+RingOfSharpshooting.levelDamageBonus(hero) : buffedLvl())), augment.damageFactor(bulletMax(Dungeon.hero != null ? buffedLvl()+RingOfSharpshooting.levelDamageBonus(hero) : buffedLvl())), round, maxRound(), new DecimalFormat("#.##").format(reloadTime()));
+                    shotPerShoot(), augment.damageFactor(bulletMin(buffedLvl())), augment.damageFactor(bulletMax(buffedLvl())), round, maxRound(), new DecimalFormat("#.##").format(reloadTime()));
         } else { //감정되어 있지 않을 때
             info += "\n\n" + Messages.get(Gun.class, "gun_typical_desc",
                     shotPerShoot(), augment.damageFactor(bulletMin(0)), augment.damageFactor(bulletMax(0)), round, maxRound(), new DecimalFormat("#.##").format(reloadTime()));
@@ -765,25 +762,25 @@ public class Gun extends MeleeWeapon {
             }
             if (whatModded[1]) {
                 info += Messages.get(GunSmithingTool.WndMod.class, magazineMod.name());
-                if (whatModded[2] || whatModded[3] || whatModded[4] || whatModded[5]) { //이 개조 이후에 추가로 개조된 것이 있는지를 확인
+                if (whatModded[2] || whatModded[3] || whatModded[4] || whatModded[5] || whatModded[6]) { //이 개조 이후에 추가로 개조된 것이 있는지를 확인
                     info += ", ";
                 }
             }
             if (whatModded[2]) {
                 info += Messages.get(GunSmithingTool.WndMod.class, bulletMod.name());
-                if (whatModded[3] || whatModded[4] || whatModded[5]) { //이 개조 이후에 추가로 개조된 것이 있는지를 확인
+                if (whatModded[3] || whatModded[4] || whatModded[5] || whatModded[6]) { //이 개조 이후에 추가로 개조된 것이 있는지를 확인
                     info += ", ";
                 }
             }
             if (whatModded[3]) {
                 info += Messages.get(GunSmithingTool.WndMod.class, weightMod.name());
-                if (whatModded[4] || whatModded[5]) { //이 개조 이후에 추가로 개조된 것이 있는지를 확인
+                if (whatModded[4] || whatModded[5] || whatModded[6]) { //이 개조 이후에 추가로 개조된 것이 있는지를 확인
                     info += ", ";
                 }
             }
             if (whatModded[4]) {
                 info += Messages.get(GunSmithingTool.WndMod.class, attachMod.name());
-                if (whatModded[5]) { //이 개조 이후에 추가로 개조된 것이 있는지를 확인
+                if (whatModded[5] || whatModded[6]) { //이 개조 이후에 추가로 개조된 것이 있는지를 확인
                     info += ", ";
                 }
             }
