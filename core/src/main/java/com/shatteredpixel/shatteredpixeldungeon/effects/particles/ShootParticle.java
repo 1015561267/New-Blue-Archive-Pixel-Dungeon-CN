@@ -1,12 +1,16 @@
 package com.shatteredpixel.shatteredpixeldungeon.effects.particles;
 
+import static com.shatteredpixel.shatteredpixeldungeon.actors.Char.INFINITE_ACCURACY;
+
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RabbitSquadBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR;
@@ -109,9 +113,36 @@ public class ShootParticle extends SnipeParticle {
                 attackingBullet = bullet;
             } else {
                 Gun gun = Gun.getGun(SR.class, this.tier, this.lvl);
+                if(SPDSettings.rabbitEnhance()){
+                    if(Dungeon.hero.belongings.weapon!=null && Dungeon.hero.belongings.weapon instanceof Gun){
+                        Gun temp = (Gun) Dungeon.hero.belongings.weapon;
+                        gun.enchantment          = temp.enchantment;
+                        gun.curseInfusionBonus   = temp.curseInfusionBonus;
+                        gun.masteryPotionBonus   = temp.masteryPotionBonus;
+                        gun.levelKnown           = temp.levelKnown;
+                        gun.cursedKnown          = temp.cursedKnown;
+                        gun.cursed               = temp.cursed;
+                        gun.augment              = temp.augment;
+                        gun.enchantHardened      = temp.enchantHardened;
+                        gun.keptThoughLostInvent = temp.keptThoughLostInvent;
+                        gun.barrelMod = temp.barrelMod;
+                        gun.magazineMod = temp.magazineMod;
+                        gun.bulletMod = temp.bulletMod;
+                        gun.weightMod = temp.weightMod;
+                        gun.attachMod = temp.attachMod;
+                        gun.enchantMod = temp.enchantMod;
+                        gun.inscribeMod = temp.inscribeMod;
+                    }
+                }
                 attackingBullet = gun.knockBullet();
                 if (Dungeon.hero.hasTalent(Talent.MIYAKO_EX1_2)) {
-                    attackingBullet.setAccMulti(1f+(2f*Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_2)-1f));
+                    if(!SPDSettings.rabbitEnhance()){
+                        attackingBullet.setAccMulti(1f+(2f*Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_2)-1f));
+                    }
+                    else {
+                        attackingBullet.setAccMulti(INFINITE_ACCURACY);
+                        Buff.affect(Dungeon.hero,RabbitSquadBuff.MiyuDmgEnhance.class);
+                    }
                 }
             }
 
