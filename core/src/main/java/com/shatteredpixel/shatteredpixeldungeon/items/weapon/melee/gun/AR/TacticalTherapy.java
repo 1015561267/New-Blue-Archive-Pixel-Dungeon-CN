@@ -5,7 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SpecialGun;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class TacticalTherapy extends AR {
+public class TacticalTherapy extends AR implements SpecialGun {
     {
         image = ItemSpriteSheet.TACTICAL_THERAPY;
         tier = 3;
@@ -16,7 +16,7 @@ public class TacticalTherapy extends AR {
         return new TacticalTherapyBullet();
     }
 
-    public class TacticalTherapyBullet extends Bullet {
+    public class TacticalTherapyBullet extends ARBullet {
         @Override
         public int proc(Char attacker, Char defender, int damage) {
             int dmg = super.proc(attacker, defender, damage);

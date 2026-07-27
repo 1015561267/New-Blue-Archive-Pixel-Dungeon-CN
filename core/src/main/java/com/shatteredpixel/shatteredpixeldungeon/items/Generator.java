@@ -209,6 +209,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.MG.MG_T4;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.MG.MG_T5;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.MG.Mulligan;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.MT.FancyLight;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SG.MTET;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SG.SG_T1;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SG.SG_T2;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SG.SG_T3;
@@ -228,6 +229,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_T2;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_T3;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_T4;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_T5;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.WineRedAdmire;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ForceCube;
@@ -607,9 +609,14 @@ public class Generator {
 					TwinDragon.class,
 					JusticeIncarnate.class,
 					TacticalTherapy.class,
-					FancyLight.class
+					FancyLight.class,
+
+
+					MTET.class,
+
+					WineRedAdmire.class,
 			};
-			GUN_SP.defaultProbs = new float[]{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			GUN_SP.defaultProbs = new float[]{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 			GUN_SP.probs = GUN_SP.defaultProbs.clone();
 			
 			//see Generator.randomArmor
