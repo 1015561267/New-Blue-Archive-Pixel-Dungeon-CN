@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.JusticeParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SpecialGun;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
@@ -39,6 +40,19 @@ public class JusticeIncarnate extends SR implements SpecialGun {
                 CellEmitter.heroCenter(defender.pos).burst(JusticeParticle.factory(), 1);
             }
             return finalDmg;
+        }
+    }
+
+    public static class Recipe extends BaseRecipe {
+
+        @Override
+        public Class<? extends Gun> ingredients() {
+            return SR.class;
+        }
+
+        @Override
+        public Class<? extends Gun> result() {
+            return JusticeIncarnate.class;
         }
     }
 }

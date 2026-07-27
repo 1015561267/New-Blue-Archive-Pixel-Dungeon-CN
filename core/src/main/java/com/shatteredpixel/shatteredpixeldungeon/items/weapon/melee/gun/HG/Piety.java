@@ -5,6 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SpecialGun;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
@@ -60,6 +61,19 @@ public class Piety extends HG implements SpecialGun {
         @Override
         public void throwSound() {
             Sample.INSTANCE.play( Assets.Sounds.HIT_CRUSH, 1, Random.Float(0.25f, 0.5f) ); //더 낮은 음
+        }
+    }
+
+    public static class Recipe extends BaseRecipe {
+
+        @Override
+        public Class<? extends Gun> ingredients() {
+            return HG.class;
+        }
+
+        @Override
+        public Class<? extends Gun> result() {
+            return Piety.class;
         }
     }
 }

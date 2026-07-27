@@ -2,18 +2,25 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SMG;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SpecialGun;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.Tweener;
-import com.watabou.utils.Random;
 
 public class TwinDragon extends SMG implements SpecialGun {
     {
         image = ItemSpriteSheet.TWIN_DRAGON;
-        tier = 3;
+        tier = 4;
         shotPerShoot = 6;
         shootingAccuracy = 0.5f;
+    }
+
+
+    @Override
+    public int baseBulletMax(int lvl) {
+        return 2 * (tier()) +
+                Math.round(0.5f * lvl * (tier()-1)); //3티어 성능
     }
 
     @Override
@@ -35,6 +42,19 @@ public class TwinDragon extends SMG implements SpecialGun {
                     }
                 });
             }
+        }
+    }
+
+    public static class Recipe extends BaseRecipe {
+
+        @Override
+        public Class<? extends Gun> ingredients() {
+            return SMG.class;
+        }
+
+        @Override
+        public Class<? extends Gun> result() {
+            return TwinDragon.class;
         }
     }
 }

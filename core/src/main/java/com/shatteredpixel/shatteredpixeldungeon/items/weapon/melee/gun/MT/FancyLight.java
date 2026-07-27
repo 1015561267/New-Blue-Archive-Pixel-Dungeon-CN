@@ -1,31 +1,27 @@
-package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.AR;
+package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.MT;
 
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.GL.GL;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SpecialGun;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class UniqueIdea extends AR implements SpecialGun {
-    {
-        image = ItemSpriteSheet.UNIQUE_IDEA;
-        tier = 4;
-    }
+public class FancyLight extends MT implements SpecialGun {
 
-    @Override
-    public int baseBulletMax(int lvl) {
-        return 4 * (tier() - 1) +   //2티어급 기본 피해량
-                lvl * (tier() + 3); //6티어급 강화 효율
+    {
+        image = ItemSpriteSheet.FACNY_LIGHT;
+        tier = 4;
     }
 
     public static class Recipe extends BaseRecipe {
 
         @Override
         public Class<? extends Gun> ingredients() {
-            return AR.class;
+            return GL.class;
         }
 
         @Override
         public Class<? extends Gun> result() {
-            return UniqueIdea.class;
+            return FancyLight.class;
         }
     }
 }

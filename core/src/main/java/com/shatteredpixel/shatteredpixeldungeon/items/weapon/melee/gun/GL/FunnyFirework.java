@@ -6,8 +6,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SpecialGun;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class FunnyFirework extends GL implements SpecialGun {
@@ -19,6 +19,12 @@ public class FunnyFirework extends GL implements SpecialGun {
     }
 
     @Override
+    public int baseBulletMax(int lvl) {
+        return 4 * (tier() + 1) +
+                lvl * (tier() + 1);
+    }
+
+    @Override
     public Bullet knockBullet(){
         return new FunnyFireworkBullet();
     }
@@ -26,8 +32,8 @@ public class FunnyFirework extends GL implements SpecialGun {
     public class FunnyFireworkBullet extends GLBullet {
         @Override
         public int proc(Char attacker, Char defender, int damage) {
-            if (!defender.isImmune(Blindness.class)) {
-                Buff.affect(defender, Blindness.class, 2f);
+            if (!defender.isImmune(Blindness.class) && defender.isAlive()) {
+                Buff.prolong(defender, Blindness.class, 2f);
             }
             return super.proc(attacker, defender, damage);
         }
@@ -44,6 +50,19 @@ public class FunnyFirework extends GL implements SpecialGun {
                     Buff.prolong( curUser, Light.class, 10f+buffedLvl()*5);
                 }
             }
+        }
+    }
+
+    public static class Recipe extends BaseRecipe {
+
+        @Override
+        public Class<? extends Gun> ingredients() {
+            return GL.class;
+        }
+
+        @Override
+        public Class<? extends Gun> result() {
+            return FunnyFirework.class;
         }
     }
 }

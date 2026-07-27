@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SpecialGun;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -42,6 +43,19 @@ public class ShootingStar extends SG implements SpecialGun {
                 Buff.affect(defender, Amok.class, 2f);
             }
             return super.proc(attacker, defender, damage);
+        }
+    }
+
+    public static class Recipe extends BaseRecipe {
+
+        @Override
+        public Class<? extends Gun> ingredients() {
+            return SG.class;
+        }
+
+        @Override
+        public Class<? extends Gun> result() {
+            return ShootingStar.class;
         }
     }
 }
