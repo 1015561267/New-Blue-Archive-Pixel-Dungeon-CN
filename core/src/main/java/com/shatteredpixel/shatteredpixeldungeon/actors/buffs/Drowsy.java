@@ -21,7 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 public class Drowsy extends FlavourBuff {
@@ -53,7 +56,9 @@ public class Drowsy extends FlavourBuff {
 	@Override
 	public boolean act(){
 		Buff.affect(target, MagicalSleep.class);
-
+		if(target instanceof Hero && ((Hero) target).heroClass == HeroClass.HOSHINO){
+			Badges.validateNiceSleep();
+		}
 		return super.act();
 	}
 

@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -72,6 +73,8 @@ public class SuperNovaCharge extends CounterBuff implements ActionIndicator.Acti
             }
         }
         countUp(cnt);
+
+        Badges.validateMaximumPower( (int) this.count() );
     }
 
     @Override

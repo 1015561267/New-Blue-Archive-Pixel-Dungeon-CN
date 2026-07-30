@@ -46,6 +46,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.active.HandGrenade;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.IronHorus;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.TrashBin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
@@ -123,6 +125,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.Bundle;
@@ -180,6 +184,13 @@ public enum Catalog {
 		}
 	}
 
+	private void removeItems(Class<?>... items){
+		for (Class<?> item : items){
+			seen.remove(item);
+			//useCount.put(item, 0);
+		}
+	}
+
 	public String title(){
 		return Messages.get(this, name() + ".title");
 	}
@@ -198,7 +209,8 @@ public enum Catalog {
 
 	static {
 
-		MELEE_WEAPONS.addItems(Generator.Category.WEP_T1.classes);
+		//MELEE_WEAPONS.addItems(Generator.Category.WEP_T1.classes);
+		MELEE_WEAPONS.addItems(WornShortsword.class);
 		MELEE_WEAPONS.addItems(Generator.Category.WEP_T2.classes);
 		MELEE_WEAPONS.addItems(Generator.Category.WEP_T3.classes);
 		MELEE_WEAPONS.addItems(Generator.Category.WEP_T4.classes);
@@ -218,6 +230,7 @@ public enum Catalog {
 		THROWN_WEAPONS.addItems(Generator.Category.MIS_T3.classes);
 		THROWN_WEAPONS.addItems(Generator.Category.MIS_T4.classes);
 		THROWN_WEAPONS.addItems(Generator.Category.MIS_T5.classes);
+		THROWN_WEAPONS.removeItems(ThrowingSpike.class);
 
 		ENCHANTMENTS.addItems(Weapon.Enchantment.common);
 		ENCHANTMENTS.addItems(Weapon.Enchantment.uncommon);
@@ -234,13 +247,13 @@ public enum Catalog {
 		RINGS.addItems(Generator.Category.RING.classes);
 
 		ARTIFACTS.addItems(Generator.Category.ARTIFACT.classes);
+		ARTIFACTS.removeItems(CloakOfShadows.class);
+		ARTIFACTS.removeItems(HolyTome.class);
 
 		TRINKETS.addItems(Generator.Category.TRINKET.classes);
 
 		MISC_EQUIPMENT.addItems(BrokenSeal.class, Claymore.class, HandGrenade.class, IronHorus.class, Bicycle.class, ConversionKit.class, TrashBin.class,
 				Waterskin.class, VelvetPouch.class, PotionBandolier.class, ScrollHolder.class, MagicalHolster.class, Amulet.class);
-
-
 
 		POTIONS.addItems(Generator.Category.POTION.classes);
 
@@ -251,8 +264,8 @@ public enum Catalog {
 		STONES.addItems(Generator.Category.STONE.classes);
 
 		FOOD.addItems( Food.class, Pasty.class, MysteryMeat.class, ChargrilledMeat.class,
-				StewedMeat.class, FrozenCarpaccio.class, SmallRation.class, Berry.class,
-				SupplyRation.class, Blandfruit.class, PhantomMeat.class, MeatPie.class, HardTack.class );
+				StewedMeat.class, FrozenCarpaccio.class, SmallRation.class, //Berry.class,SupplyRation.class,
+				Blandfruit.class, PhantomMeat.class, MeatPie.class, HardTack.class );
 
 		EXOTIC_POTIONS.addItems(ExoticPotion.exoToReg.keySet().toArray(new Class[0]));
 

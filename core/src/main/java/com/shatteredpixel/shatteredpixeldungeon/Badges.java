@@ -162,7 +162,8 @@ public class Badges {
 		BAG_BOUGHT_POTION_BANDOLIER,
 		BAG_BOUGHT_MAGICAL_HOLSTER,
 		ALL_BAGS_BOUGHT             ( 67 ),
-		MASTERY_COMBO               ( 68 ),
+		MASTERY_COMBO,
+		MAXIMUM_POWER 				(68),
 		MONSTERS_SLAIN_5            ( 69 ),
 		GOLD_COLLECTED_5            ( 70 ),
 		ITEM_LEVEL_4                ( 71 ),
@@ -184,6 +185,9 @@ public class Badges {
 		RESEARCHER_3                ( 85, BadgeType.JOURNAL ),
 		GAMES_PLAYED_3              ( 86, BadgeType.GLOBAL ),
 		HIGH_SCORE_3                ( 87 ),
+
+		NICE_SLEEP                ( 88 ),
+		NINJA_WAR               ( 89 ),
 
 		//platinum
 		MANY_BUFFS                  ( 96 ),
@@ -981,11 +985,21 @@ public class Badges {
 				}
 			}
 
+			if(badge == Badge.BOSS_SLAIN_2){
+				if(Dungeon.hero.heroClass == HeroClass.IZUNA){
+					badge = Badge.NINJA_WAR;
+					local.add( badge );
+					displayBadge( badge );
+				}
+			}
+
 			if (Statistics.qualifiedForBossRemainsBadge && Dungeon.hero.belongings.getItem(RemainsItem.class) != null){
 				badge = Badge.BOSS_SLAIN_REMAINS;
 				local.add( badge );
 				displayBadge( badge );
 			}
+
+
 
 		}
 	}
@@ -1121,6 +1135,22 @@ public class Badges {
 //			local.add( badge );
 //			displayBadge( badge );
 //		}
+	}
+
+	public static void validateMaximumPower( int n ) {
+		if (!local.contains( Badge.MAXIMUM_POWER ) && n >= 100) {
+			Badge badge = Badge.MAXIMUM_POWER;
+			local.add( badge );
+			displayBadge( badge );
+		}
+	}
+
+	public static void validateNiceSleep() {
+		if (!local.contains( Badge.NICE_SLEEP )) {
+			Badge badge = Badge.NICE_SLEEP;
+			local.add( badge );
+			displayBadge( badge );
+		}
 	}
 	
 	public static void validateVictory() {
