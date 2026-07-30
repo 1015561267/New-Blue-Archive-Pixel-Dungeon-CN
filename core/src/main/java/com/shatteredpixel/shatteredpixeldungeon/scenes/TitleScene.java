@@ -533,6 +533,7 @@ public class TitleScene extends PixelScene {
                         "QQ群：460655540\n" +
                         "github项目地址：https://github.com/ \n" + "1015561267/New-Blue-Archive-Pixel-Dungeon-CN \n"+
 						"学生遗物程序由译者完成，贴图素材由QQ用户3933367362提供，设计由QQ用户3059117107提供，测试阶段可能出现bug，如发现请与译者联系。\n" +
+						"新加成就程序由译者完成，贴图素材与设计由QQ用户3933367362提供，测试阶段可能出现bug，如发现请与译者联系。\n" +
 						"——by _Teller_\n"
 						;
                 RenderedTextBlock.cnLocalizationFlag = true;
