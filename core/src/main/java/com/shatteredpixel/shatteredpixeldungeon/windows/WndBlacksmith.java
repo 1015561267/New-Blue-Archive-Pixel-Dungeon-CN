@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -302,6 +303,11 @@ public class WndBlacksmith extends Window {
 					} else {
 						first.upgrade();
 					}
+
+					if(first instanceof Gun){
+						Statistics.upgradeGun = true;
+					}
+
 					Badges.validateItemLevelAquired( first );
 					Item.updateQuickslot();
 

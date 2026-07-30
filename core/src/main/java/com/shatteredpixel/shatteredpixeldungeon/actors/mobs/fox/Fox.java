@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.fox;
 
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -120,6 +121,16 @@ public class Fox extends Mob {
         if (kurumiID != -1 && !(this instanceof Kurumi))    ((Fox) Actor.findById(kurumiID)).allyDie(this );
         if (otogiID != -1 && !(this instanceof Otogi))      ((Fox) Actor.findById(otogiID)).allyDie(this );
         super.die(cause);
+
+        //FIXME a silly trick that could just count that 3 of them isn't alive and this one die means all die
+        int count = 0;
+        if(this.yukinoID == -1) count++;
+        if(this.nikoID == -1) count++;
+        if(this.kurumiID == -1) count++;
+        if(this.otogiID == -1) count++;
+        if(count>=3){
+            Badges.validateCleanedOut();
+        }
     }
 
     @Override

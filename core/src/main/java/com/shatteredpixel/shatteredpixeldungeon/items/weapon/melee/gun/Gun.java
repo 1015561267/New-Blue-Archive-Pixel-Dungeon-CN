@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AvantGardeKunBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RabbitSquadBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.NoticeTracker;
@@ -1157,6 +1158,13 @@ public class Gun extends MeleeWeapon {
             curUser = hero;
             boolean killedEnemy = false;
             boolean shootAll = hero.buff(ShootAllBuff.class) != null && hero.buff(ShootAllBuff.class).shootAll();
+
+            CounterBuff temp = null;
+            if(shootAll)
+            {
+                temp = Buff.affect(curUser, ShootAllBuff.ShootAllCountBuff.class);
+            }
+
             do {
                 if (explode) {
                     killedEnemy = explosiveShot(cell);
@@ -1166,6 +1174,13 @@ public class Gun extends MeleeWeapon {
 
                 onShoot(shootAll, useRound);
             } while (shootAll && round() > 0);
+
+            if(temp!=null){
+                if(temp.count()>=200) {
+                    Badges.validateFullFirepower();
+                }
+                hero.buff(ShootAllBuff.ShootAllCountBuff.class).detach();
+            }
         }
 
         public void onShoot(boolean shootAll, boolean useRound) {

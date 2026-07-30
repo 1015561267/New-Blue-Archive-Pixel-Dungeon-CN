@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShootAllBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.YuzuStatus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
@@ -921,6 +922,9 @@ public abstract class Char extends Actor {
 			return;
 		}
 
+		//feels stupid but have to have this to calculate actual damage
+		int rawHp = this.HP;
+
 		if(isInvulnerable(src.getClass())){
 			sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
 			return;
@@ -1166,6 +1170,10 @@ public abstract class Char extends Actor {
 		}
 
 		if (HP < 0) HP = 0;
+
+		if(!(this instanceof Hero) && hero.buff(ShootAllBuff.ShootAllCountBuff.class)!=null){
+			hero.buff(ShootAllBuff.ShootAllCountBuff.class).countUp(Math.max(0 ,dmg + shielded));
+		}
 
 		if (!isAlive()) {
 			die( src );

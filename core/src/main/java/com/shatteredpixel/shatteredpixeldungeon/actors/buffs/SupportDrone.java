@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
@@ -32,6 +33,8 @@ public class SupportDrone extends Buff {
         if (Dungeon.hero.hasTalent(Talent.MIYAKO_EX2_1) && Random.Float() < 0.2f) add++;
         drone = Math.min(drone+add, MaxDrone());
         Dungeon.observe();
+
+        if(drone>=4) Badges.validateSwarmTactics();
     }
 
     public int MaxDrone() {

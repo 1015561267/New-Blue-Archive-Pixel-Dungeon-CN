@@ -154,4 +154,6 @@ public class ShootAllBuff extends Buff implements ActionIndicator.Action {
             return Messages.get(this, "desc", duration);
         }
     }
+
+    public static class ShootAllCountBuff extends CounterBuff{ }
 }

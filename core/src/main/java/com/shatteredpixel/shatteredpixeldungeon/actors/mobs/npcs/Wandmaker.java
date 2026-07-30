@@ -222,7 +222,7 @@ public class Wandmaker extends NPC {
 		// 3 = rotberry quest
 		
 		private static boolean spawned;
-		
+		private static boolean completed;
 		private static boolean given;
 		
 		public static Wand wand1;
@@ -234,11 +234,14 @@ public class Wandmaker extends NPC {
 
 			wand1 = null;
 			wand2 = null;
+			completed = false;
 		}
 		
 		private static final String NODE		= "wandmaker";
 		
 		private static final String SPAWNED		= "spawned";
+		private static final String COMPLETED	= "completed";
+
 		private static final String TYPE		= "type";
 		private static final String GIVEN		= "given";
 		private static final String WAND1		= "wand1";
@@ -260,6 +263,7 @@ public class Wandmaker extends NPC {
 				
 				node.put( WAND1, wand1 );
 				node.put( WAND2, wand2 );
+				node.put( COMPLETED, completed );
 
 				if (type == 2){
 					node.put( RITUALPOS, CeremonialCandle.ritualPos );
@@ -282,6 +286,7 @@ public class Wandmaker extends NPC {
 				
 				wand1 = (Wand)node.get( WAND1 );
 				wand2 = (Wand)node.get( WAND2 );
+				completed = node.getBoolean( COMPLETED );
 
 				if (type == 2){
 					CeremonialCandle.ritualPos = node.getInt( RITUALPOS );
@@ -457,6 +462,12 @@ public class Wandmaker extends NPC {
 			if (Quest.type == 1) {
 				Statistics.questScores[1] += 2000;
 			}
+
+			completed = true;
+		}
+
+		public static boolean isCompleted() {
+			return completed;
 		}
 	}
 }
