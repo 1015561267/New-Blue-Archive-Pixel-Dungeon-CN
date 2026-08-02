@@ -39,6 +39,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.NinjaCape;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.NbaRemainsItem;
@@ -770,7 +774,9 @@ public class WndJournal extends WndTabbed {
 				}
 
 				if(item instanceof NbaRemainsItem){
-					sprite = new ItemSprite(item.image,seen ? item.glowing() : null,true);
+					sprite = new ItemSprite(item.image,seen ? item.glowing() : null, (NbaRemainsItem) item);
+				}else if(item instanceof Artifact && !(item instanceof CloakOfShadows) && !(item instanceof DriedRose) && !(item instanceof NinjaCape) && !(item instanceof HolyTome)){
+					sprite = new ItemSprite(item.image,seen ? item.glowing() : null, (Artifact) item);
 				}
 				else {
 					sprite = new ItemSprite(item.image, seen ? item.glowing() : null);

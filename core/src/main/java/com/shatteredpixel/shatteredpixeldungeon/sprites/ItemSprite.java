@@ -28,6 +28,11 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.NinjaCape;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.NbaRemainsItem;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -87,6 +92,10 @@ public class ItemSprite extends MovieClip {
 			texture( Assets.Sprites.NBA_REMAIINS );
 		}
 
+		if(heap.peek() instanceof Artifact && !(heap.peek() instanceof CloakOfShadows) && !(heap.peek() instanceof DriedRose) && !(heap.peek() instanceof NinjaCape) && !(heap.peek() instanceof HolyTome)){
+			texture( Assets.Sprites.NBA_ARTIFACTS );
+		}
+
 		view( heap );
 	}
 	
@@ -95,6 +104,10 @@ public class ItemSprite extends MovieClip {
 
 		if(item instanceof NbaRemainsItem){
 			texture( Assets.Sprites.NBA_REMAIINS );
+		}
+
+		if(item instanceof Artifact && !(item instanceof CloakOfShadows) && !(item instanceof DriedRose) && !(item instanceof NinjaCape) && !(item instanceof HolyTome)){
+			texture( Assets.Sprites.NBA_ARTIFACTS );
 		}
 
 		view( item );
@@ -109,11 +122,18 @@ public class ItemSprite extends MovieClip {
 		view(image, glowing);
 	}
 
-	public ItemSprite(int image, Glowing glowing, boolean b) {
+	public ItemSprite(int image, Glowing glowing, NbaRemainsItem b) {
 		//this is a rough trick to handle journal button,don't copy this
 		super( Assets.Sprites.NBA_REMAIINS );
 		viewNbaRemainsItem(image, glowing);
 	}
+
+	public ItemSprite(int image, Glowing glowing, Artifact b) {
+		//this is a rough trick to handle journal button,don't copy this
+		super( Assets.Sprites.NBA_ARTIFACTS );
+		viewNbaArtifactsItem(image, glowing);
+	}
+
 
 	public void link() {
 		link(heap);
@@ -217,6 +237,8 @@ public class ItemSprite extends MovieClip {
 	public ItemSprite view( Item item ){
 		if(item instanceof NbaRemainsItem){
 			viewNbaRemainsItem(item.image(), item.glowing());
+		}else if(item instanceof Artifact && !(item instanceof CloakOfShadows) && !(item instanceof DriedRose) && !(item instanceof NinjaCape) && !(item instanceof HolyTome)){
+			viewNbaArtifactsItem(item.image(), item.glowing());
 		}
 		else {view(item.image(), item.glowing());}
 
@@ -281,6 +303,19 @@ public class ItemSprite extends MovieClip {
 		return this;
 	}
 
+	public ItemSprite viewNbaArtifactsItem( int image, Glowing glowing ) {
+		texture( Assets.Sprites.NBA_ARTIFACTS );
+		if (this.emitter != null) this.emitter.killAndErase();
+		emitter = null;
+		frame( ItemSpriteSheet.NBAArtifacts.film.get( image ));
+		float height = ItemSpriteSheet.NBAArtifacts.film.height( image );
+		//adds extra raise to very short items, so they are visible
+		//if (height < 8f){
+		//	perspectiveRaise =  (5 + 8 - height) / 16f;
+		//}
+		glow( glowing );
+		return this;
+	}
 
 	public void frame( int image ){
 		frame( ItemSpriteSheet.film.get( image ));

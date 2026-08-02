@@ -56,7 +56,7 @@ public class HornOfPlenty extends Artifact {
 
 
 	{
-		image = ItemSpriteSheet.ARTIFACT_HORN1;
+		image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HORN1;
 
 		levelCap = 10;
 
@@ -167,10 +167,10 @@ public class HornOfPlenty extends Artifact {
 
 		Badges.validateFoodEaten();
 
-		if (charge >= 8)        image = ItemSpriteSheet.ARTIFACT_HORN4;
-		else if (charge >= 5)   image = ItemSpriteSheet.ARTIFACT_HORN3;
-		else if (charge >= 2)   image = ItemSpriteSheet.ARTIFACT_HORN2;
-		else                    image = ItemSpriteSheet.ARTIFACT_HORN1;
+		if (charge >= 8)        image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HORN4;
+		else if (charge >= 5)   image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HORN3;
+		else if (charge >= 2)   image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HORN2;
+		else                    image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HORN1;
 
 		updateQuickslot();
 	}
@@ -193,10 +193,10 @@ public class HornOfPlenty extends Artifact {
 					partialCharge = 0;
 				}
 
-				if (charge >= 8)        image = ItemSpriteSheet.ARTIFACT_HORN4;
-				else if (charge >= 5)   image = ItemSpriteSheet.ARTIFACT_HORN3;
-				else if (charge >= 2)   image = ItemSpriteSheet.ARTIFACT_HORN2;
-				else                    image = ItemSpriteSheet.ARTIFACT_HORN1;
+				if (charge >= 8)        image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HORN4;
+				else if (charge >= 5)   image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HORN3;
+				else if (charge >= 2)   image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HORN2;
+				else                    image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HORN1;
 
 				updateQuickslot();
 			}
@@ -273,9 +273,9 @@ public class HornOfPlenty extends Artifact {
 
 		storedFoodEnergy = bundle.getInt(STORED);
 		
-		if (charge >= 8)       image = ItemSpriteSheet.ARTIFACT_HORN4;
-		else if (charge >= 5)  image = ItemSpriteSheet.ARTIFACT_HORN3;
-		else if (charge >= 2)   image = ItemSpriteSheet.ARTIFACT_HORN2;
+		if (charge >= 8)       image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HORN4;
+		else if (charge >= 5)  image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HORN3;
+		else if (charge >= 2)   image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HORN2;
 	}
 
 	public class hornRecharge extends ArtifactBuff{
@@ -300,10 +300,10 @@ public class HornOfPlenty extends Artifact {
 					charge++;
 					partialCharge -= 1;
 
-					if (charge >= 8)        image = ItemSpriteSheet.ARTIFACT_HORN4;
-					else if (charge >= 5)   image = ItemSpriteSheet.ARTIFACT_HORN3;
-					else if (charge >= 2)   image = ItemSpriteSheet.ARTIFACT_HORN2;
-					else                    image = ItemSpriteSheet.ARTIFACT_HORN1;
+					if (charge >= 8)        image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HORN4;
+					else if (charge >= 5)   image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HORN3;
+					else if (charge >= 2)   image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HORN2;
+					else                    image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HORN1;
 
 					updateQuickslot();
 

@@ -52,7 +52,7 @@ import java.util.ArrayList;
 public class ChaliceOfBlood extends Artifact {
 
 	{
-		image = ItemSpriteSheet.ARTIFACT_CHALICE1;
+		image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_CHALICE1;
 
 		levelCap = 10;
 	}
@@ -170,17 +170,17 @@ public class ChaliceOfBlood extends Artifact {
 	@Override
 	public Item upgrade() {
 		if (level() >= 6)
-			image = ItemSpriteSheet.ARTIFACT_CHALICE3;
+			image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_CHALICE3;
 		else if (level() >= 2)
-			image = ItemSpriteSheet.ARTIFACT_CHALICE2;
+			image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_CHALICE2;
 		return super.upgrade();
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
-		if (level() >= 7) image = ItemSpriteSheet.ARTIFACT_CHALICE3;
-		else if (level() >= 3) image = ItemSpriteSheet.ARTIFACT_CHALICE2;
+		if (level() >= 7) image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_CHALICE3;
+		else if (level() >= 3) image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_CHALICE2;
 	}
 
 	@Override

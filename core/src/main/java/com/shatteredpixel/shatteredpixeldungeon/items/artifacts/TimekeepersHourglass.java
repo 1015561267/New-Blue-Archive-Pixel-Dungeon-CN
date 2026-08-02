@@ -59,7 +59,7 @@ import java.util.ArrayList;
 public class TimekeepersHourglass extends Artifact {
 
 	{
-		image = ItemSpriteSheet.ARTIFACT_HOURGLASS;
+		image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_HOURGLASS;
 
 		levelCap = 5;
 

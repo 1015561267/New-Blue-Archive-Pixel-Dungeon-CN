@@ -59,7 +59,7 @@ public class EtherealChains extends Artifact {
 	public static final String AC_CAST       = "CAST";
 
 	{
-		image = ItemSpriteSheet.ARTIFACT_CHAINS;
+		image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_CHAINS;
 
 		levelCap = 5;
 		exp = 0;

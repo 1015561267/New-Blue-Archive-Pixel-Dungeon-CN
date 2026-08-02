@@ -62,7 +62,7 @@ public class LloydsBeacon extends Artifact {
 	public int returnPos;
 	
 	{
-		image = ItemSpriteSheet.ARTIFACT_BEACON;
+		image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_BEACON;
 
 		levelCap = 3;
 

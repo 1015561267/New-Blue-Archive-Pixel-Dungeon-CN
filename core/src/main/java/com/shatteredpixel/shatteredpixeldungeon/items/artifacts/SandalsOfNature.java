@@ -70,7 +70,7 @@ import java.util.HashMap;
 public class SandalsOfNature extends Artifact {
 
 	{
-		image = ItemSpriteSheet.ARTIFACT_SANDALS;
+		image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_SANDALS;
 
 		levelCap = 3;
 
@@ -223,10 +223,10 @@ public class SandalsOfNature extends Artifact {
 
 	@Override
 	public Item upgrade() {
-		if (level() < 0)        image = ItemSpriteSheet.ARTIFACT_SANDALS;
-		else if (level() == 0)  image = ItemSpriteSheet.ARTIFACT_SHOES;
-		else if (level() == 1)  image = ItemSpriteSheet.ARTIFACT_BOOTS;
-		else if (level() >= 2)  image = ItemSpriteSheet.ARTIFACT_GREAVES;
+		if (level() < 0)        image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_SANDALS;
+		else if (level() == 0)  image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_SHOES;
+		else if (level() == 1)  image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_BOOTS;
+		else if (level() >= 2)  image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_GREAVES;
 		return super.upgrade();
 	}
 
@@ -263,9 +263,9 @@ public class SandalsOfNature extends Artifact {
 		}
 		curSeedEffect = bundle.getClass(CUR_SEED_EFFECT);
 
-		if (level() == 1)  image = ItemSpriteSheet.ARTIFACT_SHOES;
-		else if (level() == 2)  image = ItemSpriteSheet.ARTIFACT_BOOTS;
-		else if (level() >= 3)  image = ItemSpriteSheet.ARTIFACT_GREAVES;
+		if (level() == 1)  image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_SHOES;
+		else if (level() == 2)  image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_BOOTS;
+		else if (level() >= 3)  image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_GREAVES;
 	}
 
 	public class Naturalism extends ArtifactBuff{

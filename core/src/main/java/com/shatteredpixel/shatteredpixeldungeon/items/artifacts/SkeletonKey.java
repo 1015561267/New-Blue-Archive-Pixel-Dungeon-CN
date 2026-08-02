@@ -64,7 +64,7 @@ import java.util.Arrays;
 public class SkeletonKey extends Artifact {
 
 	{
-		image = ItemSpriteSheet.ARTIFACT_KEY;
+		image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_KEY;
 
 		levelCap = 10;
 

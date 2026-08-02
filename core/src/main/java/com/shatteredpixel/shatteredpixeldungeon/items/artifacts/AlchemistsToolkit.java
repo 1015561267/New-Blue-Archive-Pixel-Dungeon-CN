@@ -45,7 +45,7 @@ import java.util.ArrayList;
 public class AlchemistsToolkit extends Artifact {
 
 	{
-		image = ItemSpriteSheet.ARTIFACT_TOOLKIT;
+		image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_TOOLKIT;
 		defaultAction = AC_BREW;
 
 		levelCap = 10;

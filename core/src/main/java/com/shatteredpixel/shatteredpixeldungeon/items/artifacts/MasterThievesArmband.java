@@ -55,7 +55,7 @@ import java.util.ArrayList;
 public class MasterThievesArmband extends Artifact {
 
 	{
-		image = ItemSpriteSheet.ARTIFACT_ARMBAND;
+		image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_ARMBAND;
 
 		levelCap = 10;
 

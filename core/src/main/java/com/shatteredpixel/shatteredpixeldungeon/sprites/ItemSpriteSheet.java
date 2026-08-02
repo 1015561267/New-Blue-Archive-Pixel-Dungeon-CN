@@ -1276,4 +1276,92 @@ public class ItemSpriteSheet {
 			assignItemRect( IZUNA_REMAIN,   15, 15 );
 		}
 	}
+
+	public static class NBAArtifacts {
+		//to manage changed artifact image separately
+		public static final int SIZE = 16;
+		private static final int TX_WIDTH = 256;
+		private static final int TX_HEIGHT = 32;
+
+		private static final int WIDTH = TX_WIDTH / SIZE;
+
+		public static TextureFilm film = new TextureFilm( TX_WIDTH, TX_HEIGHT, SIZE, SIZE );
+
+		//public static TextureFilm film = new TextureFilm( Assets.Sprites.NBA_ARTIFACTS,  SIZE*16 ,SIZE , SIZE, SIZE );
+
+		private static int xy(int x, int y){
+			x -= 1; y -= 1;
+			return x + WIDTH*y;
+		}
+
+		private static void assignItemRect( int item, int width, int height ){
+			int x = (item % WIDTH) * SIZE;
+			int y = (item / WIDTH) * SIZE;
+			film.add( item, x, y, x+width, y+height);
+		}
+
+		private static final int NBAARTIFACTS1          = xy(1, 1);
+
+		public static final int ARTIFACT_TOOLKIT    = NBAARTIFACTS1+0;
+
+		public static final int ARTIFACT_CHALICE1   = NBAARTIFACTS1+1;
+		public static final int ARTIFACT_CHALICE2   = NBAARTIFACTS1+2;
+		public static final int ARTIFACT_CHALICE3   = NBAARTIFACTS1+3;
+		public static final int ARTIFACT_CHAINS     = NBAARTIFACTS1+4;
+
+		public static final int ARTIFACT_HORN1      = NBAARTIFACTS1+5;
+		public static final int ARTIFACT_HORN2      = NBAARTIFACTS1+6;
+		public static final int ARTIFACT_HORN3      = NBAARTIFACTS1+7;
+		public static final int ARTIFACT_HORN4      = NBAARTIFACTS1+8;
+
+		public static final int ARTIFACT_ARMBAND    = NBAARTIFACTS1+9;
+
+		public static final int ARTIFACT_SANDALS    = NBAARTIFACTS1+10;
+		public static final int ARTIFACT_SHOES      = NBAARTIFACTS1+11;
+		public static final int ARTIFACT_BOOTS      = NBAARTIFACTS1+12;
+		public static final int ARTIFACT_GREAVES    = NBAARTIFACTS1+13;
+
+		public static final int ARTIFACT_KEY        = NBAARTIFACTS1+14;
+
+		public static final int ARTIFACT_TALISMAN   = NBAARTIFACTS1+15;
+
+		private static final int NBAARTIFACTS2          = xy(1, 2);
+
+		public static final int ARTIFACT_HOURGLASS  = NBAARTIFACTS2+0;
+
+		public static final int ARTIFACT_SPELLBOOK  = NBAARTIFACTS2+1;
+
+		public static final int ARTIFACT_CAPE       = NBAARTIFACTS2+2;
+
+		public static final int ARTIFACT_BEACON     = NBAARTIFACTS2+3;
+
+		static{
+			assignItemRect(ARTIFACT_TOOLKIT,      16,  12);
+
+			assignItemRect(ARTIFACT_CHALICE1,    16, 14);
+			assignItemRect(ARTIFACT_CHALICE2,       16, 15);
+			assignItemRect(ARTIFACT_CHALICE3,   16, 16);
+
+			assignItemRect(ARTIFACT_CHAINS,  10, 16);
+
+			assignItemRect(ARTIFACT_HORN1,    16, 15);
+			assignItemRect(ARTIFACT_HORN2,  16, 15);
+			assignItemRect(ARTIFACT_HORN3,     16, 15);
+			assignItemRect(ARTIFACT_HORN4,     16, 15);
+
+			assignItemRect(ARTIFACT_ARMBAND,   14, 16);
+
+			assignItemRect(ARTIFACT_SANDALS,   16, 16);
+			assignItemRect(ARTIFACT_SHOES,   16, 16);
+			assignItemRect(ARTIFACT_BOOTS,    16, 16 );
+			assignItemRect(ARTIFACT_GREAVES,      16, 16 );
+
+			assignItemRect(ARTIFACT_KEY,      10, 15 );
+			assignItemRect(ARTIFACT_TALISMAN,    16, 15);
+			assignItemRect(ARTIFACT_HOURGLASS,      13, 16);
+			assignItemRect(ARTIFACT_SPELLBOOK,      16, 16);
+			assignItemRect(ARTIFACT_CAPE,       16, 15);
+			assignItemRect(ARTIFACT_BEACON,        15,  15);
+		}
+	}
 }

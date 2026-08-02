@@ -55,7 +55,7 @@ import java.util.ArrayList;
 public class TalismanOfForesight extends Artifact {
 
 	{
-		image = ItemSpriteSheet.ARTIFACT_TALISMAN;
+		image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_TALISMAN;
 
 		exp = 0;
 		levelCap = 10;

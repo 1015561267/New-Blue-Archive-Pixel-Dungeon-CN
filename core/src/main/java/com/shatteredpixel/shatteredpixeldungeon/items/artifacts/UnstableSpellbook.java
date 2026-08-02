@@ -65,7 +65,7 @@ import java.util.ArrayList;
 public class UnstableSpellbook extends Artifact {
 
 	{
-		image = ItemSpriteSheet.ARTIFACT_SPELLBOOK;
+		image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_SPELLBOOK;
 
 		levelCap = 10;
 
