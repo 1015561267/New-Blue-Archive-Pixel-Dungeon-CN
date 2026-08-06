@@ -6,6 +6,8 @@ This project currently supports only Korean language now. There's no plan to tra
 
 **This project uses AI for making character splash arts.**
 
+[Join the translation work](https://app.transifex.com/rearranged-pixel-dungeon/blue-archive-pixel-dungeon/dashboard/)
+
 # How to Play
 
 You can play this game by installing **[version-name]-android.apk** for **Android** users, or directly running **[version-name]-desktop.jar** via JRE for PC users.
@@ -32,7 +34,7 @@ If you have Shattered Pixel Dungeon on Steam, you can play BAPD via following in
 
 # Contents
 
-- 7 of characters with unique abilities and special items(and adding continuously)
+- 9 of characters with unique abilities and special items(and adding continuously)
 >- **Aris** - Difficulty: **Special**
 >- **Nonomi** - Difficulty: **Easy**
 >- **Miyako** - Difficulty: **Normal**
@@ -40,6 +42,8 @@ If you have Shattered Pixel Dungeon on Steam, you can play BAPD via following in
 >- **Shiroko** - Difficulty: **Normal**
 >- **Noa** - Difficulty: **Normal**
 >- **Miyu** - Difficulty: **Hard**
+>- **Yuzu** - Difficulty: **Normal**
+>- **Izuna** - Difficulty: **Normal**
 
 - Guns
 >- **AR**(Assult Rifle)
@@ -49,6 +53,7 @@ If you have Shattered Pixel Dungeon on Steam, you can play BAPD via following in
 >- **SG**(Shotgun)
 >- **SMG**(SubMachine Gun)
 >- **SR**(Sniper Rifle)
+>- **MT**(Mortar)
 
 - Special Items
 >- **Emblem**(Aris)
@@ -58,8 +63,31 @@ If you have Shattered Pixel Dungeon on Steam, you can play BAPD via following in
 >- **Bicycle**(Shiroko)
 >- **Conversion Kit**(Noa)
 >- **Trash Bin**(Miyu)
+>- **Laptop**(Yuzu)
+>- **Assassin Kunai**(Izuna)
 
-- New appearance of Cave level and NPCs(Shopkeeper, Blacksmith)
+- Special Guns
+
+Special guns can be crafted with alchemy.
+>- Unique Idea - AR(Momoi)
+>- Tactical Therapy - AR(Serina)
+>- Funny Firework - GL(Kaede)
+>- Fancy Light - MT(Hibiki)
+>- Piety - HG(Mari)
+>- Chistka - HG(Cherino)
+>- Mulli<gun> - MG(Koyuki)
+>- Trick or Trick - MG(Mutsuki)
+>- Shooting Star - SG(Reisa)
+>- Multipurpose Tactical Enforcement Tool - SG(Eimi)
+>- Twin Dragon - SMG(Neru)
+>- Beyond the Lumination - SMG(Natsu)
+>- Justice Incarnate - SR(Mashiro)
+>- Wine Red Admire - SR(Aru)
+
+- New appearance of several NPCs(Shopkeeper, Blacksmith)
+- New splash arts for region 1, 2, 3
+- New appearance of region 1, 2, 3
+- [Seedfinder](https://github.com/Llyias/shpd-seedFinder-kr) from Llyias
 
 # Shattered Pixel Dungeon
 
