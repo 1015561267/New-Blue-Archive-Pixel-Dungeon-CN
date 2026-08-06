@@ -775,7 +775,7 @@ public class WndJournal extends WndTabbed {
 
 				if(item instanceof NbaRemainsItem){
 					sprite = new ItemSprite(item.image,seen ? item.glowing() : null, (NbaRemainsItem) item);
-				}else if(item instanceof Artifact && !(item instanceof CloakOfShadows) && !(item instanceof DriedRose) && !(item instanceof NinjaCape) && !(item instanceof HolyTome)){
+				}else if(item instanceof DriedRose.Petal || (item instanceof Artifact && !(item instanceof CloakOfShadows) && !(item instanceof NinjaCape) && !(item instanceof HolyTome))){
 					sprite = new ItemSprite(item.image,seen ? item.glowing() : null, (Artifact) item);
 				}
 				else {

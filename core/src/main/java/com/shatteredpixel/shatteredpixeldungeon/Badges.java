@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
@@ -268,6 +269,8 @@ public class Badges {
 		SOCIAL_DISASTER(114),
 		METICULOUS_PLANNING(115),
 		SIMULATION_GAME_MASTER(116),
+		TRACE_OF_DREAM(117),
+
 
 		//diamond
 		PACIFIST_ASCENT(120),
@@ -1357,6 +1360,14 @@ public class Badges {
 		if (AscensionChallenge.qualifiedForPacifist()) {
 			local.add( Badge.PACIFIST_ASCENT );
 			displayBadge( Badge.PACIFIST_ASCENT );
+		}
+
+		if(Dungeon.hero.heroClass == HeroClass.HOSHINO){
+			DriedRose rose = Dungeon.hero.belongings.getItem(DriedRose.class);
+			if (rose != null && rose.level() == 10){
+				local.add( Badge.TRACE_OF_DREAM );
+				displayBadge( Badge.TRACE_OF_DREAM );
+			}
 		}
 
 		if (Challenges.activeChallenges() == Challenges.MASKS.length) {

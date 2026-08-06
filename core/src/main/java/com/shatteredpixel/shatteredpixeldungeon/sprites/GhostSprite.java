@@ -37,15 +37,15 @@ public class GhostSprite extends MobSprite {
 		TextureFilm frames = new TextureFilm( texture, 12, 17 );
 		
 		idle = new Animation( 1, true );
-		idle.frames( frames, 0, 1 );
+		idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
 		
-		run = new Animation( 4, true );
+		run = new Animation( 20, true );
 		run.frames( frames, 2, 3 , 4,5,6,7 );
 
-		attack = new Animation( 8, false );
+		attack = new Animation( 15, false );
 		attack.frames( frames, 13, 14, 15 , 16);
 
-		die = new Animation( 10, false );
+		die = new Animation( 15, false );
 		die.frames( frames, 8, 9, 10, 11, 12 );
 		
 		play( idle );
@@ -54,6 +54,7 @@ public class GhostSprite extends MobSprite {
 	@Override
 	public void draw() {
 		//Blending.setLightMode();
+		alpha(0.75f);
 		super.draw();
 		//Blending.setNormalMode();
 	}

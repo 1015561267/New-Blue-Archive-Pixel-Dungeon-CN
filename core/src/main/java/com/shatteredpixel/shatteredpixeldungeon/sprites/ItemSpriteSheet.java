@@ -1335,6 +1335,11 @@ public class ItemSpriteSheet {
 
 		public static final int ARTIFACT_BEACON     = NBAARTIFACTS2+3;
 
+		public static final int ARTIFACT_ROSE1     = NBAARTIFACTS2+4;
+		public static final int ARTIFACT_ROSE2     = NBAARTIFACTS2+5;
+		public static final int ARTIFACT_ROSE3     = NBAARTIFACTS2+6;
+		public static final int ARTIFACT_PETAL     = NBAARTIFACTS2+7;
+
 		static{
 			assignItemRect(ARTIFACT_TOOLKIT,      16,  12);
 
@@ -1362,6 +1367,11 @@ public class ItemSpriteSheet {
 			assignItemRect(ARTIFACT_SPELLBOOK,      16, 16);
 			assignItemRect(ARTIFACT_CAPE,       16, 15);
 			assignItemRect(ARTIFACT_BEACON,        15,  15);
+
+			assignItemRect(ARTIFACT_ROSE1,      14, 16);
+			assignItemRect(ARTIFACT_ROSE2,      14, 16);
+			assignItemRect(ARTIFACT_ROSE3,      14, 16);
+			assignItemRect(ARTIFACT_PETAL,      15, 15);
 		}
 	}
 }

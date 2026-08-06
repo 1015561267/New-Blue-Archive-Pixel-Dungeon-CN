@@ -92,7 +92,7 @@ public class ItemSprite extends MovieClip {
 			texture( Assets.Sprites.NBA_REMAIINS );
 		}
 
-		if(heap.peek() instanceof Artifact && !(heap.peek() instanceof CloakOfShadows) && !(heap.peek() instanceof DriedRose) && !(heap.peek() instanceof NinjaCape) && !(heap.peek() instanceof HolyTome)){
+		if(heap.peek() instanceof DriedRose.Petal || (heap.peek()instanceof Artifact&&!(heap.peek()instanceof CloakOfShadows) && !(heap.peek() instanceof NinjaCape) && !(heap.peek() instanceof HolyTome))){
 			texture( Assets.Sprites.NBA_ARTIFACTS );
 		}
 
@@ -106,7 +106,7 @@ public class ItemSprite extends MovieClip {
 			texture( Assets.Sprites.NBA_REMAIINS );
 		}
 
-		if(item instanceof Artifact && !(item instanceof CloakOfShadows) && !(item instanceof DriedRose) && !(item instanceof NinjaCape) && !(item instanceof HolyTome)){
+		if(item instanceof DriedRose.Petal || (item instanceof Artifact && !(item instanceof CloakOfShadows) && !(item instanceof NinjaCape) && !(item instanceof HolyTome))){
 			texture( Assets.Sprites.NBA_ARTIFACTS );
 		}
 
@@ -237,7 +237,7 @@ public class ItemSprite extends MovieClip {
 	public ItemSprite view( Item item ){
 		if(item instanceof NbaRemainsItem){
 			viewNbaRemainsItem(item.image(), item.glowing());
-		}else if(item instanceof Artifact && !(item instanceof CloakOfShadows) && !(item instanceof DriedRose) && !(item instanceof NinjaCape) && !(item instanceof HolyTome)){
+		}else if(item instanceof DriedRose.Petal || (item instanceof Artifact && !(item instanceof CloakOfShadows) && !(item instanceof NinjaCape) && !(item instanceof HolyTome))){
 			viewNbaArtifactsItem(item.image(), item.glowing());
 		}
 		else {view(item.image(), item.glowing());}

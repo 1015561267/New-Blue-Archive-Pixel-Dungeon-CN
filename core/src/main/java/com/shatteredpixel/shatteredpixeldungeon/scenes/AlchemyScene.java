@@ -441,6 +441,10 @@ public class AlchemyScene extends PixelScene {
 		add(energyLeft);
 
 		energyIcon = new ItemSprite( toolkit != null ? ItemSpriteSheet.ARTIFACT_TOOLKIT : ItemSpriteSheet.ENERGY);
+		if(toolkit!=null){
+			energyIcon = new ItemSprite(ItemSpriteSheet.NBAArtifacts.ARTIFACT_TOOLKIT,null,toolkit);
+		}else energyIcon = new ItemSprite( ItemSpriteSheet.ENERGY);
+
 		energyIcon.x = energyLeft.left() - energyIcon.width();
 		energyIcon.y = energyLeft.top() - (energyIcon.height() - energyLeft.height())/2;
 		align(energyIcon);

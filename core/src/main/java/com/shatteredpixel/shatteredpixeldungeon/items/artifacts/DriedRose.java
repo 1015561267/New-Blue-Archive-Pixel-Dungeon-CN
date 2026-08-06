@@ -85,7 +85,7 @@ import java.util.ArrayList;
 public class DriedRose extends Artifact {
 
 	{
-		image = ItemSpriteSheet.ARTIFACT_ROSE1;
+		image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_ROSE1;
 
 		levelCap = 10;
 
@@ -336,9 +336,9 @@ public class DriedRose extends Artifact {
 	@Override
 	public Item upgrade() {
 		if (level() >= 9)
-			image = ItemSpriteSheet.ARTIFACT_ROSE3;
+			image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_ROSE3;
 		else if (level() >= 4)
-			image = ItemSpriteSheet.ARTIFACT_ROSE2;
+			image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_ROSE2;
 
 		//For upgrade transferring via well of transmutation
 		droppedPetals = Math.max( level(), droppedPetals );
@@ -492,7 +492,7 @@ public class DriedRose extends Artifact {
 			stackable = true;
 			dropsDownHeap = true;
 			
-			image = ItemSpriteSheet.PETAL;
+			image = ItemSpriteSheet.NBAArtifacts.ARTIFACT_PETAL;
 		}
 
 		@Override
