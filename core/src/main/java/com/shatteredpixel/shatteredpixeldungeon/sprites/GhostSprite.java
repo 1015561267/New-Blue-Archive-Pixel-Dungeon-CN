@@ -32,30 +32,30 @@ public class GhostSprite extends MobSprite {
 	public GhostSprite() {
 		super();
 		
-		texture( Assets.Sprites.GHOST );
+		texture( Assets.Sprites.YUME );
 		
-		TextureFilm frames = new TextureFilm( texture, 14, 15 );
+		TextureFilm frames = new TextureFilm( texture, 12, 17 );
 		
-		idle = new Animation( 5, true );
+		idle = new Animation( 1, true );
 		idle.frames( frames, 0, 1 );
 		
-		run = new Animation( 10, true );
-		run.frames( frames, 0, 1 );
+		run = new Animation( 4, true );
+		run.frames( frames, 2, 3 , 4,5,6,7 );
 
-		attack = new Animation( 10, false );
-		attack.frames( frames, 0, 2, 3 );
+		attack = new Animation( 8, false );
+		attack.frames( frames, 13, 14, 15 , 16);
 
-		die = new Animation( 8, false );
-		die.frames( frames, 0, 4, 5, 6, 7 );
+		die = new Animation( 10, false );
+		die.frames( frames, 8, 9, 10, 11, 12 );
 		
 		play( idle );
 	}
 	
 	@Override
 	public void draw() {
-		Blending.setLightMode();
+		//Blending.setLightMode();
 		super.draw();
-		Blending.setNormalMode();
+		//Blending.setNormalMode();
 	}
 	
 	@Override

@@ -337,6 +337,8 @@ public class Assets {
 		public static final String YOG      = "sprites/yog.png";
 		public static final String LARVA    = "sprites/larva.png";
 		public static final String GHOST    = "sprites/ghost.png";
+		public static final String YUME    = "sprites/yume.png";
+
 		public static final String MAKER    = "sprites/wandmaker.png";
 		public static final String TROLL    = "sprites/blacksmith.png";
 		public static final String IMP      = "sprites/demon.png";
