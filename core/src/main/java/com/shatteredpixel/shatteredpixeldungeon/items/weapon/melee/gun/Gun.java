@@ -1083,6 +1083,41 @@ public class Gun extends MeleeWeapon {
             return damage;
         }
 
+        private int damageRoll(Char owner, Char enemy) {
+            int damage = bulletDamage();
+            if (owner instanceof Hero && ((Hero)owner).hasTalent(Talent.MIYU_T3_1)) {
+                Hero hero = (Hero)owner;
+                if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
+                    //deals 25/33/50% toward max to max on surprise, instead of min to max.
+                    int diff = max() - min();
+                    damage = augment.damageFactor(Hero.heroDamageIntRange(
+                            min() + Math.round(diff/(float)(5-((Hero)owner).pointsInTalent(Talent.MIYU_T3_1))),
+                            max()));
+                    int exStr = hero.STR() - STRReq();
+                    if (exStr > 0) {
+                        damage += Hero.heroDamageIntRange(0, exStr);
+                    }
+                }
+            }
+            if (isSnipeShot()) {
+                switch ((Dungeon.level.distance(owner.pos, enemy.pos)-1) / 3 + 1) {
+                    case 1:
+                        damage = Math.round(damage * 1.1f);
+                        break;
+                    case 2:
+                        damage = Math.round(damage * 1.2f);
+                        break;
+                    case 3:
+                        damage = Math.round(damage * 1.35f);
+                        break;
+                    case 4: default:
+                        damage = Math.round(damage * 1.5f);
+                        break;
+                }
+            }
+            return damage;
+        }
+
         @Override
         public boolean hasEnchant(Class<? extends Enchantment> type, Char owner) {
             return Gun.this.hasEnchant(type, owner);
@@ -1224,7 +1259,7 @@ public class Gun extends MeleeWeapon {
                     CellEmitter.center(cell).burst(BlastParticle.FACTORY, 2);
                 } else {
                     if (curUser.buff(HPBullet.HPBulletBuff.class) != null) {
-                        if (!curUser.buff(HPBullet.HPBulletBuff.class).proc(enemy, damageRoll(curUser))) {
+                        if (!curUser.buff(HPBullet.HPBulletBuff.class).proc(enemy, damageRoll(curUser,enemy))) {
                             if (!curUser.shoot( enemy, this )) {
                                 CellEmitter.get(cell).burst(SmokeParticle.FACTORY, 2);
                                 CellEmitter.center(cell).burst(BlastParticle.FACTORY, 2);
