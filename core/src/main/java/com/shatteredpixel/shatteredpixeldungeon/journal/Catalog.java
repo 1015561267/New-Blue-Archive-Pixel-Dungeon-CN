@@ -105,6 +105,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.quest.EscapeCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.ImpStatue;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.VaultBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.ArisRemain;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.HoshinoRemain;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.IzunaRemain;

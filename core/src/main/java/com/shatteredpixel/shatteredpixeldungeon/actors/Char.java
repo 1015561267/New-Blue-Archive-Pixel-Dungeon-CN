@@ -526,7 +526,7 @@ public abstract class Char extends Actor {
 				dmg = this.buff(YuzuStatus.class).criticalDamage((Hero)this, enemy, dmg);
 			}
 			else if( this instanceof Hero && this.buff(YuzuStatus.CertainCritBuff.class) != null ){
-				hero.buff(YuzuStatus.CertainCritBuff.class).countDown(1);
+				this.buff(YuzuStatus.CertainCritBuff.class).countDown(1);
 				dmg *= 1.2f;
 			}
 
@@ -1213,8 +1213,8 @@ public abstract class Char extends Actor {
 
 		if (HP < 0) HP = 0;
 
-		if(!(this instanceof Hero) && hero.buff(ShootAllBuff.ShootAllCountBuff.class)!=null){
-			hero.buff(ShootAllBuff.ShootAllCountBuff.class).countUp(Math.max(0 ,dmg + shielded));
+		if(!(this instanceof Hero) && Dungeon.hero.buff(ShootAllBuff.ShootAllCountBuff.class)!=null){
+			Dungeon.hero.buff(ShootAllBuff.ShootAllCountBuff.class).countUp(Math.max(0 ,dmg + shielded));
 		}
 
 		if (!isAlive()) {

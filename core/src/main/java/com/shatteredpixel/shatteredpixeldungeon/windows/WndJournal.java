@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.NinjaCape;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Scrunchie;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.NbaRemainsItem;
@@ -775,7 +776,7 @@ public class WndJournal extends WndTabbed {
 
 				if(item instanceof NbaRemainsItem){
 					sprite = new ItemSprite(item.image,seen ? item.glowing() : null, (NbaRemainsItem) item);
-				}else if(item instanceof DriedRose.Petal || (item instanceof Artifact && !(item instanceof CloakOfShadows) && !(item instanceof NinjaCape) && !(item instanceof HolyTome))){
+				}else if(item instanceof DriedRose.Petal || (item instanceof Artifact && !(item instanceof CloakOfShadows) && !(item instanceof NinjaCape) && !(item instanceof HolyTome) && !(item instanceof Scrunchie))){
 					sprite = new ItemSprite(item.image,seen ? item.glowing() : null, (Artifact) item);
 				}
 				else {

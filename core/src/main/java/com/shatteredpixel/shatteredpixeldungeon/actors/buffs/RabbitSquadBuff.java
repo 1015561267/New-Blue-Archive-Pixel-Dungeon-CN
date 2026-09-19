@@ -756,8 +756,7 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
     public void healSaki(){
         if(saki!=null) {
             Healing healing = Buff.affect(saki, Healing.class);
-            healing.setHeal((int) ((0.8f * saki.HT + 14) * 0.33f * Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_1)), 0.25f, 0);
-            healing.applyVialEffect();
+            healing.setHeal((int) ((0.8f * saki.HT + 14) * 0.33f * Dungeon.hero.pointsInTalent(Talent.MIYAKO_EX1_1)), 0.25f, 0,true);
         }
     }
 
