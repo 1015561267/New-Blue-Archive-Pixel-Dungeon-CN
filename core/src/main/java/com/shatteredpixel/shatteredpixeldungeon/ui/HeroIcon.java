@@ -134,6 +134,8 @@ public class HeroIcon extends Image {
 	public static final int GAME_START		= 128+15;
 	public static final int SWITCHING		= 128+16;
 	public static final int CHASE			= 128+17;
+	public static final int CALL_OF_STAR	= 128+18;
+	public static final int LITTLE_ANGRY	= 128+19;
 
 	//new armor abilities
 	public static final int ARIS_1			= 128+24;
@@ -163,6 +165,9 @@ public class HeroIcon extends Image {
 	public static final int IZUNA_1			= 128+48;
 	public static final int IZUNA_2			= 128+49;
 	public static final int IZUNA_3			= 128+50;
+	public static final int MIKA_1			= 128+51;
+	public static final int MIKA_2			= 128+52;
+	public static final int MIKA_3			= 128+53;
 
 	//new action indicator visuals
   	public static final int CHARGE						= 128+64;
@@ -178,6 +183,7 @@ public class HeroIcon extends Image {
   	public static final int TELESCOPE_ACTION			= 128+74;
   	public static final int AVANT_GARDE_KUN_ACTION		= 128+75;
   	public static final int CHASE_ACTION				= 128+76;
+  	public static final int CALL_OF_STAR_ACTION			= 128+77;
 
 	//Yuzu abilities
 	public static final int SHOP_1			= 128 + 88;

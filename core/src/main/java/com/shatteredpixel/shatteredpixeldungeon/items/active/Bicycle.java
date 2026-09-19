@@ -179,6 +179,7 @@ public class Bicycle extends Item {
 
 	public void onRide() {
 		use(1);
+		curUser = hero;
 		if (curUser.hasTalent(Talent.SHIROKO_T2_5)) {
 			curUser.belongings.charge( 0.02f+0.03f* curUser.pointsInTalent(Talent.SHIROKO_T2_5) );
 		}
@@ -228,6 +229,9 @@ public class Bicycle extends Item {
 		if (move.chargeReq > charge()) {
 			return false;
 		}
+		if (move == ProfessionalRideMove.RIDING_RELOAD && !(hero.belongings.weapon instanceof Gun)) {
+			return false;
+		}
 		if (move == ProfessionalRideMove.ACCELERATE && hero.buff(AccelerationBuff.class) != null) {
 			return false;
 		}
@@ -251,8 +255,8 @@ public class Bicycle extends Item {
 					hero.spend(-((Gun) wep).reloadTime());
 					Item.updateQuickslot();
 					BuffIndicator.refreshHero();
+					use(move.chargeReq);
 				}
-				use(move.chargeReq);
 				break;
 			case SLAM:
 				GameScene.selectCell(thrower);

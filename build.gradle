@@ -23,11 +23,12 @@ allprojects {
         appName = 'Re Blue Archive Pixel Dungeon'
         appPackageName = 'com.shatteredpixel.rebluearchivepixeldungeoncn'
 
-        appVersionCode = 896
-        appVersionName = '3.3.8'
+        //Full releases gets +2 on version code, needed for an F-Droid quirk
+        appVersionCode = 912
+        appVersionName = '4.0.0'
 
-        appVersionCode += 128
-        appVersionName += '_based_1.15.0_cn'
+        appVersionCode += 129
+        appVersionName += '_based_1.16.0'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 

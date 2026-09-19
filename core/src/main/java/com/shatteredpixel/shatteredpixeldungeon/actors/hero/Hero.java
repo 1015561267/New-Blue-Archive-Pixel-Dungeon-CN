@@ -102,6 +102,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.fox.Kurumi;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.fox.Niko;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.fox.Otogi;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.fox.Yukino;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
@@ -109,6 +110,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
+import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -148,6 +150,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.EscapeCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
@@ -183,6 +187,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.VaultLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.WeakFloorRoom;
@@ -190,18 +195,22 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.AlchemyScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.WelcomeScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTradeItem;
 import com.watabou.noosa.Game;
@@ -315,6 +324,10 @@ public class Hero extends Char {
 
 		if (hasTalent(Talent.STRONGMAN)){
 			strBonus += (int)Math.floor(STR * (0.03f + 0.05f*pointsInTalent(Talent.STRONGMAN)));
+		}
+
+		if (hasTalent(Talent.MIKA_T3_1)){
+			strBonus += (int)Math.floor(STR * (0.03f + 0.05f*pointsInTalent(Talent.MIKA_T3_1)));
 		}
 
 		return STR + strBonus;
@@ -520,7 +533,7 @@ public class Hero extends Char {
 		}
 
 		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
-			Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
+			Buff.affect( this, Sai.ComboStrikeTracker.class).addHit( attackTarget );
 		}
 
 		attackTarget = null;
@@ -615,7 +628,6 @@ public class Hero extends Char {
 					buff.uses--;
 				}
 			}
-
 		} else {
 			if (buff(Momentum.class) != null && buff(Momentum.class).freerunning()){
 				accuracy *= 1f + pointsInTalent(Talent.PROJECTILE_MOMENTUM)/2f;
@@ -702,8 +714,8 @@ public class Hero extends Char {
 			}
 		}
 
-		if (hero.hasTalent(Talent.SHIROKO_EX1_2) && hero.buff(Bicycle.BicycleBuff.class) != null) {
-			evasion *= Math.max(1, 1+(hero.speed()-1)*hero.pointsInTalent(Talent.SHIROKO_EX1_2)/6f);
+		if (this.hasTalent(Talent.SHIROKO_EX1_2) && this.buff(Bicycle.BicycleBuff.class) != null) {
+			evasion *= Math.max(1, 1+(this.speed()-1)*this.pointsInTalent(Talent.SHIROKO_EX1_2)/6f);
 		}
 
 		return Math.max(1, Math.round(evasion));
@@ -1075,10 +1087,6 @@ public class Hero extends Char {
 				actResult = false;
 			}
 		}
-		
-		if(hasTalent(Talent.BARKSKIN) && Dungeon.level.map[pos] == Terrain.FURROWED_GRASS){
-			Barkskin.conditionallyAppend(this, (lvl*pointsInTalent(Talent.BARKSKIN))/2, 1 );
-		}
 
 		if (hasTalent(Talent.NONOMI_T3_2) && buff(Talent.AutoReloadBuff.class) == null) {
 			Buff.affect(this, Talent.AutoReloadBuff.class);
@@ -1104,6 +1112,41 @@ public class Hero extends Char {
 		AttackIndicator.updateState();
 		
 		GameScene.ready();
+		//check statistics to see if vault warned?
+		//or just used shared prefs?
+		if (Dungeon.level instanceof VaultLevel
+				&& HP < HT*0.334f
+				&& !Statistics.vaultInjureWarned
+				&& SPDSettings.vaultInjureWarns() < 3){
+			SPDSettings.vaultInjureWarns(SPDSettings.vaultInjureWarns()+1);
+			Statistics.vaultInjureWarned = true;
+			ShatteredPixelDungeon.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					String text = Messages.get(EscapeCrystal.class, "injure_warning_1");
+					if (!Dungeon.level.locked) {
+						text += "\n\n" + Messages.get(EscapeCrystal.class, "injure_warning_2");
+					}
+					text += "\n\n" + Messages.get(EscapeCrystal.class, "injure_warning_3");
+					GameScene.show(new WndOptions(new ImpSprite(),
+							Messages.titleCase(Messages.get(Imp.class, "name")),
+							text,
+							//recycling this one
+							Messages.get(WelcomeScene.class, "controller_okay")){
+
+						@Override
+						protected void onSelect(int index) {
+							super.onSelect(index);
+						}
+
+						@Override
+						public void onBackPressed() {
+							//do nothing, must close via button
+						}
+					});
+				}
+			});
+		}
 	}
 	
 	public void interrupt() {
@@ -1165,7 +1208,7 @@ public class Hero extends Char {
 			
 		} else {
 			
-			if (fieldOfView[ch.pos] && getCloser( ch.pos )) {
+			if ((fieldOfView[ch.pos] || Char.hasProp(ch, Property.OBJECT)) && getCloser( ch.pos )) {
 
 				return true;
 
@@ -1245,7 +1288,9 @@ public class Hero extends Char {
 				if (item.doPickUp( this )) {
 					heap.pickUp();
 
+					//TODO this statement is getting silly, might be better to handle this as a propery of items
 					if (item instanceof Dewdrop
+							|| (item instanceof DwarfToken && Imp.Quest.mirrorUsed)
 							|| item instanceof TimekeepersHourglass.sandBag
 							|| item instanceof DriedRose.Petal
 							|| item instanceof Key
@@ -1263,7 +1308,6 @@ public class Hero extends Char {
 						}
 					} else {
 
-						//TODO make all unique items important? or just POS / SOU?
 						boolean important = item.unique && item.isIdentified() &&
 								(item instanceof Scroll || item instanceof Potion);
 						if (important) {
@@ -1322,9 +1366,15 @@ public class Hero extends Char {
 			
 			Heap heap = Dungeon.level.heaps.get( dst );
 			if (heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE)) {
-				
-				if ((heap.type == Type.LOCKED_CHEST && Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1)
-					|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1)){
+
+				boolean noKey = false;
+				if (heap.type == Type.LOCKED_CHEST){
+					noKey = Dungeon.branch != 0 || Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1;
+				} else if (heap.type == Type.CRYSTAL_CHEST){
+					noKey = Dungeon.branch != 0 || Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1;
+				}
+
+				if (noKey){
 
 						GLog.w( Messages.get(this, "locked_chest") );
 						ready();
@@ -1370,7 +1420,12 @@ public class Hero extends Char {
 			boolean hasKey = false;
 			int door = Dungeon.level.map[doorCell];
 			
-			if (door == Terrain.LOCKED_DOOR
+			if (Dungeon.branch != 0) {
+
+				//keys currently do not apply to sub-floors
+				hasKey = false;
+
+			} else if (door == Terrain.LOCKED_DOOR
 					&& Notes.keyCount(new IronKey(Dungeon.depth)) > 0) {
 				
 				hasKey = true;
@@ -1617,7 +1672,9 @@ public class Hero extends Char {
 	public void rest( boolean fullRest ) {
 		spendAndNextConstant( TIME_TO_REST );
 		if (hasTalent(Talent.HOLD_FAST)){
-			Buff.affect(this, HoldFast.class).pos = pos;
+			if (heroClass != HeroClass.WARRIOR || buff(BrokenSeal.WarriorShield.class) != null) {
+				Buff.affect(this, HoldFast.class).pos = pos;
+			}
 		}
 		if (hasTalent(Talent.PATIENT_STRIKE)){
 			Buff.affect(Dungeon.hero, Talent.PatientStrikeTracker.class).pos = Dungeon.hero.pos;
@@ -1646,19 +1703,16 @@ public class Hero extends Char {
 		if (wep != null) {
 			damage = wep.proc( this, enemy, damage );
 		} else {
-			boolean wasEnemy = enemy.alignment == Alignment.ENEMY;
-			if (buff(BodyForm.BodyFormBuff.class) != null
-					&& buff(BodyForm.BodyFormBuff.class).enchant() != null){
+
+			if (buff(BodyForm.BodyFormBuff.class) != null && buff(BodyForm.BodyFormBuff.class).enchant() != null){
 				damage = buff(BodyForm.BodyFormBuff.class).enchant().proc(new WornShortsword(), this, enemy, damage);
 			}
-			if (!wasEnemy || enemy.alignment == Alignment.ENEMY) {
-				if (buff(HolyWeapon.HolyWepBuff.class) != null) {
-					int dmg = subClass == HeroSubClass.PALADIN ? 6 : 2;
-					enemy.damage(Math.round(dmg * Weapon.Enchantment.genericProcChanceMultiplier(this)), HolyWeapon.INSTANCE);
-				}
-				if (buff(Smite.SmiteTracker.class) != null) {
-					enemy.damage(Smite.bonusDmg(this, enemy), Smite.INSTANCE);
-				}
+			if (enemy.isAlive() && buff(HolyWeapon.HolyWepBuff.class) != null) {
+				int dmg = subClass == HeroSubClass.PALADIN ? 6 : 2;
+				enemy.damage(Math.round(dmg * Weapon.Enchantment.genericProcChanceMultiplier(this)), HolyWeapon.INSTANCE);
+			}
+			if (enemy.isAlive() && buff(Smite.SmiteTracker.class) != null) {
+				enemy.damage(Smite.bonusDmg(this, enemy), Smite.INSTANCE);
 			}
 		}
 		
@@ -1690,7 +1744,7 @@ public class Hero extends Char {
 			}
 			break;
 		case DOUBLE_BARREL:
-			if (((wep instanceof Gun.Bullet && !((Gun.Bullet) wep).isSpecialShot()) || (hasTalent(Talent.NOA_EX1_3) && !(wep instanceof Gun.Bullet))) && enemy != this && hero.buff(DoubleBarrelMark.class) == null) {
+			if (((wep instanceof Gun.Bullet && !((Gun.Bullet) wep).isSpecialShot()) || (hasTalent(Talent.NOA_EX1_3) && !(wep instanceof Gun.Bullet))) && enemy != this && this.buff(DoubleBarrelMark.class) == null) {
 				Actor.add(new Actor() {
 
 					{
@@ -1769,7 +1823,7 @@ public class Hero extends Char {
 
 		damage = Talent.onDefenseProc(this, enemy, damage);
 
-		if (Dungeon.isChallenged(Challenges.NUTRITION_LACK) && buff(Hunger.class).isStarving() && Random.Float() < 0.2f) {
+		if (Dungeon.isChallenged(Challenges.NUTRITION_LACK) && buff(Hunger.class) != null && buff(Hunger.class).isStarving() && Random.Float() < 0.2f) {
 			Buff.affect(this, Bleeding.class).set(1+(int)(lvl/10), Challenges.class);
 		}
 
@@ -1794,11 +1848,6 @@ public class Hero extends Char {
 		if (buff(TimekeepersHourglass.timeStasis.class) != null
 				|| buff(TimeStasis.class) != null) {
 			return;
-		}
-
-		//TODO hero cannot take damage in the vault tester area
-		if (Dungeon.depth > 15 && Dungeon.branch == 1){
-			dmg = 0;
 		}
 
 		//regular damage interrupt, triggers on any damage except specific mild DOT effects
@@ -2147,7 +2196,7 @@ public class Hero extends Char {
 			
 			curAction = new HeroAction.Alchemy( cell );
 			
-		} else if (fieldOfView[cell] && ch instanceof Mob) {
+		} else if (ch instanceof Mob && (fieldOfView[cell] || Char.hasProp(ch, Property.OBJECT))) {
 
 			if (((Mob) ch).heroShouldInteract()) {
 				curAction = new HeroAction.Interact( ch );
@@ -2588,7 +2637,7 @@ public class Hero extends Char {
 		}
 
 		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
-			Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
+			Buff.affect( this, Sai.ComboStrikeTracker.class).addHit( attackTarget );
 		}
 
 		curAction = null;
@@ -2619,7 +2668,9 @@ public class Hero extends Char {
 				Buff.affect(this, Hunger.class).affectHunger(-4);
 			} else if (Dungeon.level.distance(pos, doorCell) <= 1) {
 				boolean hasKey = true;
-				if (door == Terrain.LOCKED_DOOR) {
+				if (Dungeon.branch != 0){
+					hasKey = false; //keys currently do not work in sub-floors
+				} else if (door == Terrain.LOCKED_DOOR) {
 					hasKey = Notes.remove(new IronKey(Dungeon.depth));
 					if (hasKey) {
 						if (keyUseTrack != null){
@@ -2672,12 +2723,14 @@ public class Hero extends Char {
 				if (heap.type == Type.SKELETON || heap.type == Type.REMAINS) {
 					Sample.INSTANCE.play( Assets.Sounds.BONES );
 				} else if (heap.type == Type.LOCKED_CHEST){
-					hasKey = Notes.remove(new GoldenKey(Dungeon.depth));
+					//keys currently do not work in sub-floors
+					hasKey = Dungeon.branch == 0 && Notes.remove(new GoldenKey(Dungeon.depth));
 					if (hasKey && keyUseTrack != null){
 						keyUseTrack.processGoldLockOpened();
 					}
 				} else if (heap.type == Type.CRYSTAL_CHEST){
-					hasKey = Notes.remove(new CrystalKey(Dungeon.depth));
+					//keys currently do not work in sub-floors
+					hasKey = Dungeon.branch == 0 && Notes.remove(new CrystalKey(Dungeon.depth));
 					if (hasKey && keyUseTrack != null){
 						keyUseTrack.processCrystalLockOpened();
 					}
@@ -2748,9 +2801,9 @@ public class Hero extends Char {
 				if ((foresight || fieldOfView[curr]) && curr != pos) {
 
 					if ((foresight && (!Dungeon.level.mapped[curr] || foresightScan))){
-						GameScene.effectOverFog(new CheckedCell(curr, foresightScan ? pos : curr));
+						GameScene.checkedCell(curr, foresightScan ? pos : curr);
 					} else if (intentional) {
-						GameScene.effectOverFog(new CheckedCell(curr, pos));
+						GameScene.checkedCell(curr, pos);
 					}
 
 					if (foresight){
@@ -3001,9 +3054,13 @@ public class Hero extends Char {
 				}
 			}.attachTo(this);
 		}
-		if (Dungeon.hero.buff(Blink.PerfectAssassination.class) != null) {
-			Dungeon.hero.buff(Blink.PerfectAssassination.class).detach();
-			Buff.affect(Dungeon.hero, Talent.LethalMomentumTracker.class, 0f);
+		if (buff(Blink.PerfectAssassination.class) != null) {
+			buff(Blink.PerfectAssassination.class).detach();
+			Buff.affect(this, Talent.LethalMomentumTracker.class, 0f);
+		}
+
+		if (hasTalent(Talent.MIKA_EX2_3)) {
+			Buff.affect(this, Sungrass.Health.class).boost(pointsInTalent(Talent.MIKA_EX2_3));
 		}
 	}
 

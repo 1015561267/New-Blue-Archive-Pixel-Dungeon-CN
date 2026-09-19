@@ -257,13 +257,14 @@ public class HeroSelectScene extends PixelScene {
 			title.setPos(insets.left + (leftArea - title.width())/2f, (h-uiHeight)/2f);
 			align(title);
 
-			int btnWidth = HeroBtn.MIN_WIDTH + 15;
-			int btnHeight = HeroBtn.HEIGHT;
+			int btnWidth = HeroBtn.MIN_WIDTH+10;
+			int btnHeight = HeroBtn.HEIGHT-4;
 			if (uiHeight >= 180){
 				btnHeight += 6;
 			}
 
-			int cols = (int)Math.ceil(heroBtns.size()/3f);
+			final int MAX_BUTTONS = 4;
+			int cols = Math.min(heroBtns.size(), MAX_BUTTONS);
 			float curX = insets.left + (leftArea - btnWidth * cols + (cols-1))/2f;
 			float curY = title.bottom() + uiSpacing;
 
@@ -271,7 +272,6 @@ public class HeroSelectScene extends PixelScene {
 			int totalCount = 0;
 			int btnNum = heroBtns.size();
 			int spacing = 1;
-			final int MAX_BUTTONS = 3;
 			for (StyledButton button : heroBtns){
 				button.setRect(curX, curY, btnWidth, btnHeight);
 				align(button);
@@ -299,7 +299,7 @@ public class HeroSelectScene extends PixelScene {
 				if (totalCount >= MAX_BUTTONS*(btnNum/MAX_BUTTONS) && count == 0) {
 					//한 줄에 비어 있어야 할 버튼의 수만큼 반복
 					//예시: 7개면 2번, 8개면 1번, 9개면 0번 반복
-					for (int i = 0; i < 1+btnNum/MAX_BUTTONS-btnNum%MAX_BUTTONS; i++) {
+					for (int i = 0; i < (MAX_BUTTONS - (btnNum % MAX_BUTTONS)) % MAX_BUTTONS; i++) {
 						curX += (btnWidth+spacing)/2f;
 					}
 				}
@@ -802,9 +802,9 @@ public class HeroSelectScene extends PixelScene {
 								if (diff <= 0) {
 									long time = Game.realTime - (Game.realTime % DAY);
 
-									//earliest possible daily for v3.0.1 is Mar 01 2025
-									//which is 20,148 days days after Jan 1 1970
-									time = Math.max(time, 20_148 * DAY);
+									//earliest possible daily for v4.0 is Apr 01 2026
+									//which is 20,544 days after Jan 1 1970
+									time = Math.max(time, 20_544 * DAY);
 
 									SPDSettings.lastDaily(time);
 									Dungeon.dailyReplay = false;

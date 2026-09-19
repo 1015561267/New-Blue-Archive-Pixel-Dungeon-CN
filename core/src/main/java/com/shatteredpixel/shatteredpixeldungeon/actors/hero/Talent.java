@@ -28,12 +28,14 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CallOfStar;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChaseMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Conversation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
@@ -43,8 +45,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LittleAngry;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.NoticeTracker;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RabbitSquadBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
@@ -85,7 +89,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.NinjaCape;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Scrunchie;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.RollCake;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.EmptyScroll;
@@ -98,6 +104,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfClairvoyance
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic;
@@ -117,6 +124,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWea
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
@@ -731,6 +739,48 @@ public enum Talent {
 	IZUNA_ARMOR3_2(24, 8, 4),
 	IZUNA_ARMOR3_3(25, 8, 4),
 
+	//Mika T1
+	MIKA_T1_1(0, 9, 2),
+	MIKA_T1_2(1, 9, 2),
+	MIKA_T1_3(2, 9, 2),
+	MIKA_T1_4(3, 9, 2),
+
+	//Mika T2
+	MIKA_T2_1(4, 9, 2),
+	MIKA_T2_2(5, 9, 2),
+	MIKA_T2_3(6, 9, 2),
+	MIKA_T2_4(7, 9, 2),
+	MIKA_T2_5(8, 9, 2),
+
+	//Mika T3
+	MIKA_T3_1(9, 9, 3),
+	MIKA_T3_2(10, 9, 3),
+
+	//Call of Star T3
+	MIKA_EX1_1(11, 9, 3),
+	MIKA_EX1_2(12, 9, 3),
+	MIKA_EX1_3(13, 9, 3),
+
+	//Little Angry T3
+	MIKA_EX2_1(14, 9, 3),
+	MIKA_EX2_2(15, 9, 3),
+	MIKA_EX2_3(16, 9, 3),
+
+	//Armor Ability 1 T4
+	MIKA_ARMOR1_1(17, 9, 4),
+	MIKA_ARMOR1_2(18, 9, 4),
+	MIKA_ARMOR1_3(19, 9, 4),
+
+	//Armor Ability 2 T4
+	MIKA_ARMOR2_1(20, 9, 4),
+	MIKA_ARMOR2_2(21, 9, 4),
+	MIKA_ARMOR2_3(22, 9, 4),
+
+	//Armor Ability 3 T4
+	MIKA_ARMOR3_1(23, 9, 4),
+	MIKA_ARMOR3_2(24, 9, 4),
+	MIKA_ARMOR3_3(25, 9, 4),
+
 	//universal T4
 	HEROIC_ENERGY(26, 0, 4), //See icon() and title() for special logic for this one
 	//Ratmogrify T4
@@ -1057,9 +1107,12 @@ public enum Talent {
 				case IZUNA:
 					y = 8;
 					break;
+				case MIKA:
+					y = 9;
+					break;
 			}
 			if (Ratmogrify.useRatroicEnergy){
-				y = 9;
+				y = 11;
 			}
 			return x+TALENT_NUMBER*y;
 		} else {
@@ -1124,6 +1177,9 @@ public enum Talent {
 			if (hero.belongings.weapon() != null && !ShardOfOblivion.passiveIDDisabled()){
 				hero.belongings.weapon().identify();
 			}
+			if (hero.belongings.secondWep() != null && !ShardOfOblivion.passiveIDDisabled()){
+				hero.belongings.secondWep().identify();
+			}
 		}
 
 		if (talent == PROTECTIVE_SHADOWS && hero.invisible > 0){
@@ -1153,6 +1209,16 @@ public enum Talent {
 				if (item instanceof NinjaCape){
 					if (!hero.belongings.lostInventory() || item.keptThroughLostInventory()) {
 						((NinjaCape) item).activate(Dungeon.hero);
+					}
+				}
+			}
+		}
+
+		if (talent == MIKA_T3_2 && hero.heroClass == HeroClass.MIKA){
+			for (Item item : Dungeon.hero.belongings.backpack){
+				if (item instanceof Scrunchie){
+					if (!hero.belongings.lostInventory() || item.keptThroughLostInventory()) {
+						((Scrunchie) item).activate(Dungeon.hero);
 					}
 				}
 			}
@@ -1293,12 +1359,26 @@ public enum Talent {
 			}
 		}
 
+		if (talent == MIKA_T1_2 && !ShardOfOblivion.passiveIDDisabled()) {
+			if (hero.pointsInTalent(MIKA_T1_2) == 1) {
+				if (hero.belongings.armor != null)  {
+					hero.belongings.armor.identify();
+				}
+			}
+			if (hero.pointsInTalent(MIKA_T1_2) == 2) {
+				for (Item i : hero.belongings.getAllItems(Armor.class)) {
+					i.identify();
+				}
+			}
+		}
+
 		if (talent == NONOMI_T3_1 && hero.pointsInTalent(NONOMI_T3_1) == 1) {
 			new MG_SP().identify().collect();
 		}
 		if (talent == NONOMI_T3_1 || talent == NONOMI_EX1_1
 				|| talent == MIYAKO_T2_2
-				|| talent == IZUNA_T1_1 || talent == IZUNA_EX2_3) {
+				|| talent == IZUNA_T1_1 || talent == IZUNA_EX2_3
+				|| talent == MIKA_T3_1) {
 			Item.updateQuickslot();
 		}
 
@@ -1452,6 +1532,15 @@ public enum Talent {
 		}
 		if (hero.hasTalent(Talent.YUZU_T2_1)) {
 			PotionOfCleansing.cleanseDebuff(hero, hero.pointsInTalent(Talent.YUZU_T2_1) == 2 ? 2 : 0);
+		}
+		if (hero.hasTalent(Talent.MIKA_T2_1)) {
+			Buff.affect(hero, Swiftthistle.TimeBubble.class).reset(1+2*hero.pointsInTalent(Talent.MIKA_T2_1));
+		}
+		if (hero.hasTalent(Talent.MIKA_T2_2)) {
+			if (Random.Float() < 0.1f+0.1f*hero.pointsInTalent(Talent.MIKA_T2_2)) {
+				Item rollCake = new RollCake();
+				Dungeon.level.drop(rollCake, hero.pos).sprite.drop();
+			}
 		}
 	}
 
@@ -1723,6 +1812,9 @@ public enum Talent {
 		if (hero.hasTalent(YUZU_T1_2) && (item instanceof GL)){
 			identify = true;
 		}
+		if (hero.hasTalent(MIKA_T1_2) && (item instanceof Armor)) {
+			identify = true;
+		}
 
 		if (identify) {
 			if (ShardOfOblivion.passiveIDDisabled()) {
@@ -1771,6 +1863,10 @@ public enum Talent {
 		}
 
 		if (hero.pointsInTalent(YUZU_T1_2) == 2 && (item instanceof GL)){
+			identify = true;
+		}
+
+		if (hero.pointsInTalent(MIKA_T1_2) == 2 && (item instanceof Armor)){
 			identify = true;
 		}
 
@@ -1922,6 +2018,31 @@ public enum Talent {
 
 		if (hero.buff(TakingAimTracker.class) != null) hero.buff(TakingAimTracker.class).detach();
 
+		if (hero.buff(DestructionInstinct.class) != null) {
+			dmg += 2+3*hero.pointsInTalent(Talent.MIKA_T1_1);
+			hero.buff(DestructionInstinct.class).detach();
+		}
+
+		if (hero.subClass == HeroSubClass.CALL_OF_STAR && hero.buff(CallOfStar.CallOfStarCooldown.class) == null) {
+			Buff.affect(hero, CallOfStar.class).onHit(hero.belongings.attackingWeapon());
+		}
+
+		if (hero.subClass == HeroSubClass.LITTLE_ANGRY) {
+			if (enemy.buff(Paralysis.class) != null && enemy.buff(WandOfBlastWave.BWaveOnHitTracker.class) == null){
+				enemy.buff(Paralysis.class).detach();
+				int bonusDmg = Hero.heroDamageIntRange(hero.lvl + hero.STR()*2, 2*(hero.lvl + hero.STR()*2));
+				if (hero.hasTalent(Talent.MIKA_EX2_2)) {
+					bonusDmg = Math.round(bonusDmg*(1+(hero.pointsInTalent(Talent.MIKA_EX2_2)/6f)*((hero.HT-hero.HP)/(float)hero.HT)));
+				}
+				enemy.damage(bonusDmg, LittleAngry.class);
+				WandOfBlastWave.BlastWave.blast(enemy.pos);
+				Sample.INSTANCE.play( Assets.Sounds.BLAST );
+
+				//brief immunity, to prevent stacking absurd damage with it with things like para gas
+				Buff.prolong(enemy, WandOfBlastWave.BWaveOnHitTracker.class, 3f);
+			}
+		}
+
 		return dmg;
 	}
 
@@ -1944,6 +2065,17 @@ public enum Talent {
 			if (Random.Float() < 0.5f) {
 				Buff.affect(enemy, Bleeding.class).set(Random.IntRange(1, hero.pointsInTalent(Talent.IZUNA_T1_3)));
 			}
+		}
+
+		if (hero.hasTalent(Talent.MIKA_T1_3)) {
+			Buff.prolong(hero, Adrenaline.class, 1+2*hero.pointsInTalent(Talent.MIKA_T1_3));
+		}
+
+		if (hero.hasTalent(Talent.MIKA_T1_4)
+				&& hero.buff(PitifulGirlCooldown.class) == null
+				&& hero.HP < hero.HT*0.05f*hero.pointsInTalent(Talent.MIKA_T1_4)) {
+			Buff.affect(hero, Barrier.class).setShield(10);
+			Buff.affect(hero, PitifulGirlCooldown.class, PitifulGirlCooldown.DURATION);
 		}
 
 		return damage;
@@ -2200,6 +2332,48 @@ public enum Talent {
 
 	}
 
+	public static class DestructionInstinct extends FlavourBuff {
+
+		public static float DURATION = 5f;
+
+		@Override
+		public int icon() {
+			return BuffIndicator.UPGRADE;
+		}
+
+		@Override
+		public void tintIcon(Image icon) {
+			icon.hardlight(1f, 0, 0);
+		}
+
+		@Override
+		public float iconFadePercent() {
+			return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+		}
+
+	}
+
+	public static class PitifulGirlCooldown extends FlavourBuff {
+		public static final float DURATION = 100f;
+
+		@Override
+		public int icon() {
+			return BuffIndicator.TIME;
+		}
+
+		@Override
+		public void tintIcon(Image icon) {
+			icon.hardlight(0xC2A8CF);
+		}
+
+		@Override
+		public float iconFadePercent() {
+			return Math.max(0, (DURATION-visualcooldown())/DURATION);
+		}
+	}
+
+	public static class CharmTracker extends Buff {}
+
 	//new buff here
 
 	public static final int MAX_TALENT_TIERS = 4;
@@ -2247,6 +2421,9 @@ public enum Talent {
 				break;
 			case IZUNA:
 				Collections.addAll(tierTalents, IZUNA_T1_1, IZUNA_T1_2, IZUNA_T1_3, IZUNA_T1_4);
+				break;
+			case MIKA:
+				Collections.addAll(tierTalents, MIKA_T1_1, MIKA_T1_2, MIKA_T1_3, MIKA_T1_4);
 				break;
 			case WARRIOR:
 				Collections.addAll(tierTalents, HEARTY_MEAL, VETERANS_INTUITION, PROVOKED_ANGER, IRON_WILL);
@@ -2304,6 +2481,9 @@ public enum Talent {
 			case IZUNA:
 				Collections.addAll(tierTalents, IZUNA_T2_1, IZUNA_T2_2, IZUNA_T2_3, IZUNA_T2_4, IZUNA_T2_5);
 				break;
+			case MIKA:
+				Collections.addAll(tierTalents, MIKA_T2_1, MIKA_T2_2, MIKA_T2_3, MIKA_T2_4, MIKA_T2_5);
+				break;
 			case WARRIOR:
 				Collections.addAll(tierTalents, IRON_STOMACH, LIQUID_WILLPOWER, RUNIC_TRANSFERENCE, LETHAL_MOMENTUM, IMPROVISED_PROJECTILES);
 				break;
@@ -2359,6 +2539,9 @@ public enum Talent {
 				break;
 			case IZUNA:
 				Collections.addAll(tierTalents, IZUNA_T3_1, IZUNA_T3_2);
+				break;
+			case MIKA:
+				Collections.addAll(tierTalents, MIKA_T3_1, MIKA_T3_2);
 				break;
 			case WARRIOR:
 				Collections.addAll(tierTalents, HOLD_FAST, STRONGMAN);
@@ -2459,6 +2642,12 @@ public enum Talent {
 				break;
 			case CHASE:
 				Collections.addAll(tierTalents, IZUNA_EX2_1, IZUNA_EX2_2, IZUNA_EX2_3);
+				break;
+			case CALL_OF_STAR:
+				Collections.addAll(tierTalents, MIKA_EX1_1, MIKA_EX1_2, MIKA_EX1_3);
+				break;
+			case LITTLE_ANGRY:
+				Collections.addAll(tierTalents, MIKA_EX2_1, MIKA_EX2_2, MIKA_EX2_3);
 				break;
 			case BERSERKER:
 				Collections.addAll(tierTalents, ENDLESS_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST);
@@ -2698,4 +2887,24 @@ public enum Talent {
 		public void tintIcon(Image icon) { icon.hardlight(1f, 1f, 0.0f); }
 		public float iconFadePercent() { return Math.max(0, 1f - (visualcooldown() / 5)); }
 	};
+
+	public static boolean hasFoodTalent(Hero hero) {
+		if (hero == null) return false;
+		return hero.hasTalent(Talent.IRON_STOMACH)
+				|| hero.hasTalent(Talent.ENERGIZING_MEAL)
+				|| hero.hasTalent(Talent.MYSTICAL_MEAL)
+				|| hero.hasTalent(Talent.INVIGORATING_MEAL)
+				|| hero.hasTalent(Talent.FOCUSED_MEAL)
+				|| hero.hasTalent(Talent.ENLIGHTENING_MEAL)
+				|| hero.hasTalent(Talent.ARIS_T2_1)
+				|| hero.hasTalent(Talent.NONOMI_T2_1)
+				|| hero.hasTalent(Talent.MIYAKO_T2_1)
+				|| hero.hasTalent(Talent.HOSHINO_T2_1)
+				|| hero.hasTalent(Talent.SHIROKO_T2_1)
+				|| hero.hasTalent(Talent.NOA_T2_1)
+				|| hero.hasTalent(Talent.MIYU_T2_1)
+				|| hero.hasTalent(Talent.YUZU_T2_1)
+				|| hero.hasTalent(Talent.IZUNA_T2_1)
+				|| hero.hasTalent(Talent.MIKA_T2_1);
+	}
 }
