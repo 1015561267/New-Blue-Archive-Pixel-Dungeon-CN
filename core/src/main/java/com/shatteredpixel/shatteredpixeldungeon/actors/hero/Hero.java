@@ -86,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.El
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.hoshino.ShieldParry;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.izuna.Blink;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mika.PerfectDeception;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.shiroko.GPSRoute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.nonomi.Bipod;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
@@ -3066,6 +3067,8 @@ public class Hero extends Char {
 
 	@Override
 	public float stealth() {
+		if (buff(PerfectDeception.DeceptionBuff.class) != null) return INFINITE_ACCURACY;
+
 		float stealth = super.stealth();
 
 		if (heroClass == HeroClass.MIYU) {
