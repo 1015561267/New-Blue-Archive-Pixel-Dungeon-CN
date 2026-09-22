@@ -1730,15 +1730,15 @@ public abstract class Level implements Bundlable {
 		if (canBreakWall(cell)) {
 			result = true;
 			//Dungeon.branch == 0일 때에만 작동하기 때문에 해당 코드는 필요 없음
-//			if (Dungeon.level instanceof MiningLevel) {
-//				if (Dungeon.level.map[cell] == Terrain.WALL_DECO) {
-//					DarkGold gold = new DarkGold();
-//					Dungeon.level.drop( gold, cell ).sprite.drop();
-//				}
-//				set(cell, Terrain.EMPTY_DECO);
-//			} else {
-//				set(cell, Terrain.EMPTY);
-//			}
+			if (Dungeon.level instanceof MiningLevel) {
+				if (Dungeon.level.map[cell] == Terrain.WALL_DECO) {
+					DarkGold gold = new DarkGold();
+					Dungeon.level.drop( gold, cell ).sprite.drop();
+				}
+				set(cell, Terrain.EMPTY_DECO);
+			} else {
+				set(cell, Terrain.EMPTY);
+			}
 			for (int i : PathFinder.NEIGHBOURS9) {
 				Dungeon.level.discoverable[cell+i] = true;
 			}
