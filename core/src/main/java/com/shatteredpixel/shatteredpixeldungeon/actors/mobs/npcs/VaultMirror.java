@@ -128,8 +128,7 @@ public class VaultMirror extends NPC {
 					reward = new ConversionKit().upgrade();
 					break;
 				case MIYU:
-					reward = new MirrorSR().upgrade(3).identify(false);
-					((MeleeWeapon)reward).enchant();
+					reward = new TrashBin();
 					break;
 				case YUZU:
 					reward = new Laptop();
@@ -139,8 +138,8 @@ public class VaultMirror extends NPC {
 					((NinjaCape) reward).directCharge(8);
 					break;
 				case MIKA:
-					reward = new Scrunchie().upgrade(8);
-					((Scrunchie) reward).directCharge(8);
+					reward = new Scrunchie().upgrade(8).identify(false);
+					((Scrunchie) reward).directCharge(3);
 					break;
 			}
 		Random.popGenerator();
@@ -274,15 +273,6 @@ public class VaultMirror extends NPC {
 	}
 
 	public static class MirrorSword extends Greatsword {
-
-		{
-			//cannot be taken out of the vault
-			unique = true;
-		}
-
-	}
-
-	public static class MirrorSR extends SR_T5 {
 
 		{
 			//cannot be taken out of the vault

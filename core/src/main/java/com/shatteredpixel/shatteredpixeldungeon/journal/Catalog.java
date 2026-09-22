@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.active.Bicycle;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.Claymore;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.HandGrenade;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.IronHorus;
+import com.shatteredpixel.shatteredpixeldungeon.items.active.Laptop;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.TrashBin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
@@ -256,7 +257,7 @@ public enum Catalog {
 
 		TRINKETS.addItems(Generator.Category.TRINKET.classes);
 
-		MISC_EQUIPMENT.addItems(BrokenSeal.class, Claymore.class, HandGrenade.class, IronHorus.class, Bicycle.class, ConversionKit.class, TrashBin.class,
+		MISC_EQUIPMENT.addItems(BrokenSeal.class, Claymore.class, HandGrenade.class, IronHorus.class, Bicycle.class, ConversionKit.class, TrashBin.class, Laptop.class, AssassinsKunai.class,
 				Waterskin.class, VelvetPouch.class, PotionBandolier.class, ScrollHolder.class, MagicalHolster.class, Amulet.class);
 
 		POTIONS.addItems(Generator.Category.POTION.classes);
@@ -424,7 +425,7 @@ public enum Catalog {
 
 	//pre-v2.5
 	private static final String CATALOG_ITEMS = "catalog_items";
-	
+
 	public static void restore( Bundle bundle ){
 
 		//old logic for pre-v2.5 catalog-specific badges
