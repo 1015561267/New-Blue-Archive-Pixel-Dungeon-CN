@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.MeteorParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.AR.AR;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.GL.GL;
@@ -22,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SMG.SMG;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.ConeAOE;
@@ -206,8 +208,16 @@ public class CallOfStar extends CounterBuff implements ActionIndicator.Action {
         }
 
         for (int cell : affectedCells) {
-            if (Dungeon.level.solid[cell]) {
-                Level.set(cell, Terrain.EMPTY);
+            if (Dungeon.level.solid[cell] && Dungeon.level.map[cell] != Terrain.ALCHEMY) {
+                if (Dungeon.level instanceof MiningLevel) {
+                    if (Dungeon.level.map[cell] == Terrain.WALL_DECO) {
+                        DarkGold gold = new DarkGold();
+                        Dungeon.level.drop( gold, cell ).sprite.drop();
+                    }
+                    Level.set(cell, Terrain.EMPTY_DECO);
+                } else {
+                    Level.set(cell, Terrain.EMPTY);
+                }
             }
             if (Dungeon.level.flamable[cell]) {
                 Level.set(cell, Terrain.EMBERS);
@@ -255,9 +265,9 @@ public class CallOfStar extends CounterBuff implements ActionIndicator.Action {
     }
 
     private float cooldownTime(float count, int killCount, Hero hero) {
-        float reductionRate = 1-0.1f*hero.pointsInTalent(Talent.MIKA_EX1_1)*killCount;
+        float reductionRate = 1-0.05f*hero.pointsInTalent(Talent.MIKA_EX1_1)*killCount;
         reductionRate = Math.max(reductionRate, 0);
-        return count*2*reductionRate;
+        return Math.min(count*2*reductionRate, CallOfStarCooldown.DURATION);
     }
 
     public static boolean isWallBreakable(int depth, int cell) {
