@@ -22,6 +22,10 @@ import com.watabou.utils.PathFinder;
 
 public class LittleAngry extends Buff implements ActionIndicator.Action {
 
+    {
+        revivePersists = true;
+    }
+
     @Override
     public boolean attachTo(Char target) {
         ActionIndicator.setAction(this);
@@ -47,7 +51,7 @@ public class LittleAngry extends Buff implements ActionIndicator.Action {
 
     @Override
     public int actionIcon() {
-        return HeroIcon.LITTLE_ANGRY;
+        return HeroIcon.LITTLE_ANGRY_ACTION;
     }
 
     @Override
@@ -107,6 +111,7 @@ public class LittleAngry extends Buff implements ActionIndicator.Action {
             WandOfBlastWave.BlastWave.blast(cell);
 
             hero.spendAndNext(1);
+            Invisibility.dispel();
 
             Buff.affect(target, LittleAngryCooldown.class, LittleAngryCooldown.DURATION);
             detach();
