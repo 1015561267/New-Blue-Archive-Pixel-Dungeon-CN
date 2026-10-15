@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.YuzuConsoleContent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.MariMiracle;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.shops.YuzuShopContent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell;
 import com.watabou.noosa.Image;
@@ -136,6 +137,8 @@ public class HeroIcon extends Image {
 	public static final int CHASE			= 128+17;
 	public static final int CALL_OF_STAR	= 128+18;
 	public static final int LITTLE_ANGRY	= 128+19;
+	public static final int DEVOUT_PRAYER	= 128+20;
+	public static final int SYMBOL_OF_PEACE	= 128+21;
 
 	//new armor abilities
 	public static final int ARIS_1			= 128+24;
@@ -168,6 +171,9 @@ public class HeroIcon extends Image {
 	public static final int MIKA_1			= 128+51;
 	public static final int MIKA_2			= 128+52;
 	public static final int MIKA_3			= 128+53;
+	public static final int MARI_1			= 128+54;
+	public static final int MARI_2			= 128+55;
+	public static final int MARI_3			= 128+56;
 
 	//new action indicator visuals
   	public static final int CHARGE						= 128+64;
@@ -225,6 +231,30 @@ public class HeroIcon extends Image {
 	public static final int SANDBOX_DIG		= 128 + 127;
 	public static final int SANDBOX_WELL	= 128 + 128;
 
+	//mari miracles
+	public static final int LIGHT_BULLET	= 128 + 136;
+	public static final int PROTECTION		= 128 + 137;
+	public static final int PRAY			= 128 + 138;
+	public static final int UNHOLY_DETECTION= 128 + 139;
+	public static final int SILVER_BULLET	= 128 + 140;
+	public static final int MIND_BIND		= 128 + 141;
+	public static final int BLESS_OF_CHARITY= 128 + 142;
+	public static final int HOLY_PROTECTION = 128 + 143;
+	public static final int HOLY_BULLET		= 128 + 144;
+	public static final int HOLY_BLAST		= 128 + 145;
+	public static final int THUNDER_LANCE	= 128 + 146;
+	public static final int HOLY_MANTLE		= 128 + 147;
+	public static final int HEALING_TOUCH	= 128 + 148;
+	public static final int BAPTIZE			= 128 + 149;
+	public static final int SALVATION		= 128 + 150;
+	public static final int REPENT			= 128 + 151;
+//	public static final int 			= 128 + 152;
+//	public static final int 			= 128 + 153;
+//	public static final int 			= 128 + 154;
+	public static final int TOUGH_BODY			= 128 + 155;
+	public static final int CRYSTAL_MIND		= 128 + 156;
+	public static final int HOLY_SOUL			= 128 + 157;
+
 
 	public HeroIcon(HeroSubClass subCls){
 		super( Assets.Interfaces.HERO_ICONS );
@@ -256,6 +286,14 @@ public class HeroIcon extends Image {
 			film = new TextureFilm(texture, SIZE, SIZE);
 		}
 		frame(film.get(spell.icon()));
+	}
+
+	public HeroIcon(MariMiracle miracle){
+		super( Assets.Interfaces.HERO_ICONS );
+		if (film == null){
+			film = new TextureFilm(texture, SIZE, SIZE);
+		}
+		frame(film.get(miracle.icon()));
 	}
 
 	public HeroIcon(YuzuShopContent content){

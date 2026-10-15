@@ -1,0 +1,106 @@
+package com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles;
+
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CrossNecklace;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
+
+public class Protection extends MariMiracle {
+
+    public static final Protection INSTANCE = new Protection();
+
+    @Override
+    public float chargeUse(Hero hero) {
+        return 3;
+    }
+
+    @Override
+    public int icon() {
+        return HeroIcon.PROTECTION;
+    }
+
+    public String desc(){
+        String desc = Messages.get(this, "desc");
+        if (Dungeon.hero.subClass == HeroSubClass.DEVOUT_PRAYER){
+            desc += "\n\n" + Messages.get(this, "desc_prayer");
+        }
+        return desc + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+    }
+
+    @Override
+    public void onCast(CrossNecklace cross, Hero hero) {
+        Buff.affect(hero, ProtectionBuff.class, ProtectionBuff.DURATION-1); //시전에 턴을 소모하지 않으므로 1턴을 뺌
+        Sample.INSTANCE.play(Assets.Sounds.READ);
+        hero.busy();
+        hero.sprite.operate(hero.pos, new Callback() {
+            @Override
+            public void call() {
+                hero.sprite.idle();
+                hero.next();
+            }
+        });
+
+        onMiracleCast(cross, hero);
+    }
+
+    public static class ProtectionBuff extends FlavourBuff {
+
+        public static final float DURATION = 50f;
+
+        {
+            type = buffType.POSITIVE;
+        }
+
+        @Override
+        public int icon() {
+            return BuffIndicator.PROTECTION;
+        }
+
+        @Override
+        public String desc() {
+            if (Dungeon.hero.subClass == HeroSubClass.SYMBOL_OF_PEACE) {
+                return Messages.get(this, "desc_symbol", damageReduction(Dungeon.hero), thunderDamageBonus(Dungeon.hero), dispTurns());
+            } else {
+                return Messages.get(this, "desc", defenseBonus(Dungeon.hero), thunderDamageBonus(Dungeon.hero), dispTurns());
+            }
+        }
+
+        @Override
+        public float iconFadePercent() {
+            return Math.max(0, (DURATION-visualcooldown())/DURATION);
+        }
+
+        public int defenseBonus(Hero hero) {
+            if (hero.subClass == HeroSubClass.DEVOUT_PRAYER) {
+                return 3;
+            } else if (hero.subClass == HeroSubClass.SYMBOL_OF_PEACE) {
+                return 0; //removes the physical damage reduction, see Char.damage()
+            } else {
+                return 1;
+            }
+        }
+
+        public int damageReduction(Hero hero) {
+            if (hero.subClass == HeroSubClass.SYMBOL_OF_PEACE) return 1;
+            else return 0;
+        }
+
+        public int thunderDamageBonus(Hero hero) {
+            if (hero.subClass == HeroSubClass.DEVOUT_PRAYER) {
+                return 4;
+            } else {
+                return 2;
+            }
+        }
+
+    }
+}

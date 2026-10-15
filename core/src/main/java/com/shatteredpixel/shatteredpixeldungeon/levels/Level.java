@@ -55,6 +55,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mari.MariTrinity;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.MindBind;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Stasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollGeomancer;
@@ -769,6 +771,9 @@ public abstract class Level implements Bundlable {
 		} else {
 			cooldown = TIME_TO_RESPAWN;
 		}
+		if (Dungeon.hero != null && Dungeon.hero.subClass == HeroSubClass.SYMBOL_OF_PEACE) {
+			cooldown *= 1.2f;
+		}
 		return cooldown / DimensionalSundial.spawnMultiplierAtCurrentTime();
 	}
 
@@ -1389,6 +1394,9 @@ public abstract class Level implements Bundlable {
 			if (c.buff(MagicalSight.class) != null){
 				sense = Math.max( MagicalSight.DISTANCE, sense );
 			}
+			if (c.buff(MariTrinity.TrinityBuff.class) != null){
+				sense = Math.max( c.buff(MariTrinity.TrinityBuff.class).mindVisionRange(), sense );
+			}
 		}
 		
 		//uses rounding
@@ -1497,6 +1505,15 @@ public abstract class Level implements Bundlable {
 			}
 
 			for (TalismanOfForesight.CharAwareness a : c.buffs(TalismanOfForesight.CharAwareness.class)){
+				Char ch = (Char) Actor.findById(a.charID);
+				if (ch == null || !ch.isAlive() || Char.hasProp(ch, Char.Property.OBJECT)) {
+					continue;
+				}
+				int p = ch.pos;
+				for (int i : PathFinder.NEIGHBOURS9) heroMindFov[p+i] = true;
+			}
+
+			for (MindBind.MindBindBuff a : c.buffs(MindBind.MindBindBuff.class)){
 				Char ch = (Char) Actor.findById(a.charID);
 				if (ch == null || !ch.isAlive() || Char.hasProp(ch, Char.Property.OBJECT)) {
 					continue;

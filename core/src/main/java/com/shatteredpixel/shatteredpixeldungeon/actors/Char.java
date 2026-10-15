@@ -87,12 +87,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mari.MariTrinity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.hoshino.Chase;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.DeathMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.shiroko.PenetrationShot;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.HolyMantle;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.MariMiracle;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.Pray;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.Protection;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.AuraOfProtection;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BeamingRay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
@@ -442,6 +447,10 @@ public abstract class Char extends Actor {
 				if (h.buff(PenetrationShot.IgnoreArmor.class) != null){
 					dr = 0;
 				}
+
+				if (h.heroClass == HeroClass.MARI && h.belongings.attackingWeapon() instanceof Gun.Bullet){
+					dr = 0;
+				}
 			}
 
 			//we use a float here briefly so that we don't have to constantly round while
@@ -516,6 +525,13 @@ public abstract class Char extends Actor {
 
 			if (enemy.buff(MonkEnergy.MonkAbility.Meditate.MeditateResistance.class) != null){
 				dmg *= 0.2f;
+			}
+
+			if (enemy.buff(Pray.PrayResistance.class) != null){
+				dmg *= 0.2f;
+				if (Dungeon.hero.hasTalent(Talent.MARI_T1_4)) {
+					dmg -= Dungeon.hero.pointsInTalent(Talent.MARI_T1_4);
+				}
 			}
 
 			if ( buff(Weakness.class) != null ){
@@ -1020,6 +1036,14 @@ public abstract class Char extends Actor {
 			}
 			damage *= 1+0.1f*debuffs;
 		}
+		if ((MariMiracle.MIRACLE_DAMAGE.contains(src.getClass())
+				|| (src == Dungeon.hero
+				&& Dungeon.hero.heroClass == HeroClass.MARI
+				&& Dungeon.hero.belongings.attackingWeapon() instanceof Gun.Bullet))
+				&& Dungeon.hero.buff(MariTrinity.TrinityBuff.class) != null
+				&& Dungeon.hero.buff(MariTrinity.TrinityBuff.class).isTrinityComplete()) {
+			damage *= 1.5f;
+		}
 
 		//two separate things can convert dmg to bleed, we handle that here
 		//we do this before modifiers are applied back to dmg as we don't want to stack them twice (from this and bleed)
@@ -1105,6 +1129,18 @@ public abstract class Char extends Actor {
 			return;
 		}
 
+		if (buff(Protection.ProtectionBuff.class) != null && !(src instanceof Hunger)) {
+			dmg -= buff(Protection.ProtectionBuff.class).damageReduction(Dungeon.hero);
+			if (dmg < 0) dmg = 0;
+		}
+
+		if (buff(HolyMantle.HolyMantleBuff.class) != null) {
+			if (dmg < 0) {
+				buff(HolyMantle.HolyMantleBuff.class).detach();
+				dmg = 0;
+			}
+		}
+
 		int shielded = dmg;
 		dmg = AvantGardeKunBuff.processDamage(this, dmg, src);
 		dmg = ShieldBuff.processDamage(this, dmg, src);
@@ -1187,6 +1223,13 @@ public abstract class Char extends Actor {
 				icon = FloatingText.PHYS_DMG_NO_BLOCK;
 			}
 
+			if (src == Dungeon.hero
+					&& Dungeon.hero.heroClass == HeroClass.MARI
+					&& Dungeon.hero.belongings.attackingWeapon() instanceof Gun.Bullet) {
+				icon = FloatingText.DMG_MIRACLE;
+			}
+			if (MariMiracle.MIRACLE_DAMAGE.contains(src.getClass()))    icon = FloatingText.DMG_MIRACLE;
+
 			if (src instanceof Hunger)                                  icon = FloatingText.HUNGER;
 			if (src instanceof Burning)                                 icon = FloatingText.BURNING;
 			if (src instanceof Chill || src instanceof Frost)           icon = FloatingText.FROST;
@@ -1202,8 +1245,9 @@ public abstract class Char extends Actor {
 			if (src instanceof AscensionChallenge)                      icon = FloatingText.AMULET;
 			if (src instanceof JusticeIncarnate.JusticeIncarnateBullet) icon = FloatingText.EXPERIENCE;
 
-			if ((icon == FloatingText.PHYS_DMG || icon == FloatingText.PHYS_DMG_NO_BLOCK) && hitMissIcon != -1){
+			if ((icon == FloatingText.PHYS_DMG || icon == FloatingText.PHYS_DMG_NO_BLOCK || icon == FloatingText.DMG_MIRACLE) && hitMissIcon != -1){
 				if (icon == FloatingText.PHYS_DMG_NO_BLOCK) hitMissIcon += 18; //extra row
+				if (icon == FloatingText.DMG_MIRACLE) hitMissIcon += 54;
 				icon = hitMissIcon;
 			}
 			hitMissIcon = -1;

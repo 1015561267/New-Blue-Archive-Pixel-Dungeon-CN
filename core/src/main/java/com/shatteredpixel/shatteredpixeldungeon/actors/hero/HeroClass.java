@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.YuzuStatus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mari.MariTrinity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.aris.BatteryChange;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.aris.Division;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.aris.ExtendedLaser;
@@ -50,6 +51,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.izuna.Thro
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.ElementalBlast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mari.BulletOfLight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mari.DivinePunishment;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mika.PerfectDeception;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mika.RollCakeThrow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mika.SuperMeteor;
@@ -94,6 +97,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CrossNecklace;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.NinjaCape;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Scrunchie;
@@ -165,6 +169,7 @@ public enum HeroClass {
 	YUZU(HeroSubClass.AVANT_GARDE_KUN, HeroSubClass.GAME_START),
 	IZUNA(HeroSubClass.SWITCHING, HeroSubClass.CHASE),
 	MIKA(HeroSubClass.CALL_OF_STAR, HeroSubClass.LITTLE_ANGRY),
+	MARI(HeroSubClass.DEVOUT_PRAYER, HeroSubClass.SYMBOL_OF_PEACE),
 
 	WARRIOR( HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ),
 	MAGE( HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ),
@@ -263,6 +268,10 @@ public enum HeroClass {
 
 			case MIKA:
 				initMika( hero );
+				break;
+
+			case MARI:
+				initMari( hero );
 				break;
 
 
@@ -475,6 +484,20 @@ public enum HeroClass {
 		new PotionOfHealing().identify();
 		new ScrollOfRage().identify();
 	}
+	private static void initMari(Hero hero) {
+		HG_T1 hgT1 = new HG_T1();
+		(hero.belongings.weapon = hgT1).identify();
+
+		CrossNecklace necklace = new CrossNecklace();
+		(hero.belongings.artifact = necklace).identify();
+		hero.belongings.artifact.activate( hero );
+
+		Dungeon.quickslot.setSlot(0, necklace);
+		Dungeon.quickslot.setSlot(1, hgT1);
+
+		new PotionOfPurity().identify();
+		new ScrollOfRemoveCurse().identify();
+	}
 
 	private static void initWarrior( Hero hero ) {
 		(hero.belongings.weapon = new WornShortsword()).identify();
@@ -603,6 +626,8 @@ public enum HeroClass {
 				return new ArmorAbility[]{new SmokeSpread(), new Blink(), new ThrowingThunder()};
 			case MIKA:
 				return new ArmorAbility[]{new RollCakeThrow(), new SuperMeteor(), new PerfectDeception()};
+			case MARI:
+				return new ArmorAbility[]{new BulletOfLight(), new MariTrinity(), new DivinePunishment()};
 
 			case WARRIOR:
 				return new ArmorAbility[]{new HeroicLeap(), new Shockwave(), new Endure()};
@@ -641,6 +666,8 @@ public enum HeroClass {
 				return Assets.Sprites.IZUNA;
 			case MIKA:
 				return Assets.Sprites.MIKA;
+			case MARI:
+				return Assets.Sprites.MARI;
 			case WARRIOR:
 				return Assets.Sprites.WARRIOR;
 			case MAGE:
@@ -678,6 +705,8 @@ public enum HeroClass {
 				return Assets.Splashes.IZUNA;
 			case MIKA:
 				return Assets.Splashes.MIKA;
+			case MARI:
+				return Assets.Splashes.MARI;
 			case WARRIOR:
 				return Assets.Splashes.WARRIOR;
 			case MAGE:

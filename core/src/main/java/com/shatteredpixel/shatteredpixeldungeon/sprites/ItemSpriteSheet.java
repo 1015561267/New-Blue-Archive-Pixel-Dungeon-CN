@@ -862,8 +862,12 @@ public class ItemSpriteSheet {
 
 	private static final int UNIQUE_ITEM_2 	= 								xy(1, 34);
 	public static final int SCRUNCHIE 		= UNIQUE_ITEM_2+0;
+	public static final int CROSS	 		= UNIQUE_ITEM_2+1;
+	public static final int THUNDER_LANCE	= UNIQUE_ITEM_2+2;
 	static {
 		assignItemRect(SCRUNCHIE, 			11, 12);
+		assignItemRect(CROSS, 				14, 15);
+		assignItemRect(THUNDER_LANCE, 		13, 13);
 	}
 
 	private static final int NEW_ARMOR 	= 								xy(1, 35);
@@ -877,6 +881,7 @@ public class ItemSpriteSheet {
 	public static final int ARMOR_YUZU	    = NEW_ARMOR+7;
 	public static final int ARMOR_IZUNA	    = NEW_ARMOR+8;
 	public static final int ARMOR_MIKA	    = NEW_ARMOR+9;
+	public static final int ARMOR_MARI	    = NEW_ARMOR+10;
 	static{
 		assignItemRect(ARMOR_ARIS,   	13, 11);
 		assignItemRect(ARMOR_NONOMI,    14, 11);
@@ -888,6 +893,7 @@ public class ItemSpriteSheet {
 		assignItemRect(ARMOR_YUZU,	    13, 12);
 		assignItemRect(ARMOR_IZUNA,	    15, 11);
 		assignItemRect(ARMOR_MIKA,	    13, 13);
+		assignItemRect(ARMOR_MARI,	    16, 16);
 	}
 	private static final int SPECIAL_ITEMS 	= 								xy(1, 36);
 	public static final int EX_DISC	  		= SPECIAL_ITEMS+0;
@@ -908,6 +914,9 @@ public class ItemSpriteSheet {
 	public static final int SNIPER_BULLET	= BULLETS+3;
 	public static final int GHOST_BULLET	= BULLETS+4;
 	public static final int NO_BULLET		= BULLETS+5;
+	public static final int LIGHT_BULLET	= BULLETS+6;
+	public static final int SILVER_BULLET	= BULLETS+7;
+	public static final int HOLY_BULLET		= BULLETS+8;
 	static{
 		assignItemRect(SINGLE_BULLET	, 8, 8);
 		assignItemRect(DOUBLE_BULLET	, 11, 10);
@@ -915,6 +924,9 @@ public class ItemSpriteSheet {
 		assignItemRect(SNIPER_BULLET	, 8, 8);
 		assignItemRect(GHOST_BULLET		, 8, 8);
 		assignItemRect(NO_BULLET		, 0, 0);
+		assignItemRect(LIGHT_BULLET		, 8, 8);
+		assignItemRect(SILVER_BULLET	, 8, 8);
+		assignItemRect(HOLY_BULLET		, 8, 8);
 	}
 
 	private static final int SPECIAL_BULLETS=			xy(1, 38);  //16 slots

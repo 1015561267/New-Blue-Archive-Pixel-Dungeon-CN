@@ -81,6 +81,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeStasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.YuzuStatus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mari.MariTrinity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.aris.Division;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
@@ -92,6 +93,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mika.Perfe
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.shiroko.GPSRoute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.nonomi.Bipod;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fantasy.Thunder;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.HolyMantle;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.LightBullet;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.MariMiracle;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.Pray;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.Protection;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HallowedGround;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard;
@@ -575,6 +582,11 @@ public class Hero extends Char {
 		float accuracy = 1;
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
 
+		if (wep instanceof Gun.Bullet && buff(LightBullet.LightMagazine.class) != null) {
+			return INFINITE_ACCURACY;
+		}
+
+
         if(buff(RabbitSquadBuff.MiyuAccEnhance.class) != null){
             buff(RabbitSquadBuff.MiyuAccEnhance.class).detach();
             accuracy *= Float.POSITIVE_INFINITY;
@@ -813,6 +825,11 @@ public class Hero extends Char {
 			dr += buff(AvantGardeKunBuff.OnBoard.class).drRoll();
 		}
 
+		if (buff(MariTrinity.TrinityBuff.class) != null) {
+			MariTrinity.TrinityBuff buff = buff(MariTrinity.TrinityBuff.class);
+			dr += buff.drRoll(this);
+		}
+
 		return dr;
 	}
 	
@@ -868,7 +885,7 @@ public class Hero extends Char {
 
 		speed *= RingOfHaste.speedMultiplier(this);
 		speed *= Talent.speedBoost(this);
-		
+
 		if (belongings.armor() != null) {
 			speed = belongings.armor().speedFactor(this, speed);
 		}
@@ -1091,7 +1108,7 @@ public class Hero extends Char {
 				
 			} else if (curAction instanceof HeroAction.Attack) {
 				actResult = actAttack( (HeroAction.Attack)curAction );
-				
+
 			} else if (curAction instanceof HeroAction.Alchemy) {
 				actResult = actAlchemy( (HeroAction.Alchemy)curAction );
 				
@@ -1836,6 +1853,16 @@ public class Hero extends Char {
 			damage = Math.round(damage * 0.25f);
 		}
 
+		if (heroClass == HeroClass.MARI) {
+			Thunder.thunderEffect(enemy.sprite);
+			enemy.damage(MariMiracle.PunishmentThunder.thunderDamage(this), new MariMiracle.PunishmentThunder());
+		}
+
+		if (buff(Protection.ProtectionBuff.class) != null){
+			int blocking = buff(Protection.ProtectionBuff.class).defenseBonus(this);
+			damage -= blocking;
+		}
+
 		damage = Talent.onDefenseProc(this, enemy, damage);
 
 		if (Dungeon.isChallenged(Challenges.NUTRITION_LACK) && buff(Hunger.class) != null && buff(Hunger.class).isStarving() && Random.Float() < 0.2f) {
@@ -1892,6 +1919,13 @@ public class Hero extends Char {
 			//and to monk meditate damage reduction
 			if (buff(MonkEnergy.MonkAbility.Meditate.MeditateResistance.class) != null){
 				damage *= 0.2f;
+			}
+			//mari pray damage reduction
+			if (buff(Pray.PrayResistance.class) != null){
+				damage *= 0.2f;
+				if (hasTalent(Talent.MARI_T1_4)) {
+					damage -= pointsInTalent(Talent.MARI_T1_4);
+				}
 			}
 		}
 

@@ -16,7 +16,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RabbitSquadBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.NoticeTracker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShootAllBuff;
@@ -26,10 +25,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mari.MariTrinity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.miyako.WireHook;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.miyu.AntiMaterialRifle;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.miyu.HPBullet;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.nonomi.Bipod;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.LightBullet;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.MindBind;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.shops.InfiniteAmmo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -41,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.GunSmithingTool;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.active.IronHorus;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CrossNecklace;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
@@ -90,7 +93,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_T3;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_T4;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.SR.SR_T5;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -437,8 +439,25 @@ public class Gun extends MeleeWeapon {
     }
 
     public void reload() {
+        if (hero.heroClass == HeroClass.MARI) {
+            CrossNecklace necklace = hero.belongings.getItem(CrossNecklace.class);
+            if (necklace == null || (!necklace.isEquipped(hero) && !hero.hasTalent(Talent.MARI_T3_2))) {
+                hero.yellW("no_necklace");
+                return;
+            }
+            int missing = maxRound()-round();
+            int bulletsToLoad = necklace.bulletsCanLoad(missing);
+            if (bulletsToLoad == 0) {
+                hero.yellW("no_charge");
+                return;
+            }
+            necklace.spendCharge(bulletsToLoad);
+            manualReload(bulletsToLoad, false);
+        } else {
+            quickReload();
+        }
+
         onReload();
-        quickReload();
 
         hero.busy();
         hero.sprite.operate(hero.pos);
@@ -468,6 +487,10 @@ public class Gun extends MeleeWeapon {
 
         if (hero.hasTalent(Talent.NOA_EX1_1) && hero.belongings.secondWep() instanceof Gun) {
             ((Gun)hero.belongings.secondWep()).manualReload(hero.pointsInTalent(Talent.NOA_EX1_1), false);
+        }
+
+        if (hero.buff(LightBullet.LightMagazine.class) != null) {
+            hero.buff(LightBullet.LightMagazine.class).detach();
         }
     }
 
@@ -1048,9 +1071,11 @@ public class Gun extends MeleeWeapon {
                     }.attachTo(defender);
                     Buff.affect(defender, Talent.CharmTracker.class);
                 }
+
+                if (hero.buff(LightBullet.LightMagazine.class) != null) {
+                    damage = hero.buff(LightBullet.LightMagazine.class).proc(hero, defender, damage);
+                }
             }
-
-
 
             return Gun.this.proc(attacker, defender, damage);
         }
@@ -1286,6 +1311,10 @@ public class Gun extends MeleeWeapon {
             if (hero.buff(Talent.PerfectPrecisionTracker.class) != null) {
                 hero.buff(Talent.PerfectPrecisionTracker.class).detach();
             }
+
+            if (hero.buff(LightBullet.LightMagazine.class) != null) {
+                hero.buff(LightBullet.LightMagazine.class).onShoot(hero);
+            }
         }
 
         private boolean oneShot(int cell) {
@@ -1418,7 +1447,17 @@ public class Gun extends MeleeWeapon {
                             curUser.buff(Snipe.ScopedArea.class).snipe(target, Actor.findChar(target), knockBullet());
                         }
                     } else {
-                        knockBullet().cast(curUser, target);
+                        Bullet bullet = knockBullet();
+
+                        if (curUser.buff(MindBind.MindBindBuff.class) != null && curUser.buff(MindBind.MindBindBuff.class).aimingTarget(target)) {
+                            bullet.setIgnoreWall(true);
+                        }
+
+                        if (curUser.buff(MariTrinity.TrinityBuff.class) != null) {
+                            bullet.setIgnoreWall(true);
+                        }
+
+                        bullet.cast(curUser, target);
                     }
                 }
             }

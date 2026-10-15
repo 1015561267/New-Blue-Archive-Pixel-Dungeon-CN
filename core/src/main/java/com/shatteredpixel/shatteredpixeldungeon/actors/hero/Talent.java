@@ -67,6 +67,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.aris.Divis
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.hoshino.SpikeShield;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mika.PerfectDeception;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.nonomi.Bipod;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.LightBullet;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.RecallInscription;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -87,6 +88,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CrossNecklace;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.NinjaCape;
@@ -782,10 +784,52 @@ public enum Talent {
 	MIKA_ARMOR3_2(24, 9, 4),
 	MIKA_ARMOR3_3(25, 9, 4),
 
+	//Mari T1
+	MARI_T1_1(0, 10, 2),
+	MARI_T1_2(1, 10, 2),
+	MARI_T1_3(2, 10, 2),
+	MARI_T1_4(3, 10, 2),
+
+	//Mari T2
+	MARI_T2_1(4, 10, 2),
+	MARI_T2_2(5, 10, 2),
+	MARI_T2_3(6, 10, 2),
+	MARI_T2_4(7, 10, 2),
+	MARI_T2_5(8, 10, 2),
+
+	//Mari T3
+	MARI_T3_1(9, 10, 3),
+	MARI_T3_2(10, 10, 3),
+
+	//Devout Prayer T3
+	MARI_EX1_1(11, 10, 3),
+	MARI_EX1_2(12, 10, 3),
+	MARI_EX1_3(13, 10, 3),
+
+	//Symbol of Peace T3
+	MARI_EX2_1(14, 10, 3),
+	MARI_EX2_2(15, 10, 3),
+	MARI_EX2_3(16, 10, 3),
+
+	//Armor Ability 1 T4
+	MARI_ARMOR1_1(17, 10, 4),
+	MARI_ARMOR1_2(18, 10, 4),
+	MARI_ARMOR1_3(19, 10, 4),
+
+	//Armor Ability 2 T4
+	MARI_ARMOR2_1(20, 10, 4),
+	MARI_ARMOR2_2(21, 10, 4),
+	MARI_ARMOR2_3(22, 10, 4),
+
+	//Armor Ability 3 T4
+	MARI_ARMOR3_1(23, 10, 4),
+	MARI_ARMOR3_2(24, 10, 4),
+	MARI_ARMOR3_3(25, 10, 4),
+
 	//universal T4
 	HEROIC_ENERGY(26, 0, 4), //See icon() and title() for special logic for this one
 	//Ratmogrify T4
-	RATSISTANCE(23, 9, 4), RATLOMACY(24, 9, 4), RATFORCEMENTS(25, 9, 4);
+	RATSISTANCE(23, 11, 4), RATLOMACY(24, 11, 4), RATFORCEMENTS(25, 11, 4);
 
 	public static class ImprovisedProjectileCooldown extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
@@ -1111,6 +1155,9 @@ public enum Talent {
 				case MIKA:
 					y = 9;
 					break;
+				case MARI:
+					y = 10;
+					break;
 			}
 			if (Ratmogrify.useRatroicEnergy){
 				y = 11;
@@ -1225,7 +1272,7 @@ public enum Talent {
 			}
 		}
 
-		if (talent == HEIGHTENED_SENSES || talent == FARSIGHT || talent == DIVINE_SENSE || talent == MIYAKO_T2_3 || talent == MIYAKO_EX2_3 || talent == HOSHINO_T2_3 || talent == SHIROKO_T2_3){
+		if (talent == HEIGHTENED_SENSES || talent == FARSIGHT || talent == DIVINE_SENSE || talent == MIYAKO_T2_3 || talent == MIYAKO_EX2_3 || talent == HOSHINO_T2_3 || talent == SHIROKO_T2_3 || talent == MARI_ARMOR2_2){
 			Dungeon.observe();
 		}
 
@@ -1250,6 +1297,16 @@ public enum Talent {
 				if (item instanceof HolyTome){
 					if (!hero.belongings.lostInventory() || item.keptThroughLostInventory()) {
 						((HolyTome) item).activate(Dungeon.hero);
+					}
+				}
+			}
+		}
+
+		if (talent == MARI_T3_2 && hero.heroClass == HeroClass.MARI){
+			for (Item item : Dungeon.hero.belongings.backpack){
+				if (item instanceof CrossNecklace){
+					if (!hero.belongings.lostInventory() || item.keptThroughLostInventory()) {
+						((CrossNecklace) item).activate(Dungeon.hero);
 					}
 				}
 			}
@@ -1543,6 +1600,17 @@ public enum Talent {
 				Dungeon.level.drop(rollCake, hero.pos).sprite.drop();
 			}
 		}
+		if (hero.hasTalent(MARI_T1_1)){
+			Buff.affect(hero, BlessOfPlentyTracker.class);
+		}
+		if (hero.hasTalent(MARI_T2_1)){
+			CrossNecklace cross = hero.belongings.getItem(CrossNecklace.class);
+			if (cross != null) {
+				// 2/3 of a charge at +1, 1 full charge at +2
+				cross.directCharge( 2+2*hero.pointsInTalent(MARI_T2_1) );
+				ScrollOfRecharging.charge(hero);
+			}
+		}
 	}
 
 	public static class WarriorFoodImmunity extends FlavourBuff{
@@ -1721,6 +1789,12 @@ public enum Talent {
 		if (hero.hasTalent(Talent.IZUNA_T2_2)) {
 			int barrierInc = 5+5*hero.pointsInTalent(Talent.IZUNA_T2_2);
 			Buff.affect(hero, Barrier.class).setShield((int)Math.ceil(barrierInc*factor));
+		}
+		if (hero.hasTalent(Talent.MARI_T2_2) && hero.belongings.weapon instanceof Gun) {
+			int maxRounds = ((Gun) hero.belongings.weapon).maxRound();
+			int bulletsToLoad = (int)GameMath.gate(1, (int)Math.ceil(maxRounds*0.25f*hero.pointsInTalent(Talent.MARI_T2_2)*factor), maxRounds);
+			((Gun) hero.belongings.weapon).quickReload();
+			Buff.affect(hero, LightBullet.LightMagazine.class).set(((Gun) hero.belongings.weapon), bulletsToLoad);
 		}
 	}
 
@@ -2379,6 +2453,13 @@ public enum Talent {
 
 	public static class CharmTracker extends Buff {}
 
+	public static class BlessOfPlentyTracker extends Buff{
+		@Override
+		public int icon() {
+			return BuffIndicator.SPELL_FOOD;
+		}
+	}
+
 	//new buff here
 
 	public static final int MAX_TALENT_TIERS = 4;
@@ -2429,6 +2510,9 @@ public enum Talent {
 				break;
 			case MIKA:
 				Collections.addAll(tierTalents, MIKA_T1_1, MIKA_T1_2, MIKA_T1_3, MIKA_T1_4);
+				break;
+			case MARI:
+				Collections.addAll(tierTalents, MARI_T1_1, MARI_T1_2, MARI_T1_3, MARI_T1_4);
 				break;
 			case WARRIOR:
 				Collections.addAll(tierTalents, HEARTY_MEAL, VETERANS_INTUITION, PROVOKED_ANGER, IRON_WILL);
@@ -2489,6 +2573,9 @@ public enum Talent {
 			case MIKA:
 				Collections.addAll(tierTalents, MIKA_T2_1, MIKA_T2_2, MIKA_T2_3, MIKA_T2_4, MIKA_T2_5);
 				break;
+			case MARI:
+				Collections.addAll(tierTalents, MARI_T2_1, MARI_T2_2, MARI_T2_3, MARI_T2_4, MARI_T2_5);
+				break;
 			case WARRIOR:
 				Collections.addAll(tierTalents, IRON_STOMACH, LIQUID_WILLPOWER, RUNIC_TRANSFERENCE, LETHAL_MOMENTUM, IMPROVISED_PROJECTILES);
 				break;
@@ -2547,6 +2634,9 @@ public enum Talent {
 				break;
 			case MIKA:
 				Collections.addAll(tierTalents, MIKA_T3_1, MIKA_T3_2);
+				break;
+			case MARI:
+				Collections.addAll(tierTalents, MARI_T3_1, MARI_T3_2);
 				break;
 			case WARRIOR:
 				Collections.addAll(tierTalents, HOLD_FAST, STRONGMAN);
@@ -2653,6 +2743,12 @@ public enum Talent {
 				break;
 			case LITTLE_ANGRY:
 				Collections.addAll(tierTalents, MIKA_EX2_1, MIKA_EX2_2, MIKA_EX2_3);
+				break;
+			case DEVOUT_PRAYER:
+				Collections.addAll(tierTalents, MARI_EX1_1, MARI_EX1_2, MARI_EX1_3);
+				break;
+			case SYMBOL_OF_PEACE:
+				Collections.addAll(tierTalents, MARI_EX2_1, MARI_EX2_2, MARI_EX2_3);
 				break;
 			case BERSERKER:
 				Collections.addAll(tierTalents, ENDLESS_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST);
@@ -2910,6 +3006,7 @@ public enum Talent {
 				|| hero.hasTalent(Talent.MIYU_T2_1)
 				|| hero.hasTalent(Talent.YUZU_T2_1)
 				|| hero.hasTalent(Talent.IZUNA_T2_1)
-				|| hero.hasTalent(Talent.MIKA_T2_1);
+				|| hero.hasTalent(Talent.MIKA_T2_1)
+				|| hero.hasTalent(Talent.MARI_T2_1);
 	}
 }
