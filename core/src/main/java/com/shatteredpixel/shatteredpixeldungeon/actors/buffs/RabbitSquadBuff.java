@@ -7,7 +7,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Stasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -74,11 +73,26 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
         if (a instanceof Saki){
             saki = (Saki)a;
         } else {
-            if (Stasis.getStasisAlly() instanceof Saki){
-                saki = (Saki) Stasis.getStasisAlly();
-                sakiID = saki.id();
-            } else {
+            for (Char ch : Actor.chars()) {
+                if (ch instanceof Saki) {
+                    saki = (Saki) ch;
+                    sakiID = saki.id();
+                    break;
+                }
+            }
+            if (saki == null) {
                 sakiID = 0;
+            }
+        }
+    }
+
+    public static void destroySaki() {
+        if (Dungeon.hero.buff(RabbitSquadBuff.class) != null) {
+            for (Char ch : Actor.chars()) {
+                if (ch instanceof Saki) {
+                    ch.destroy();
+                    break;
+                }
             }
         }
     }
@@ -229,7 +243,7 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
                 if(Dungeon.hero.buff(MoeEnhance.class)!=null){
                     blastAmount += Dungeon.hero.buff(MoeEnhance.class).getStack();
                 }
-                
+
                 //blastAmount 횟수만큼 반복하는 반복문 작성
                 while (blastAmount > 0) {
                     //지정한 위치 주변 3x3 지역 중 하나의 좌표를 무작위로 선정. 최종 폭발 지점이 된다.
@@ -689,6 +703,13 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
                 detach();
             }
         }
+
+        @Override
+        public void detach() {
+            super.detach();
+            Dungeon.hero.interrupt();
+            ActionIndicator.refresh();
+        }
     }
 
     public static class MiyuCooldown extends FlavourBuff {
@@ -717,6 +738,13 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
         @Override
         public float iconFadePercent() {
             return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+        }
+
+        @Override
+        public void detach() {
+            super.detach();
+            Dungeon.hero.interrupt();
+            ActionIndicator.refresh();
         }
     }
 
@@ -825,6 +853,13 @@ public class RabbitSquadBuff extends Buff implements ActionIndicator.Action {
         public void restoreFromBundle(Bundle bundle) {
             super.restoreFromBundle(bundle);
             stack = bundle.getInt(STACK);
+        }
+
+        @Override
+        public void detach() {
+            super.detach();
+            Dungeon.hero.interrupt();
+            ActionIndicator.refresh();
         }
     };
 }

@@ -122,6 +122,15 @@ public class MariTrinity extends ArmorAbility {
             return true;
         }
 
+        @Override
+        public void fx(boolean on) {
+            if (on) {
+                target.sprite.rgb(this);
+            } else {
+                target.sprite.clearRgb();
+            }
+        }
+
         public void reset() {
             red = false;
             yellow = false;
@@ -154,7 +163,7 @@ public class MariTrinity extends ArmorAbility {
 
         public void shieldCast(Hero hero) {
             blue = true;
-            int amount = 10*hero.pointsInTalent(Talent.MARI_ARMOR2_3);
+            int amount = 15*hero.pointsInTalent(Talent.MARI_ARMOR2_3);
             if (shielding() + amount > hero.HT) {
                 hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(hero.HT-shielding()), FloatingText.SHIELDING);
                 setShield(hero.HT);
@@ -179,6 +188,18 @@ public class MariTrinity extends ArmorAbility {
 
         public int drRoll(Hero hero) {
             return Random.NormalIntRange(minDr(hero), maxDr(hero));
+        }
+
+        public boolean red() {
+            return red;
+        }
+
+        public boolean yellow() {
+            return yellow;
+        }
+
+        public boolean blue() {
+            return blue;
         }
 
         public boolean isTrinityComplete() {

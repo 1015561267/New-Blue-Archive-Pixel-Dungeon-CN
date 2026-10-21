@@ -942,6 +942,10 @@ public abstract class Char extends Actor {
 				cachedIncomingDOT += Math.round(resist(b.getClass()) * ((Buff.DOTbuff) b).totalIncomingDMG());
 			}
 		}
+		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
+			cachedIncomingDOT = (int) Math.ceil(cachedIncomingDOT * buff.damageTakenFactor());
+		}
+
 		needsIncomingDOTUpdate = false;
 		return cachedIncomingDOT;
 	}
@@ -1134,7 +1138,7 @@ public abstract class Char extends Actor {
 			if (dmg < 0) dmg = 0;
 		}
 
-		if (buff(HolyMantle.HolyMantleBuff.class) != null) {
+		if (buff(HolyMantle.HolyMantleBuff.class) != null && !(src instanceof Hunger)) {
 			if (dmg < 0) {
 				buff(HolyMantle.HolyMantleBuff.class).detach();
 				dmg = 0;

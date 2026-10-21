@@ -135,15 +135,34 @@ public abstract class MariMiracle {
             }
 
         } else if (tier == 4){
+            if (mari.hasTalent(Talent.MARI_ARMOR1_1)) {
+                miracles.add(Flash.INSTANCE);
+            }
+            if (mari.hasTalent(Talent.MARI_ARMOR1_2)) {
+                miracles.add(BlessOfLight.INSTANCE);
+            }
+            if (mari.hasTalent(Talent.MARI_ARMOR1_3)) {
+                miracles.add(PunishmentBullet.INSTANCE);
+            }
             if (mari.hasTalent(Talent.MARI_ARMOR2_1)) {
-                miracles.add(ToughBody.INSTANCE);
+                miracles.add(HolyBody.INSTANCE);
             }
             if (mari.hasTalent(Talent.MARI_ARMOR2_2)) {
-                miracles.add(CrystalMind.INSTANCE);
+                miracles.add(HolyMind.INSTANCE);
             }
             if (mari.hasTalent(Talent.MARI_ARMOR2_3)) {
                 miracles.add(HolySoul.INSTANCE);
             }
+            if (mari.hasTalent(Talent.MARI_ARMOR3_1)) {
+                miracles.add(Encore.INSTANCE);
+            }
+            if (mari.hasTalent(Talent.MARI_ARMOR3_2)) {
+                miracles.add(CharityKiss.INSTANCE);
+            }
+            if (mari.hasTalent(Talent.MARI_ARMOR3_3)) {
+                miracles.add(HeartOverflow.INSTANCE);
+            }
+
 
         }
 
@@ -168,9 +187,15 @@ public abstract class MariMiracle {
         miracles.add(Baptize.INSTANCE);
         miracles.add(Salvation.INSTANCE);
         miracles.add(Repent.INSTANCE);
-        miracles.add(ToughBody.INSTANCE);
-        miracles.add(CrystalMind.INSTANCE);
+        miracles.add(Flash.INSTANCE);
+        miracles.add(BlessOfLight.INSTANCE);
+        miracles.add(PunishmentBullet.INSTANCE);
+        miracles.add(HolyBody.INSTANCE);
+        miracles.add(HolyMind.INSTANCE);
         miracles.add(HolySoul.INSTANCE);
+        miracles.add(Encore.INSTANCE);
+        miracles.add(CharityKiss.INSTANCE);
+        miracles.add(HeartOverflow.INSTANCE);
 
         return miracles;
     }

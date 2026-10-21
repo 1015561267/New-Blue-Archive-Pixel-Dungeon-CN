@@ -513,6 +513,10 @@ public class Hero extends Char {
 				b.detach();
 				Buff.affect(this, Conversation.class);
 			}
+			if (b instanceof RabbitSquadBuff) {
+				b.detach();
+				Buff.affect(this, RabbitSquadBuff.class);
+			}
 		}
 		Buff.affect( this, Regeneration.class );
 		Buff.affect( this, Hunger.class );
@@ -862,7 +866,7 @@ public class Hero extends Char {
 		if (heroClass != HeroClass.DUELIST
 				&& hasTalent(Talent.WEAPON_RECHARGING)
 				&& (buff(Recharging.class) != null || buff(ArtifactRecharge.class) != null)){
-			dmg = Math.round(dmg * 1.025f + (.025f*pointsInTalent(Talent.WEAPON_RECHARGING)));
+			dmg = Math.round(dmg * (1.025f + .025f*pointsInTalent(Talent.WEAPON_RECHARGING)));
 		}
 
 		if (dmg < 0) dmg = 0;
@@ -3012,6 +3016,7 @@ public class Hero extends Char {
 		GLog.newLine();
 		String finalStr = Messages.get(this, heroClass.name() + "_" + str);
 		GLog.i( "%s: \"%s\" ", Messages.titleCase(name()), finalStr );
+		yellDebug(finalStr, str);
 	}
 
 	public void yellP( String str ) { //초록색
@@ -3019,6 +3024,7 @@ public class Hero extends Char {
 		GLog.newLine();
 		String finalStr = Messages.get(this, heroClass.name() + "_" + str);
 		GLog.p( "%s: \"%s\" ", Messages.titleCase(name()), finalStr );
+		yellDebug(finalStr, str);
 	}
 
 	public void yellN( String str ) { //빨간색
@@ -3026,6 +3032,7 @@ public class Hero extends Char {
 		GLog.newLine();
 		String finalStr = Messages.get(this, heroClass.name() + "_" + str);
 		GLog.n( "%s: \"%s\" ", Messages.titleCase(name()), finalStr );
+		yellDebug(finalStr, str);
 	}
 
 	public void yellW( String str ) { //주황색
@@ -3033,6 +3040,7 @@ public class Hero extends Char {
 		GLog.newLine();
 		String finalStr = Messages.get(this, heroClass.name() + "_" + str);
 		GLog.w( "%s: \"%s\" ", Messages.titleCase(name()), finalStr );
+		yellDebug(finalStr, str);
 	}
 
 	public void yellH( String str ) { //노란색
@@ -3040,6 +3048,13 @@ public class Hero extends Char {
 		GLog.newLine();
 		String finalStr = Messages.get(this, heroClass.name() + "_" + str);
 		GLog.h( "%s: \"%s\" ", Messages.titleCase(name()), finalStr );
+		yellDebug(finalStr, str);
+	}
+
+	public void yellDebug( String finalStr, String str ) { //for tracking of missing sentences
+		if (finalStr.equals("!!!NO TEXT FOUND!!!")) {
+			GLog.w(heroClass.name() + "_" + str);
+		}
 	}
 
 	public void resetTalent() {

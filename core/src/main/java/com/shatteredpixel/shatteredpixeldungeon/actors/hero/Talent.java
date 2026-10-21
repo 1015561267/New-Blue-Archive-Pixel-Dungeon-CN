@@ -1431,7 +1431,11 @@ public enum Talent {
 		}
 
 		if (talent == NONOMI_T3_1 && hero.pointsInTalent(NONOMI_T3_1) == 1) {
-			new MG_SP().identify().collect();
+			Item item = new MG_SP();
+			item.identify();
+			if (!item.collect()) {
+				Dungeon.level.drop(item, hero.pos).sprite.drop();
+			}
 		}
 		if (talent == NONOMI_T3_1 || talent == NONOMI_EX1_1
 				|| talent == MIYAKO_T2_2
@@ -2046,7 +2050,7 @@ public enum Talent {
 			Buff.affect(enemy, PushingTracker.class);
 			Elastic.pushEnemyWithoutPit(hero, enemy, hero.belongings.weapon(), 1 + hero.pointsInTalent(Talent.NONOMI_T2_5));
 			if (Random.Float() < 0.2f) {
-				hero.yellI("nonomi_push");
+				hero.yellI("push");
 			}
 		}
 

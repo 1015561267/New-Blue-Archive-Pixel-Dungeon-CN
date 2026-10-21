@@ -172,7 +172,17 @@ public class LightBullet extends TargetedMariMiracle {
 
         @Override
         public String desc() {
-            return Messages.get(this, "desc", bullets);
+            String desc = Messages.get(this, "desc", bullets);
+            if (Dungeon.hero.buff(Flash.FlashBuff.class) != null) {
+                desc += "\n\n" + Messages.get(Flash.FlashBuff.class, "desc");
+            }
+            if (Dungeon.hero.buff(BlessOfLight.BlessOfLightBuff.class) != null) {
+                desc += "\n\n" + Messages.get(BlessOfLight.BlessOfLightBuff.class, "desc");
+            }
+            if (Dungeon.hero.buff(PunishmentBullet.PunishmentBulletBuff.class) != null) {
+                desc += "\n\n" + Messages.get(PunishmentBullet.PunishmentBulletBuff.class, "desc");
+            }
+            return desc;
         }
 
         public void set(Gun gun, int bullets) {
@@ -196,6 +206,20 @@ public class LightBullet extends TargetedMariMiracle {
             }
             spend(TICK);
             return super.act();
+        }
+
+        @Override
+        public void detach() {
+            if (target.buff(Flash.FlashBuff.class) != null) {
+                target.buff(Flash.FlashBuff.class).detach();
+            }
+            if (target.buff(BlessOfLight.BlessOfLightBuff.class) != null) {
+                target.buff(BlessOfLight.BlessOfLightBuff.class).detach();
+            }
+            if (target.buff(PunishmentBullet.PunishmentBulletBuff.class) != null) {
+                target.buff(PunishmentBullet.PunishmentBulletBuff.class).detach();
+            }
+            super.detach();
         }
 
         public void onShoot(Hero hero) {
@@ -223,6 +247,16 @@ public class LightBullet extends TargetedMariMiracle {
             if (attacker.hasTalent(Talent.MARI_T1_3)) {
                 damage += 1+2*attacker.pointsInTalent(Talent.MARI_T1_3);
             }
+            if (attacker.buff(Flash.FlashBuff.class) != null) {
+                attacker.buff(Flash.FlashBuff.class).proc(attacker, defender);
+            }
+            if (attacker.buff(BlessOfLight.BlessOfLightBuff.class) != null) {
+                attacker.buff(BlessOfLight.BlessOfLightBuff.class).proc(attacker, defender, damage);
+            }
+            if (attacker.buff(PunishmentBullet.PunishmentBulletBuff.class) != null) {
+                attacker.buff(PunishmentBullet.PunishmentBulletBuff.class).proc(attacker, defender);
+            }
+
             return damage;
         }
 

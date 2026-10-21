@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RabbitSquadBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.VaultTokenDoor;
@@ -46,7 +47,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndError;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
@@ -264,6 +264,8 @@ public class EscapeCrystal extends Item {
 	private void leaveVault( Item preserve, int score ){
 		Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 
+		RabbitSquadBuff.destroySaki();
+
 		Dungeon.hero.live(); //clears all non-persist buffs, resets hunger/regen
 		Dungeon.hero.HP = Dungeon.hero.HT; //full heal
 
@@ -321,7 +323,7 @@ public class EscapeCrystal extends Item {
 		storedItems.put(ENERGY, Dungeon.energy);
 
 		Dungeon.quickslot.reset();
-		QuickSlotButton.reset();
+		updateQuickslot();
 		Dungeon.gold = Dungeon.energy = 0;
 		hero.belongings.clear();
 	}
@@ -336,7 +338,7 @@ public class EscapeCrystal extends Item {
 
 		Dungeon.quickslot.reset();
 		Dungeon.quickslot.restorePlaceholders(storedItems.getBundle(QUICKSLOTS));
-		QuickSlotButton.reset();
+		updateQuickslot();
 
 		Dungeon.hero.belongings.restoreFromBundle(storedItems.getBundle(BELONGINGS));
 
