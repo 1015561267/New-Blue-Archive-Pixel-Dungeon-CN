@@ -28,12 +28,24 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.NinjaCape;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Scrunchie;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SkeletonKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.nba.NbaRemainsItem;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -238,7 +250,21 @@ public class ItemSprite extends MovieClip {
 	public ItemSprite view( Item item ){
 		if(item instanceof NbaRemainsItem){
 			viewNbaRemainsItem(item.image(), item.glowing());
-		}else if(item instanceof DriedRose.Petal || (item instanceof Artifact && !(item instanceof CloakOfShadows) && !(item instanceof NinjaCape) && !(item instanceof HolyTome) && !(item instanceof Scrunchie))){
+		}else if(item instanceof DriedRose.Petal ||
+				(item instanceof AlchemistsToolkit) ||
+				(item instanceof CapeOfThorns) ||
+				(item instanceof ChaliceOfBlood) ||
+				(item instanceof DriedRose) ||
+				(item instanceof EtherealChains) ||
+				(item instanceof HornOfPlenty) ||
+				(item instanceof LloydsBeacon) ||
+				(item instanceof MasterThievesArmband) ||
+				(item instanceof SandalsOfNature) ||
+				(item instanceof SkeletonKey) ||
+				(item instanceof TalismanOfForesight) ||
+				(item instanceof TimekeepersHourglass) ||
+				(item instanceof UnstableSpellbook))
+		{
 			viewNbaArtifactsItem(item.image(), item.glowing());
 		}
 		else {view(item.image(), item.glowing());}

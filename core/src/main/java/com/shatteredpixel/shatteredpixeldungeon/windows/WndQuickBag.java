@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CrossNecklace;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.NinjaCape;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Scrunchie;
@@ -78,7 +79,9 @@ public class WndQuickBag extends Window {
 					&& (!(i instanceof CloakOfShadows) || !Dungeon.hero.hasTalent(Talent.LIGHT_CLOAK))
 					&& (!(i instanceof HolyTome) || !Dungeon.hero.hasTalent(Talent.LIGHT_READING))
 					&& (!(i instanceof NinjaCape) || !Dungeon.hero.hasTalent(Talent.IZUNA_T3_2))
-					&& (!(i instanceof Scrunchie) || !Dungeon.hero.hasTalent(Talent.MIKA_T3_2))){
+					&& (!(i instanceof Scrunchie) || !Dungeon.hero.hasTalent(Talent.MIKA_T3_2))
+					&& (!(i instanceof CrossNecklace) || !Dungeon.hero.hasTalent(Talent.MARI_T3_2))
+			){
 				continue;
 			}
 			items.add(i);

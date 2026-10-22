@@ -729,7 +729,7 @@ public class Generator {
 					TimekeepersHourglass.class,
 					UnstableSpellbook.class,
 					NinjaCape.class,
-					Scrunchie.class
+					Scrunchie.class,
 			};
 			ARTIFACT.defaultProbs = new float[]{ 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0 };
 			ARTIFACT.probs = ARTIFACT.defaultProbs.clone();
