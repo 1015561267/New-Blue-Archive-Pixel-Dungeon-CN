@@ -1371,11 +1371,11 @@ public class WndSettings extends WndTabbed {
 				chkAutoDewPickup.setRect(0, sep1.y + 1 + GAP, width / 2 - 1, BTN_HEIGHT);
 				chkScoreWarning.setRect(chkAutoDewPickup.right() + GAP, chkAutoDewPickup.top(), width / 2 - 1, BTN_HEIGHT);
 				optFrameSpeed.setRect(0, chkAutoDewPickup.bottom() + GAP, width/2-1, SLIDER_HEIGHT);
-				chkImageDisplay.setRect(0, optFrameSpeed.bottom() + GAP, width / 2 - 1, BTN_HEIGHT);
+				chkImageDisplay.setRect(optFrameSpeed.right() + GAP, chkScoreWarning.bottom() + GAP, width / 2 - 1, BTN_HEIGHT);
 			} else {
 				chkAutoDewPickup.setRect(0, sep1.y + 1 + GAP, width, BTN_HEIGHT);
 				chkScoreWarning.setRect(0, chkAutoDewPickup.bottom() + GAP, width, BTN_HEIGHT);
-				optFrameSpeed.setRect(0, chkAutoDewPickup.bottom() + GAP, width, BTN_HEIGHT);
+				optFrameSpeed.setRect(0, chkScoreWarning.bottom() + GAP, width, BTN_HEIGHT);
 				chkImageDisplay.setRect(0, optFrameSpeed.bottom() + GAP, width, BTN_HEIGHT);
 			}
 

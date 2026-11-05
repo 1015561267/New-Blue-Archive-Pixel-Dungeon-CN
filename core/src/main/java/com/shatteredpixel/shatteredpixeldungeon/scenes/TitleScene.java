@@ -567,7 +567,7 @@ public class TitleScene extends PixelScene {
                     ShatteredPixelDungeon.scene().add(new WndMessage(
 
                             "_Bug会变少吗？_\n" +
-                                    "你问我，那我问你。（以下内容以该窗口最后编辑版本1.2.0为准）\n\n\n" +
+                                    "你问我，那我问你。（以该窗口最后编辑版本1.2.0为准）\n\n\n" +
                                     "- 版本过久，待重新收集\n"
                     ));
                     RenderedTextBlock.cnLocalizationFlag = false;
