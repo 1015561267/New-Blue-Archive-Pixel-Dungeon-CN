@@ -130,6 +130,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CrossNecklace;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
@@ -527,10 +528,15 @@ public abstract class Char extends Actor {
 				dmg *= 0.2f;
 			}
 
+			//mari pray damage reduction
 			if (enemy.buff(Pray.PrayResistance.class) != null){
-				dmg *= 0.2f;
-				if (Dungeon.hero.hasTalent(Talent.MARI_T1_4)) {
-					dmg -= Dungeon.hero.pointsInTalent(Talent.MARI_T1_4);
+				CrossNecklace.CrossRecharge crossBuff = enemy.buff(CrossNecklace.CrossRecharge.class);
+				if (crossBuff != null) {
+					float reduction = 0.7f-0.5f*(1f-crossBuff.chargePercent());
+					dmg *= reduction;
+					if (Dungeon.hero.hasTalent(Talent.MARI_T1_4)) {
+						dmg -= Dungeon.hero.pointsInTalent(Talent.MARI_T1_4);
+					}
 				}
 			}
 
@@ -778,7 +784,17 @@ public abstract class Char extends Actor {
 		}
 		acuRoll *= accMulti;
 
-		float defRoll = Random.Float( defStat );
+		float defRoll;
+		if (defender instanceof Hero && ((Hero)defender).belongings.armor != null) {
+			defRoll = Random.Float( defStat );
+			int tries = ((Hero)defender).belongings.armor.armorType.evasionTries();
+			for (int i = 1; i < tries; i++) {
+				float roll = Random.Float( defStat );
+				if (roll > defRoll) defRoll = roll;
+			}
+		} else {
+			defRoll = Random.Float( defStat );
+		}
 		if (defender.buff(Bless.class) != null) defRoll *= 1.25f;
 		if (defender.buff(  Hex.class) != null) defRoll *= 0.8f;
 		if (defender.buff( Daze.class) != null) defRoll *= 0.5f;
@@ -1135,11 +1151,11 @@ public abstract class Char extends Actor {
 
 		if (buff(Protection.ProtectionBuff.class) != null && !(src instanceof Hunger)) {
 			dmg -= buff(Protection.ProtectionBuff.class).damageReduction(Dungeon.hero);
-			if (dmg < 0) dmg = 0;
+			dmg = Math.max(dmg, 0);
 		}
 
 		if (buff(HolyMantle.HolyMantleBuff.class) != null && !(src instanceof Hunger)) {
-			if (dmg < 0) {
+			if (dmg > 0) {
 				buff(HolyMantle.HolyMantleBuff.class).detach();
 				dmg = 0;
 			}

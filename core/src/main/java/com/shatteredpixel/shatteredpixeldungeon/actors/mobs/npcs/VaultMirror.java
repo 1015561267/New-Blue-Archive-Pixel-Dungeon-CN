@@ -144,7 +144,7 @@ public class VaultMirror extends NPC {
 					break;
 				case MARI:
 					reward = new CrossNecklace().upgrade(8).identify(false);
-					((CrossNecklace) reward).directCharge(10);
+					((CrossNecklace) reward).directCharge(3);
 					break;
 			}
 		Random.popGenerator();

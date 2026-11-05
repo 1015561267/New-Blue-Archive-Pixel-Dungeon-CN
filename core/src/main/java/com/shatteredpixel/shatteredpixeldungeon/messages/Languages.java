@@ -25,10 +25,10 @@ import java.util.Locale;
 
 public enum Languages {
 	KOREAN("한국어",         "ko", Status.O_COMPLETE, null, null),
-	RUSSIAN("русский",      "ru", Status.__UNREVIEW, new String[]{"Aleksey Petrenko"}, new String[]{"SPD's translators credit"}),
-	ENGLISH("english",      "en", Status.X_UNFINISH, null, null),
-	CHI_SMPL("简体中文",     "zh", Status.X_UNFINISH, null, new String[]{"SPD's translators credit"}),
-	SPANISH("español",      "es", Status.X_UNFINISH, null, new String[]{"SPD's translators credit"}),
+	RUSSIAN("русский",      "ru", Status.__UNREVIEW, new String[]{"alekseypetrenko096"}, new String[]{"SPD's translators credit"}),
+	ENGLISH("english",      "en", Status.X_UNFINISH, new String[]{"hphucut, domotokaiser, mlesniarek00"}, null),
+	CHI_SMPL("简体中文",     "zh", Status.X_UNFINISH, new String[]{"zengweigao85"}, new String[]{"SPD's translators credit"}),
+	SPANISH("español",      "es", Status.X_UNFINISH, new String[]{"Wyatt_Ml"}, new String[]{"SPD's translators credit"}),
 	PORTUGUESE("português", "pt", Status.X_UNFINISH, null, new String[]{"SPD's translators credit"}),
 	FRENCH("français",      "fr", Status.X_UNFINISH, null, new String[]{"SPD's translators credit"}),
 	GERMAN("deutsch",       "de", Status.X_UNFINISH, null, new String[]{"SPD's translators credit"}),

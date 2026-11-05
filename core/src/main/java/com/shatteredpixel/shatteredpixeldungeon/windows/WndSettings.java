@@ -22,11 +22,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -70,6 +72,7 @@ public class WndSettings extends WndTabbed {
 	private DataTab     data;
 	private AudioTab    audio;
 	private LangsTab    langs;
+	private PreferenceTab    preference;
 
 	public static int last_index = 0;
 
@@ -187,6 +190,22 @@ public class WndSettings extends WndTabbed {
 
 		};
 		add( langsTab );
+
+		if (Badges.isUnlocked(Badges.Badge.VICTORY) || DeviceCompat.isDebug()) {
+			preference = new PreferenceTab();
+			preference.setSize(width, 0);
+			height = Math.max(height, preference.height());
+			add( preference );
+
+			add( new IconTab(Icons.get(Icons.CATALOG)){
+				@Override
+				protected void select(boolean value) {
+					super.select(value);
+					preference.visible = preference.active = value;
+					if (value) last_index = 6;
+				}
+			});
+		}
 
 		resize(width, (int)Math.ceil(height));
 
@@ -1279,6 +1298,85 @@ public class WndSettings extends WndTabbed {
 				txtTranifex.maxWidth((int)width);
 
 				height = txtTranifex.bottom();
+			}
+
+		}
+	}
+
+	private static class PreferenceTab extends Component {
+
+		RenderedTextBlock title;
+		ColorBlock sep1;
+		CheckBox chkAutoDewPickup;
+		CheckBox chkScoreWarning;
+		OptionSlider optFrameSpeed;
+		CheckBox chkImageDisplay;
+
+		@Override
+		protected void createChildren() {
+			title = PixelScene.renderTextBlock(Messages.get(this, "title"), 9);
+			title.hardlight(TITLE_COLOR);
+			add(title);
+
+			sep1 = new ColorBlock(1, 1, 0xFF000000);
+			add(sep1);
+
+			chkAutoDewPickup = new CheckBox(Messages.get(this, "auto_dew_collect")){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.autoDewCollect(checked());
+				}
+			};
+			chkAutoDewPickup.checked(SPDSettings.autoDewCollect());
+			add(chkAutoDewPickup);
+
+			chkScoreWarning = new CheckBox(Messages.get(this, "score_warning")){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.scoreAlert(checked());
+				}
+			};
+			chkScoreWarning.checked(SPDSettings.scoreAlert());
+			add(chkScoreWarning);
+
+			optFrameSpeed = new OptionSlider(Messages.get(this, "frame_speed"), "x1", "x5", 1, 5) {
+				@Override
+				protected void onChange() {
+					SPDSettings.frameSpeed(getSelectedValue());
+				}
+			};
+			optFrameSpeed.setSelectedValue(SPDSettings.frameSpeed());
+			add(optFrameSpeed);
+
+			chkImageDisplay = new CheckBox(Messages.get(this, "image_display")){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.imageDisplay(checked());
+				}
+			};
+			chkImageDisplay.checked(SPDSettings.imageDisplay());
+			add(chkImageDisplay);
+		}
+
+		@Override
+		protected void layout() {
+			title.setPos((width - title.width())/2, y + GAP);
+			sep1.size(width, 1);
+			sep1.y = title.bottom() + 3*GAP;
+
+			if (width > 200) {
+				chkAutoDewPickup.setRect(0, sep1.y + 1 + GAP, width / 2 - 1, BTN_HEIGHT);
+				chkScoreWarning.setRect(chkAutoDewPickup.right() + GAP, chkAutoDewPickup.top(), width / 2 - 1, BTN_HEIGHT);
+				optFrameSpeed.setRect(0, chkAutoDewPickup.bottom() + GAP, width/2-1, SLIDER_HEIGHT);
+				chkImageDisplay.setRect(0, optFrameSpeed.bottom() + GAP, width / 2 - 1, BTN_HEIGHT);
+			} else {
+				chkAutoDewPickup.setRect(0, sep1.y + 1 + GAP, width, BTN_HEIGHT);
+				chkScoreWarning.setRect(0, chkAutoDewPickup.bottom() + GAP, width, BTN_HEIGHT);
+				optFrameSpeed.setRect(0, chkAutoDewPickup.bottom() + GAP, width, BTN_HEIGHT);
+				chkImageDisplay.setRect(0, optFrameSpeed.bottom() + GAP, width, BTN_HEIGHT);
 			}
 
 		}

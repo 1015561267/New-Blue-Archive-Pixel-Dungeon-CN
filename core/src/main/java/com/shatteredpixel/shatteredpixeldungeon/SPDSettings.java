@@ -487,4 +487,36 @@ public class SPDSettings extends GameSettings {
     public static boolean rabbitEnhance(){
         return getBoolean(RABBIT_ENHANCE, false );
     }
+
+	//Preferences
+
+	public static final String KEY_AUTO_DEW_COLLECT = "auto_dew_collect";
+
+	public static void autoDewCollect( boolean value ) {
+		put( KEY_AUTO_DEW_COLLECT, value );
+	}
+
+	public static boolean autoDewCollect() {
+		return getBoolean( KEY_AUTO_DEW_COLLECT, false );
+	}
+
+	public static final String KEY_SCORE_WARNING = "score_warning";
+
+	public static void scoreAlert(boolean value ) {
+		put( KEY_SCORE_WARNING, value );
+	}
+
+	public static boolean scoreAlert() {
+		return getBoolean( KEY_SCORE_WARNING, false );
+	}
+
+	public static final String KEY_IMAGE_DISPLAY = "image_display";
+
+	public static void imageDisplay( boolean value ) {
+		put( KEY_IMAGE_DISPLAY, value );
+	}
+
+	public static boolean imageDisplay() {
+		return getBoolean( KEY_IMAGE_DISPLAY, false );
+	}
 }

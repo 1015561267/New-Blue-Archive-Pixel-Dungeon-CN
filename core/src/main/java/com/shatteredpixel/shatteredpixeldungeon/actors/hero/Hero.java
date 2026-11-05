@@ -94,6 +94,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.shiroko.GP
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.nonomi.Bipod;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.console.fantasy.Thunder;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.HealingTouch;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.HolyMantle;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.LightBullet;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.miracles.MariMiracle;
@@ -138,6 +139,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CrossNecklace;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
@@ -832,6 +834,10 @@ public class Hero extends Char {
 		if (buff(MariTrinity.TrinityBuff.class) != null) {
 			MariTrinity.TrinityBuff buff = buff(MariTrinity.TrinityBuff.class);
 			dr += buff.drRoll(this);
+		}
+
+		if (buff(Protection.ProtectionBuff.class) != null){
+			dr += buff(Protection.ProtectionBuff.class).defenseBonus(this);
 		}
 
 		return dr;
@@ -1862,9 +1868,8 @@ public class Hero extends Char {
 			enemy.damage(MariMiracle.PunishmentThunder.thunderDamage(this), new MariMiracle.PunishmentThunder());
 		}
 
-		if (buff(Protection.ProtectionBuff.class) != null){
-			int blocking = buff(Protection.ProtectionBuff.class).defenseBonus(this);
-			damage -= blocking;
+		if (buff(Pray.PrayResistance.class) != null) {
+			buff(Pray.PrayResistance.class).defenseProc(this);
 		}
 
 		damage = Talent.onDefenseProc(this, enemy, damage);
@@ -1925,10 +1930,14 @@ public class Hero extends Char {
 				damage *= 0.2f;
 			}
 			//mari pray damage reduction
-			if (buff(Pray.PrayResistance.class) != null){
-				damage *= 0.2f;
-				if (hasTalent(Talent.MARI_T1_4)) {
-					damage -= pointsInTalent(Talent.MARI_T1_4);
+			if (buff(Pray.PrayResistance.class) != null && !(src instanceof HealingTouch.NeutralDeferedDamage)){
+				CrossNecklace.CrossRecharge crossBuff = buff(CrossNecklace.CrossRecharge.class);
+				if (crossBuff != null) {
+					float reduction = 0.7f-0.5f*(1f-crossBuff.chargePercent());
+					damage *= reduction;
+					if (hasTalent(Talent.MARI_T1_4)) {
+						damage -= pointsInTalent(Talent.MARI_T1_4);
+					}
 				}
 			}
 		}
